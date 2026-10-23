@@ -1,0 +1,53 @@
+{
+  "generatedAt": "2026-10-23T08:05:40.787Z",
+  "status": "passed",
+  "leagues": [
+    {
+      "competition": "Bundesliga",
+      "status": "passed",
+      "configuredAliases": 15,
+      "invalidAliasTargets": [],
+      "currentTeamsWithoutHistoricalIdentity": [
+        "Elversberg",
+        "Paderborn"
+      ]
+    },
+    {
+      "competition": "LaLiga",
+      "status": "passed",
+      "configuredAliases": 21,
+      "invalidAliasTargets": [],
+      "currentTeamsWithoutHistoricalIdentity": [
+        "La Coruna",
+        "Malaga",
+        "Santander"
+      ]
+    },
+    {
+      "competition": "Ligue 1",
+      "status": "passed",
+      "configuredAliases": 14,
+      "invalidAliasTargets": [],
+      "currentTeamsWithoutHistoricalIdentity": [
+        "Le Mans"
+      ]
+    },
+    {
+      "competition": "Premier League",
+      "status": "passed",
+      "configuredAliases": 28,
+      "invalidAliasTargets": [],
+      "currentTeamsWithoutHistoricalIdentity": [
+        "Coventry",
+        "Hull"
+      ]
+    },
+    {
+      "competition": "Serie A",
+      "status": "passed",
+      "configuredAliases": 9,
+      "invalidAliasTargets": [],
+      "currentTeamsWithoutHistoricalIdentity": []
+    }
+  ]
+}

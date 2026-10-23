@@ -1,0 +1,36 @@
+{
+  "generatedAt": "2026-10-23T08:05:39.427Z",
+  "status": "passed",
+  "leagues": [
+    {
+      "competition": "Bundesliga",
+      "status": "passed",
+      "criticalIssues": 0,
+      "warnings": 1
+    },
+    {
+      "competition": "LaLiga",
+      "status": "passed",
+      "criticalIssues": 0,
+      "warnings": 1
+    },
+    {
+      "competition": "Ligue 1",
+      "status": "passed",
+      "criticalIssues": 0,
+      "warnings": 1
+    },
+    {
+      "competition": "Premier League",
+      "status": "passed",
+      "criticalIssues": 0,
+      "warnings": 1
+    },
+    {
+      "competition": "Serie A",
+      "status": "passed",
+      "criticalIssues": 0,
+      "warnings": 0
+    }
+  ]
+}

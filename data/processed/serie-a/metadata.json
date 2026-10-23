@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-10-23T08:05:36.957Z",
+  "competition": "Serie A",
+  "historicalSeasons": [
+    "2021/2022",
+    "2022/2023",
+    "2023/2024",
+    "2024/2025",
+    "2025/2026"
+  ],
+  "currentSeason": "2026/2027",
+  "historicalMatches": 1900,
+  "currentSeasonMatches": 70,
+  "currentSeasonFinishedMatches": 70,
+  "currentSeasonScheduledMatches": 0,
+  "sourceFiles": [
+    "season-21_22-serie-a.csv",
+    "season-22_23-serie-a.csv",
+    "season-23_24-serie-a.csv",
+    "season-24_25-serie-a.csv",
+    "season-25_26-serie-a.csv",
+    "season-26_27-serie-a.csv"
+  ]
+}

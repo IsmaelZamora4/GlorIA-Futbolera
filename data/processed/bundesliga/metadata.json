@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-10-23T08:05:36.960Z",
+  "competition": "Bundesliga",
+  "historicalSeasons": [
+    "2021/2022",
+    "2022/2023",
+    "2023/2024",
+    "2024/2025",
+    "2025/2026"
+  ],
+  "currentSeason": "2026/2027",
+  "historicalMatches": 1530,
+  "currentSeasonMatches": 54,
+  "currentSeasonFinishedMatches": 54,
+  "currentSeasonScheduledMatches": 0,
+  "sourceFiles": [
+    "season-21_22-bundesliga.csv",
+    "season-22_23-bundesliga.csv",
+    "season-23_24-bundesliga.csv",
+    "season-24_25-bundesliga.csv",
+    "season-25_26-bundesliga.csv",
+    "season-26_27-bundesliga.csv"
+  ]
+}

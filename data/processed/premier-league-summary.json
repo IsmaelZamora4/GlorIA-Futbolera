@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-10-22T12:46:57.631Z",
+  "competition": "Premier League",
+  "seasons": [
+    "2021/2022",
+    "2022/2023",
+    "2023/2024",
+    "2024/2025",
+    "2025/2026"
+  ],
+  "matches": 1900,
+  "homeWins": 839,
+  "draws": 454,
+  "awayWins": 607,
+  "btts": 1051,
+  "over15": 1516,
+  "over25": 1075,
+  "over35": 649,
+  "averageGoals": 2.927,
+  "averageCorners": 10.333,
+  "averageYellowCards": 3.791
+}

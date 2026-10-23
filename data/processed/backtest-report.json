@@ -1,0 +1,1713 @@
+{
+  "generatedAt": "2026-10-23T08:12:48.600Z",
+  "methodology": {
+    "evaluation": "walk-forward temporal",
+    "leakageGuard": "Cada partido se estima solo con encuentros cuya fecha sea estrictamente anterior.",
+    "warmupMatches": 150,
+    "note": "Brier más bajo es mejor. Las métricas describen el histórico y no garantizan resultados futuros ni rentabilidad de apuestas."
+  },
+  "leagues": [
+    {
+      "slug": "bundesliga",
+      "competition": "Bundesliga",
+      "sourceMatches": 1530,
+      "evaluatedFixtures": 1379,
+      "skippedForWarmup": 151,
+      "result1X2": {
+        "accuracy": 0.491,
+        "brierScore": 0.204
+      },
+      "goals": {
+        "mae": 1.4,
+        "over25": {
+          "sample": 1379,
+          "hitRate": 0.613,
+          "averagePredictedProbability": 0.603,
+          "brierScore": 0.235,
+          "calibration": [
+            {
+              "range": "40–50%",
+              "sample": 25,
+              "predicted": 0.484,
+              "observed": 0.44
+            },
+            {
+              "range": "50–60%",
+              "sample": 620,
+              "predicted": 0.567,
+              "observed": 0.577
+            },
+            {
+              "range": "60–70%",
+              "sample": 717,
+              "predicted": 0.635,
+              "observed": 0.651
+            },
+            {
+              "range": "70–100%",
+              "sample": 17,
+              "predicted": 0.714,
+              "observed": 0.588
+            }
+          ]
+        }
+      },
+      "btts": {
+        "sample": 1379,
+        "hitRate": 0.601,
+        "averagePredictedProbability": 0.608,
+        "brierScore": 0.24,
+        "calibration": [
+          {
+            "range": "40–50%",
+            "sample": 4,
+            "predicted": 0.494,
+            "observed": 0.5
+          },
+          {
+            "range": "50–60%",
+            "sample": 549,
+            "predicted": 0.575,
+            "observed": 0.559
+          },
+          {
+            "range": "60–70%",
+            "sample": 822,
+            "predicted": 0.63,
+            "observed": 0.63
+          },
+          {
+            "range": "70–100%",
+            "sample": 4,
+            "predicted": 0.716,
+            "observed": 0.5
+          }
+        ]
+      },
+      "corners": {
+        "mae": 2.72,
+        "over85": {
+          "sample": 1378,
+          "hitRate": 0.61,
+          "averagePredictedProbability": 0.625,
+          "brierScore": 0.239,
+          "calibration": [
+            {
+              "range": "40–50%",
+              "sample": 6,
+              "predicted": 0.486,
+              "observed": 0.333
+            },
+            {
+              "range": "50–60%",
+              "sample": 363,
+              "predicted": 0.572,
+              "observed": 0.595
+            },
+            {
+              "range": "60–70%",
+              "sample": 956,
+              "predicted": 0.641,
+              "observed": 0.618
+            },
+            {
+              "range": "70–100%",
+              "sample": 53,
+              "predicted": 0.713,
+              "observed": 0.604
+            }
+          ]
+        }
+      },
+      "shotsOnTarget": {
+        "mae": 2.54,
+        "over75": {
+          "sample": 1378,
+          "hitRate": 0.715,
+          "averagePredictedProbability": 0.732,
+          "brierScore": 0.2,
+          "calibration": [
+            {
+              "range": "50–60%",
+              "sample": 5,
+              "predicted": 0.595,
+              "observed": 0.6
+            },
+            {
+              "range": "60–70%",
+              "sample": 354,
+              "predicted": 0.673,
+              "observed": 0.636
+            },
+            {
+              "range": "70–100%",
+              "sample": 1019,
+              "predicted": 0.753,
+              "observed": 0.743
+            }
+          ]
+        }
+      },
+      "calibration": {
+        "result1X2": {
+          "home": {
+            "globalRate": 0.435,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 267,
+                "observedRate": 0.21,
+                "calibratedRate": 0.225
+              },
+              {
+                "min": 0.4,
+                "max": 0.5,
+                "sample": 639,
+                "observedRate": 0.391,
+                "calibratedRate": 0.393
+              },
+              {
+                "min": 0.5,
+                "max": 0.6,
+                "sample": 382,
+                "observedRate": 0.581,
+                "calibratedRate": 0.574
+              },
+              {
+                "min": 0.6,
+                "max": 1.01,
+                "sample": 91,
+                "observedRate": 0.791,
+                "calibratedRate": 0.682
+              }
+            ]
+          },
+          "draw": {
+            "globalRate": 0.25,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 1379,
+                "observedRate": 0.25,
+                "calibratedRate": 0.25
+              },
+              {
+                "min": 0.4,
+                "max": 0.5,
+                "sample": 0,
+                "observedRate": 0.25,
+                "calibratedRate": 0.25
+              },
+              {
+                "min": 0.5,
+                "max": 0.6,
+                "sample": 0,
+                "observedRate": 0.25,
+                "calibratedRate": 0.25
+              },
+              {
+                "min": 0.6,
+                "max": 0.7,
+                "sample": 0,
+                "observedRate": 0.25,
+                "calibratedRate": 0.25
+              },
+              {
+                "min": 0.7,
+                "max": 1.01,
+                "sample": 0,
+                "observedRate": 0.25,
+                "calibratedRate": 0.25
+              }
+            ]
+          },
+          "away": {
+            "globalRate": 0.315,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 1238,
+                "observedRate": 0.285,
+                "calibratedRate": 0.286
+              },
+              {
+                "min": 0.4,
+                "max": 1.01,
+                "sample": 141,
+                "observedRate": 0.574,
+                "calibratedRate": 0.48
+              }
+            ]
+          }
+        },
+        "goalsOver25": {
+          "globalRate": 0.613,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.5,
+              "sample": 25,
+              "observedRate": 0.44,
+              "calibratedRate": 0.547
+            },
+            {
+              "min": 0.5,
+              "max": 0.6,
+              "sample": 620,
+              "observedRate": 0.577,
+              "calibratedRate": 0.579
+            },
+            {
+              "min": 0.6,
+              "max": 1.01,
+              "sample": 734,
+              "observedRate": 0.65,
+              "calibratedRate": 0.648
+            }
+          ]
+        },
+        "bttsYes": {
+          "globalRate": 0.601,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.6,
+              "sample": 553,
+              "observedRate": 0.559,
+              "calibratedRate": 0.563
+            },
+            {
+              "min": 0.6,
+              "max": 1.01,
+              "sample": 826,
+              "observedRate": 0.63,
+              "calibratedRate": 0.628
+            }
+          ]
+        },
+        "cornersOver85": {
+          "globalRate": 0.61,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.5,
+              "sample": 6,
+              "observedRate": 0.333,
+              "calibratedRate": 0.574
+            },
+            {
+              "min": 0.5,
+              "max": 0.6,
+              "sample": 363,
+              "observedRate": 0.595,
+              "calibratedRate": 0.596
+            },
+            {
+              "min": 0.6,
+              "max": 1.01,
+              "sample": 1009,
+              "observedRate": 0.617,
+              "calibratedRate": 0.617
+            }
+          ]
+        },
+        "shotsTotalOver75": {
+          "globalRate": 0.715,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.7,
+              "sample": 359,
+              "observedRate": 0.635,
+              "calibratedRate": 0.65
+            },
+            {
+              "min": 0.7,
+              "max": 1.01,
+              "sample": 1019,
+              "observedRate": 0.743,
+              "calibratedRate": 0.742
+            }
+          ]
+        }
+      }
+    },
+    {
+      "slug": "la-liga",
+      "competition": "LaLiga",
+      "sourceMatches": 1900,
+      "evaluatedFixtures": 1748,
+      "skippedForWarmup": 152,
+      "result1X2": {
+        "accuracy": 0.505,
+        "brierScore": 0.202
+      },
+      "goals": {
+        "mae": 1.28,
+        "over25": {
+          "sample": 1748,
+          "hitRate": 0.478,
+          "averagePredictedProbability": 0.455,
+          "brierScore": 0.245,
+          "calibration": [
+            {
+              "range": "0–40%",
+              "sample": 262,
+              "predicted": 0.373,
+              "observed": 0.366
+            },
+            {
+              "range": "40–50%",
+              "sample": 1142,
+              "predicted": 0.452,
+              "observed": 0.472
+            },
+            {
+              "range": "50–60%",
+              "sample": 341,
+              "predicted": 0.527,
+              "observed": 0.578
+            },
+            {
+              "range": "60–70%",
+              "sample": 3,
+              "predicted": 0.611,
+              "observed": 1
+            }
+          ]
+        }
+      },
+      "btts": {
+        "sample": 1748,
+        "hitRate": 0.52,
+        "averagePredictedProbability": 0.493,
+        "brierScore": 0.249,
+        "calibration": [
+          {
+            "range": "0–40%",
+            "sample": 18,
+            "predicted": 0.383,
+            "observed": 0.5
+          },
+          {
+            "range": "40–50%",
+            "sample": 995,
+            "predicted": 0.468,
+            "observed": 0.497
+          },
+          {
+            "range": "50–60%",
+            "sample": 732,
+            "predicted": 0.528,
+            "observed": 0.552
+          },
+          {
+            "range": "60–70%",
+            "sample": 3,
+            "predicted": 0.61,
+            "observed": 0.333
+          }
+        ]
+      },
+      "corners": {
+        "mae": 2.58,
+        "over85": {
+          "sample": 1748,
+          "hitRate": 0.6,
+          "averagePredictedProbability": 0.594,
+          "brierScore": 0.239,
+          "calibration": [
+            {
+              "range": "40–50%",
+              "sample": 54,
+              "predicted": 0.479,
+              "observed": 0.5
+            },
+            {
+              "range": "50–60%",
+              "sample": 815,
+              "predicted": 0.561,
+              "observed": 0.587
+            },
+            {
+              "range": "60–70%",
+              "sample": 867,
+              "predicted": 0.63,
+              "observed": 0.615
+            },
+            {
+              "range": "70–100%",
+              "sample": 12,
+              "predicted": 0.708,
+              "observed": 0.917
+            }
+          ]
+        }
+      },
+      "shotsOnTarget": {
+        "mae": 2.4,
+        "over75": {
+          "sample": 1748,
+          "hitRate": 0.604,
+          "averagePredictedProbability": 0.561,
+          "brierScore": 0.235,
+          "calibration": [
+            {
+              "range": "0–40%",
+              "sample": 8,
+              "predicted": 0.386,
+              "observed": 0.375
+            },
+            {
+              "range": "40–50%",
+              "sample": 234,
+              "predicted": 0.473,
+              "observed": 0.53
+            },
+            {
+              "range": "50–60%",
+              "sample": 1060,
+              "predicted": 0.549,
+              "observed": 0.568
+            },
+            {
+              "range": "60–70%",
+              "sample": 428,
+              "predicted": 0.635,
+              "observed": 0.727
+            },
+            {
+              "range": "70–100%",
+              "sample": 18,
+              "predicted": 0.724,
+              "observed": 0.889
+            }
+          ]
+        }
+      },
+      "calibration": {
+        "result1X2": {
+          "home": {
+            "globalRate": 0.463,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 497,
+                "observedRate": 0.268,
+                "calibratedRate": 0.275
+              },
+              {
+                "min": 0.4,
+                "max": 0.5,
+                "sample": 813,
+                "observedRate": 0.458,
+                "calibratedRate": 0.458
+              },
+              {
+                "min": 0.5,
+                "max": 0.6,
+                "sample": 379,
+                "observedRate": 0.66,
+                "calibratedRate": 0.65
+              },
+              {
+                "min": 0.6,
+                "max": 1.01,
+                "sample": 59,
+                "observedRate": 0.915,
+                "calibratedRate": 0.732
+              }
+            ]
+          },
+          "draw": {
+            "globalRate": 0.255,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 1748,
+                "observedRate": 0.255,
+                "calibratedRate": 0.255
+              },
+              {
+                "min": 0.4,
+                "max": 0.5,
+                "sample": 0,
+                "observedRate": 0.255,
+                "calibratedRate": 0.255
+              },
+              {
+                "min": 0.5,
+                "max": 0.6,
+                "sample": 0,
+                "observedRate": 0.255,
+                "calibratedRate": 0.255
+              },
+              {
+                "min": 0.6,
+                "max": 0.7,
+                "sample": 0,
+                "observedRate": 0.255,
+                "calibratedRate": 0.255
+              },
+              {
+                "min": 0.7,
+                "max": 1.01,
+                "sample": 0,
+                "observedRate": 0.255,
+                "calibratedRate": 0.255
+              }
+            ]
+          },
+          "away": {
+            "globalRate": 0.282,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 1629,
+                "observedRate": 0.262,
+                "calibratedRate": 0.262
+              },
+              {
+                "min": 0.4,
+                "max": 1.01,
+                "sample": 119,
+                "observedRate": 0.563,
+                "calibratedRate": 0.45
+              }
+            ]
+          }
+        },
+        "goalsOver25": {
+          "globalRate": 0.478,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.4,
+              "sample": 262,
+              "observedRate": 0.366,
+              "calibratedRate": 0.374
+            },
+            {
+              "min": 0.4,
+              "max": 0.5,
+              "sample": 1142,
+              "observedRate": 0.472,
+              "calibratedRate": 0.472
+            },
+            {
+              "min": 0.5,
+              "max": 1.01,
+              "sample": 344,
+              "observedRate": 0.581,
+              "calibratedRate": 0.566
+            }
+          ]
+        },
+        "bttsYes": {
+          "globalRate": 0.52,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.5,
+              "sample": 1013,
+              "observedRate": 0.498,
+              "calibratedRate": 0.498
+            },
+            {
+              "min": 0.5,
+              "max": 1.01,
+              "sample": 735,
+              "observedRate": 0.551,
+              "calibratedRate": 0.549
+            }
+          ]
+        },
+        "cornersOver85": {
+          "globalRate": 0.6,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.5,
+              "sample": 54,
+              "observedRate": 0.5,
+              "calibratedRate": 0.543
+            },
+            {
+              "min": 0.5,
+              "max": 0.6,
+              "sample": 815,
+              "observedRate": 0.587,
+              "calibratedRate": 0.587
+            },
+            {
+              "min": 0.6,
+              "max": 0.7,
+              "sample": 867,
+              "observedRate": 0.615,
+              "calibratedRate": 0.614
+            },
+            {
+              "min": 0.7,
+              "max": 1.01,
+              "sample": 12,
+              "observedRate": 0.917,
+              "calibratedRate": 0.719
+            }
+          ]
+        },
+        "shotsTotalOver75": {
+          "globalRate": 0.604,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.5,
+              "sample": 242,
+              "observedRate": 0.525,
+              "calibratedRate": 0.536
+            },
+            {
+              "min": 0.5,
+              "max": 0.6,
+              "sample": 1060,
+              "observedRate": 0.568,
+              "calibratedRate": 0.569
+            },
+            {
+              "min": 0.6,
+              "max": 0.7,
+              "sample": 428,
+              "observedRate": 0.727,
+              "calibratedRate": 0.721
+            },
+            {
+              "min": 0.7,
+              "max": 1.01,
+              "sample": 18,
+              "observedRate": 0.889,
+              "calibratedRate": 0.739
+            }
+          ]
+        }
+      }
+    },
+    {
+      "slug": "ligue-1",
+      "competition": "Ligue 1",
+      "sourceMatches": 1678,
+      "evaluatedFixtures": 1519,
+      "skippedForWarmup": 159,
+      "result1X2": {
+        "accuracy": 0.509,
+        "brierScore": 0.204
+      },
+      "goals": {
+        "mae": 1.36,
+        "over25": {
+          "sample": 1519,
+          "hitRate": 0.539,
+          "averagePredictedProbability": 0.52,
+          "brierScore": 0.248,
+          "calibration": [
+            {
+              "range": "0–40%",
+              "sample": 4,
+              "predicted": 0.394,
+              "observed": 0.75
+            },
+            {
+              "range": "40–50%",
+              "sample": 495,
+              "predicted": 0.473,
+              "observed": 0.523
+            },
+            {
+              "range": "50–60%",
+              "sample": 984,
+              "predicted": 0.54,
+              "observed": 0.539
+            },
+            {
+              "range": "60–70%",
+              "sample": 36,
+              "predicted": 0.614,
+              "observed": 0.722
+            }
+          ]
+        }
+      },
+      "btts": {
+        "sample": 1519,
+        "hitRate": 0.546,
+        "averagePredictedProbability": 0.547,
+        "brierScore": 0.249,
+        "calibration": [
+          {
+            "range": "40–50%",
+            "sample": 88,
+            "predicted": 0.487,
+            "observed": 0.534
+          },
+          {
+            "range": "50–60%",
+            "sample": 1373,
+            "predicted": 0.549,
+            "observed": 0.546
+          },
+          {
+            "range": "60–70%",
+            "sample": 58,
+            "predicted": 0.61,
+            "observed": 0.569
+          }
+        ]
+      },
+      "corners": {
+        "mae": 2.63,
+        "over85": {
+          "sample": 1519,
+          "hitRate": 0.587,
+          "averagePredictedProbability": 0.611,
+          "brierScore": 0.243,
+          "calibration": [
+            {
+              "range": "40–50%",
+              "sample": 11,
+              "predicted": 0.477,
+              "observed": 0.455
+            },
+            {
+              "range": "50–60%",
+              "sample": 626,
+              "predicted": 0.572,
+              "observed": 0.583
+            },
+            {
+              "range": "60–70%",
+              "sample": 846,
+              "predicted": 0.636,
+              "observed": 0.593
+            },
+            {
+              "range": "70–100%",
+              "sample": 36,
+              "predicted": 0.716,
+              "observed": 0.556
+            }
+          ]
+        }
+      },
+      "shotsOnTarget": {
+        "mae": 2.52,
+        "over75": {
+          "sample": 1519,
+          "hitRate": 0.648,
+          "averagePredictedProbability": 0.638,
+          "brierScore": 0.223,
+          "calibration": [
+            {
+              "range": "40–50%",
+              "sample": 20,
+              "predicted": 0.476,
+              "observed": 0.4
+            },
+            {
+              "range": "50–60%",
+              "sample": 360,
+              "predicted": 0.568,
+              "observed": 0.55
+            },
+            {
+              "range": "60–70%",
+              "sample": 920,
+              "predicted": 0.647,
+              "observed": 0.66
+            },
+            {
+              "range": "70–100%",
+              "sample": 219,
+              "predicted": 0.727,
+              "observed": 0.785
+            }
+          ]
+        }
+      },
+      "calibration": {
+        "result1X2": {
+          "home": {
+            "globalRate": 0.437,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 513,
+                "observedRate": 0.261,
+                "calibratedRate": 0.268
+              },
+              {
+                "min": 0.4,
+                "max": 0.5,
+                "sample": 693,
+                "observedRate": 0.47,
+                "calibratedRate": 0.469
+              },
+              {
+                "min": 0.5,
+                "max": 1.01,
+                "sample": 313,
+                "observedRate": 0.652,
+                "calibratedRate": 0.617
+              }
+            ]
+          },
+          "draw": {
+            "globalRate": 0.238,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 1519,
+                "observedRate": 0.238,
+                "calibratedRate": 0.238
+              },
+              {
+                "min": 0.4,
+                "max": 0.5,
+                "sample": 0,
+                "observedRate": 0.238,
+                "calibratedRate": 0.238
+              },
+              {
+                "min": 0.5,
+                "max": 0.6,
+                "sample": 0,
+                "observedRate": 0.238,
+                "calibratedRate": 0.238
+              },
+              {
+                "min": 0.6,
+                "max": 0.7,
+                "sample": 0,
+                "observedRate": 0.238,
+                "calibratedRate": 0.238
+              },
+              {
+                "min": 0.7,
+                "max": 1.01,
+                "sample": 0,
+                "observedRate": 0.238,
+                "calibratedRate": 0.238
+              }
+            ]
+          },
+          "away": {
+            "globalRate": 0.325,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 1328,
+                "observedRate": 0.283,
+                "calibratedRate": 0.284
+              },
+              {
+                "min": 0.4,
+                "max": 1.01,
+                "sample": 191,
+                "observedRate": 0.618,
+                "calibratedRate": 0.531
+              }
+            ]
+          }
+        },
+        "goalsOver25": {
+          "globalRate": 0.539,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.5,
+              "sample": 499,
+              "observedRate": 0.525,
+              "calibratedRate": 0.526
+            },
+            {
+              "min": 0.5,
+              "max": 0.6,
+              "sample": 984,
+              "observedRate": 0.539,
+              "calibratedRate": 0.539
+            },
+            {
+              "min": 0.6,
+              "max": 1.01,
+              "sample": 36,
+              "observedRate": 0.722,
+              "calibratedRate": 0.626
+            }
+          ]
+        },
+        "bttsYes": {
+          "globalRate": 0.546,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.5,
+              "sample": 88,
+              "observedRate": 0.534,
+              "calibratedRate": 0.538
+            },
+            {
+              "min": 0.5,
+              "max": 0.6,
+              "sample": 1373,
+              "observedRate": 0.546,
+              "calibratedRate": 0.546
+            },
+            {
+              "min": 0.6,
+              "max": 1.01,
+              "sample": 58,
+              "observedRate": 0.569,
+              "calibratedRate": 0.559
+            }
+          ]
+        },
+        "cornersOver85": {
+          "globalRate": 0.587,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.5,
+              "sample": 11,
+              "observedRate": 0.455,
+              "calibratedRate": 0.559
+            },
+            {
+              "min": 0.5,
+              "max": 0.6,
+              "sample": 626,
+              "observedRate": 0.583,
+              "calibratedRate": 0.583
+            },
+            {
+              "min": 0.6,
+              "max": 1.01,
+              "sample": 882,
+              "observedRate": 0.592,
+              "calibratedRate": 0.592
+            }
+          ]
+        },
+        "shotsTotalOver75": {
+          "globalRate": 0.648,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.6,
+              "sample": 380,
+              "observedRate": 0.542,
+              "calibratedRate": 0.557
+            },
+            {
+              "min": 0.6,
+              "max": 0.7,
+              "sample": 920,
+              "observedRate": 0.66,
+              "calibratedRate": 0.66
+            },
+            {
+              "min": 0.7,
+              "max": 1.01,
+              "sample": 219,
+              "observedRate": 0.785,
+              "calibratedRate": 0.774
+            }
+          ]
+        }
+      }
+    },
+    {
+      "slug": "premier-league",
+      "competition": "Premier League",
+      "sourceMatches": 1900,
+      "evaluatedFixtures": 1750,
+      "skippedForWarmup": 150,
+      "result1X2": {
+        "accuracy": 0.513,
+        "brierScore": 0.202
+      },
+      "goals": {
+        "mae": 1.32,
+        "over25": {
+          "sample": 1750,
+          "hitRate": 0.569,
+          "averagePredictedProbability": 0.541,
+          "brierScore": 0.244,
+          "calibration": [
+            {
+              "range": "0–40%",
+              "sample": 2,
+              "predicted": 0.388,
+              "observed": 0.5
+            },
+            {
+              "range": "40–50%",
+              "sample": 316,
+              "predicted": 0.474,
+              "observed": 0.497
+            },
+            {
+              "range": "50–60%",
+              "sample": 1244,
+              "predicted": 0.546,
+              "observed": 0.57
+            },
+            {
+              "range": "60–70%",
+              "sample": 188,
+              "predicted": 0.62,
+              "observed": 0.681
+            }
+          ]
+        }
+      },
+      "btts": {
+        "sample": 1750,
+        "hitRate": 0.557,
+        "averagePredictedProbability": 0.561,
+        "brierScore": 0.246,
+        "calibration": [
+          {
+            "range": "40–50%",
+            "sample": 74,
+            "predicted": 0.485,
+            "observed": 0.568
+          },
+          {
+            "range": "50–60%",
+            "sample": 1452,
+            "predicted": 0.557,
+            "observed": 0.545
+          },
+          {
+            "range": "60–70%",
+            "sample": 224,
+            "predicted": 0.614,
+            "observed": 0.629
+          }
+        ]
+      },
+      "corners": {
+        "mae": 2.72,
+        "over85": {
+          "sample": 1750,
+          "hitRate": 0.691,
+          "averagePredictedProbability": 0.701,
+          "brierScore": 0.214,
+          "calibration": [
+            {
+              "range": "50–60%",
+              "sample": 15,
+              "predicted": 0.583,
+              "observed": 0.733
+            },
+            {
+              "range": "60–70%",
+              "sample": 828,
+              "predicted": 0.67,
+              "observed": 0.671
+            },
+            {
+              "range": "70–100%",
+              "sample": 907,
+              "predicted": 0.731,
+              "observed": 0.708
+            }
+          ]
+        }
+      },
+      "shotsOnTarget": {
+        "mae": 2.44,
+        "over75": {
+          "sample": 1750,
+          "hitRate": 0.67,
+          "averagePredictedProbability": 0.664,
+          "brierScore": 0.221,
+          "calibration": [
+            {
+              "range": "50–60%",
+              "sample": 142,
+              "predicted": 0.581,
+              "observed": 0.69
+            },
+            {
+              "range": "60–70%",
+              "sample": 1239,
+              "predicted": 0.656,
+              "observed": 0.66
+            },
+            {
+              "range": "70–100%",
+              "sample": 369,
+              "predicted": 0.723,
+              "observed": 0.694
+            }
+          ]
+        }
+      },
+      "calibration": {
+        "result1X2": {
+          "home": {
+            "globalRate": 0.444,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 545,
+                "observedRate": 0.25,
+                "calibratedRate": 0.256
+              },
+              {
+                "min": 0.4,
+                "max": 0.5,
+                "sample": 747,
+                "observedRate": 0.456,
+                "calibratedRate": 0.456
+              },
+              {
+                "min": 0.5,
+                "max": 0.6,
+                "sample": 367,
+                "observedRate": 0.616,
+                "calibratedRate": 0.607
+              },
+              {
+                "min": 0.6,
+                "max": 1.01,
+                "sample": 91,
+                "observedRate": 0.813,
+                "calibratedRate": 0.7
+              }
+            ]
+          },
+          "draw": {
+            "globalRate": 0.236,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 1.01,
+                "sample": 1750,
+                "observedRate": 0.236,
+                "calibratedRate": 0.236
+              }
+            ]
+          },
+          "away": {
+            "globalRate": 0.32,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 1495,
+                "observedRate": 0.278,
+                "calibratedRate": 0.279
+              },
+              {
+                "min": 0.4,
+                "max": 1.01,
+                "sample": 255,
+                "observedRate": 0.565,
+                "calibratedRate": 0.506
+              }
+            ]
+          }
+        },
+        "goalsOver25": {
+          "globalRate": 0.569,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.5,
+              "sample": 318,
+              "observedRate": 0.497,
+              "calibratedRate": 0.505
+            },
+            {
+              "min": 0.5,
+              "max": 0.6,
+              "sample": 1244,
+              "observedRate": 0.57,
+              "calibratedRate": 0.57
+            },
+            {
+              "min": 0.6,
+              "max": 1.01,
+              "sample": 188,
+              "observedRate": 0.681,
+              "calibratedRate": 0.661
+            }
+          ]
+        },
+        "bttsYes": {
+          "globalRate": 0.557,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.6,
+              "sample": 1526,
+              "observedRate": 0.546,
+              "calibratedRate": 0.546
+            },
+            {
+              "min": 0.6,
+              "max": 1.01,
+              "sample": 224,
+              "observedRate": 0.629,
+              "calibratedRate": 0.618
+            }
+          ]
+        },
+        "cornersOver85": {
+          "globalRate": 0.691,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.7,
+              "sample": 843,
+              "observedRate": 0.673,
+              "calibratedRate": 0.674
+            },
+            {
+              "min": 0.7,
+              "max": 1.01,
+              "sample": 907,
+              "observedRate": 0.708,
+              "calibratedRate": 0.707
+            }
+          ]
+        },
+        "shotsTotalOver75": {
+          "globalRate": 0.67,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.7,
+              "sample": 1381,
+              "observedRate": 0.663,
+              "calibratedRate": 0.664
+            },
+            {
+              "min": 0.7,
+              "max": 1.01,
+              "sample": 369,
+              "observedRate": 0.694,
+              "calibratedRate": 0.693
+            }
+          ]
+        }
+      }
+    },
+    {
+      "slug": "serie-a",
+      "competition": "Serie A",
+      "sourceMatches": 1900,
+      "evaluatedFixtures": 1750,
+      "skippedForWarmup": 150,
+      "result1X2": {
+        "accuracy": 0.497,
+        "brierScore": 0.205
+      },
+      "goals": {
+        "mae": 1.25,
+        "over25": {
+          "sample": 1750,
+          "hitRate": 0.478,
+          "averagePredictedProbability": 0.5,
+          "brierScore": 0.248,
+          "calibration": [
+            {
+              "range": "0–40%",
+              "sample": 46,
+              "predicted": 0.378,
+              "observed": 0.37
+            },
+            {
+              "range": "40–50%",
+              "sample": 860,
+              "predicted": 0.463,
+              "observed": 0.447
+            },
+            {
+              "range": "50–60%",
+              "sample": 774,
+              "predicted": 0.537,
+              "observed": 0.505
+            },
+            {
+              "range": "60–70%",
+              "sample": 70,
+              "predicted": 0.625,
+              "observed": 0.629
+            }
+          ]
+        }
+      },
+      "btts": {
+        "sample": 1750,
+        "hitRate": 0.507,
+        "averagePredictedProbability": 0.532,
+        "brierScore": 0.25,
+        "calibration": [
+          {
+            "range": "0–40%",
+            "sample": 1,
+            "predicted": 0.398,
+            "observed": 1
+          },
+          {
+            "range": "40–50%",
+            "sample": 422,
+            "predicted": 0.477,
+            "observed": 0.436
+          },
+          {
+            "range": "50–60%",
+            "sample": 1213,
+            "predicted": 0.543,
+            "observed": 0.522
+          },
+          {
+            "range": "60–70%",
+            "sample": 114,
+            "predicted": 0.623,
+            "observed": 0.614
+          }
+        ]
+      },
+      "corners": {
+        "mae": 2.68,
+        "over85": {
+          "sample": 1750,
+          "hitRate": 0.574,
+          "averagePredictedProbability": 0.595,
+          "brierScore": 0.241,
+          "calibration": [
+            {
+              "range": "40–50%",
+              "sample": 34,
+              "predicted": 0.482,
+              "observed": 0.353
+            },
+            {
+              "range": "50–60%",
+              "sample": 924,
+              "predicted": 0.562,
+              "observed": 0.519
+            },
+            {
+              "range": "60–70%",
+              "sample": 768,
+              "predicted": 0.636,
+              "observed": 0.641
+            },
+            {
+              "range": "70–100%",
+              "sample": 24,
+              "predicted": 0.719,
+              "observed": 0.833
+            }
+          ]
+        }
+      },
+      "shotsOnTarget": {
+        "mae": 2.36,
+        "over75": {
+          "sample": 1750,
+          "hitRate": 0.585,
+          "averagePredictedProbability": 0.603,
+          "brierScore": 0.24,
+          "calibration": [
+            {
+              "range": "40–50%",
+              "sample": 40,
+              "predicted": 0.487,
+              "observed": 0.425
+            },
+            {
+              "range": "50–60%",
+              "sample": 825,
+              "predicted": 0.56,
+              "observed": 0.535
+            },
+            {
+              "range": "60–70%",
+              "sample": 783,
+              "predicted": 0.639,
+              "observed": 0.631
+            },
+            {
+              "range": "70–100%",
+              "sample": 102,
+              "predicted": 0.724,
+              "observed": 0.706
+            }
+          ]
+        }
+      },
+      "calibration": {
+        "result1X2": {
+          "home": {
+            "globalRate": 0.401,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 739,
+                "observedRate": 0.238,
+                "calibratedRate": 0.242
+              },
+              {
+                "min": 0.4,
+                "max": 0.5,
+                "sample": 667,
+                "observedRate": 0.447,
+                "calibratedRate": 0.445
+              },
+              {
+                "min": 0.5,
+                "max": 1.01,
+                "sample": 344,
+                "observedRate": 0.663,
+                "calibratedRate": 0.624
+              }
+            ]
+          },
+          "draw": {
+            "globalRate": 0.276,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 1750,
+                "observedRate": 0.276,
+                "calibratedRate": 0.276
+              },
+              {
+                "min": 0.4,
+                "max": 0.5,
+                "sample": 0,
+                "observedRate": 0.276,
+                "calibratedRate": 0.276
+              },
+              {
+                "min": 0.5,
+                "max": 0.6,
+                "sample": 0,
+                "observedRate": 0.276,
+                "calibratedRate": 0.276
+              },
+              {
+                "min": 0.6,
+                "max": 0.7,
+                "sample": 0,
+                "observedRate": 0.276,
+                "calibratedRate": 0.276
+              },
+              {
+                "min": 0.7,
+                "max": 1.01,
+                "sample": 0,
+                "observedRate": 0.276,
+                "calibratedRate": 0.276
+              }
+            ]
+          },
+          "away": {
+            "globalRate": 0.323,
+            "smoothingPriorStrength": 20,
+            "bins": [
+              {
+                "min": 0,
+                "max": 0.4,
+                "sample": 1416,
+                "observedRate": 0.256,
+                "calibratedRate": 0.257
+              },
+              {
+                "min": 0.4,
+                "max": 1.01,
+                "sample": 334,
+                "observedRate": 0.608,
+                "calibratedRate": 0.553
+              }
+            ]
+          }
+        },
+        "goalsOver25": {
+          "globalRate": 0.478,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.4,
+              "sample": 46,
+              "observedRate": 0.37,
+              "calibratedRate": 0.402
+            },
+            {
+              "min": 0.4,
+              "max": 0.5,
+              "sample": 860,
+              "observedRate": 0.447,
+              "calibratedRate": 0.447
+            },
+            {
+              "min": 0.5,
+              "max": 0.6,
+              "sample": 774,
+              "observedRate": 0.505,
+              "calibratedRate": 0.504
+            },
+            {
+              "min": 0.6,
+              "max": 1.01,
+              "sample": 70,
+              "observedRate": 0.629,
+              "calibratedRate": 0.574
+            }
+          ]
+        },
+        "bttsYes": {
+          "globalRate": 0.507,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.5,
+              "sample": 423,
+              "observedRate": 0.437,
+              "calibratedRate": 0.443
+            },
+            {
+              "min": 0.5,
+              "max": 0.6,
+              "sample": 1213,
+              "observedRate": 0.522,
+              "calibratedRate": 0.522
+            },
+            {
+              "min": 0.6,
+              "max": 1.01,
+              "sample": 114,
+              "observedRate": 0.614,
+              "calibratedRate": 0.586
+            }
+          ]
+        },
+        "cornersOver85": {
+          "globalRate": 0.574,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.5,
+              "sample": 34,
+              "observedRate": 0.353,
+              "calibratedRate": 0.472
+            },
+            {
+              "min": 0.5,
+              "max": 0.6,
+              "sample": 924,
+              "observedRate": 0.519,
+              "calibratedRate": 0.521
+            },
+            {
+              "min": 0.6,
+              "max": 0.7,
+              "sample": 768,
+              "observedRate": 0.641,
+              "calibratedRate": 0.639
+            },
+            {
+              "min": 0.7,
+              "max": 1.01,
+              "sample": 24,
+              "observedRate": 0.833,
+              "calibratedRate": 0.715
+            }
+          ]
+        },
+        "shotsTotalOver75": {
+          "globalRate": 0.585,
+          "smoothingPriorStrength": 20,
+          "bins": [
+            {
+              "min": 0,
+              "max": 0.5,
+              "sample": 40,
+              "observedRate": 0.425,
+              "calibratedRate": 0.505
+            },
+            {
+              "min": 0.5,
+              "max": 0.6,
+              "sample": 825,
+              "observedRate": 0.535,
+              "calibratedRate": 0.536
+            },
+            {
+              "min": 0.6,
+              "max": 0.7,
+              "sample": 783,
+              "observedRate": 0.631,
+              "calibratedRate": 0.63
+            },
+            {
+              "min": 0.7,
+              "max": 1.01,
+              "sample": 102,
+              "observedRate": 0.706,
+              "calibratedRate": 0.686
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

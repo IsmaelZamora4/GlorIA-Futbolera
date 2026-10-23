@@ -1,0 +1,420 @@
+{
+  "generatedAt": "2026-10-23T08:05:39.423Z",
+  "competition": "Premier League",
+  "status": "passed",
+  "critical": [],
+  "warnings": [
+    {
+      "code": "current_teams_without_historical_exact_match",
+      "message": "Puede indicar clubes ascendidos o aliases que deberán resolverse en el paso 3.",
+      "teams": [
+        "Coventry",
+        "Hull"
+      ]
+    }
+  ],
+  "raw": {
+    "files": [
+      {
+        "file": "season-21_22-premier-league.csv",
+        "currentSeason": false,
+        "rows": 380,
+        "missingColumns": [],
+        "counters": {
+          "invalidDate": 0,
+          "missingTeam": 0,
+          "sameTeam": 0,
+          "incompleteScore": 0,
+          "invalidScore": 0,
+          "resultMismatch": 0,
+          "optional": {
+            "HxG": {
+              "missing": 380,
+              "invalid": 0
+            },
+            "AxG": {
+              "missing": 380,
+              "invalid": 0
+            },
+            "HS": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AS": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HST": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AST": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HC": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AC": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HY": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AY": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HR": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AR": {
+              "missing": 0,
+              "invalid": 0
+            }
+          }
+        }
+      },
+      {
+        "file": "season-22_23-premier-league.csv",
+        "currentSeason": false,
+        "rows": 380,
+        "missingColumns": [],
+        "counters": {
+          "invalidDate": 0,
+          "missingTeam": 0,
+          "sameTeam": 0,
+          "incompleteScore": 0,
+          "invalidScore": 0,
+          "resultMismatch": 0,
+          "optional": {
+            "HxG": {
+              "missing": 380,
+              "invalid": 0
+            },
+            "AxG": {
+              "missing": 380,
+              "invalid": 0
+            },
+            "HS": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AS": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HST": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AST": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HC": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AC": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HY": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AY": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HR": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AR": {
+              "missing": 0,
+              "invalid": 0
+            }
+          }
+        }
+      },
+      {
+        "file": "season-23_24-premier-league.csv",
+        "currentSeason": false,
+        "rows": 380,
+        "missingColumns": [],
+        "counters": {
+          "invalidDate": 0,
+          "missingTeam": 0,
+          "sameTeam": 0,
+          "incompleteScore": 0,
+          "invalidScore": 0,
+          "resultMismatch": 0,
+          "optional": {
+            "HxG": {
+              "missing": 380,
+              "invalid": 0
+            },
+            "AxG": {
+              "missing": 380,
+              "invalid": 0
+            },
+            "HS": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AS": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HST": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AST": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HC": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AC": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HY": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AY": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HR": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AR": {
+              "missing": 0,
+              "invalid": 0
+            }
+          }
+        }
+      },
+      {
+        "file": "season-24_25-premier-league.csv",
+        "currentSeason": false,
+        "rows": 380,
+        "missingColumns": [],
+        "counters": {
+          "invalidDate": 0,
+          "missingTeam": 0,
+          "sameTeam": 0,
+          "incompleteScore": 0,
+          "invalidScore": 0,
+          "resultMismatch": 0,
+          "optional": {
+            "HxG": {
+              "missing": 380,
+              "invalid": 0
+            },
+            "AxG": {
+              "missing": 380,
+              "invalid": 0
+            },
+            "HS": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AS": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HST": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AST": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HC": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AC": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HY": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AY": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HR": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AR": {
+              "missing": 0,
+              "invalid": 0
+            }
+          }
+        }
+      },
+      {
+        "file": "season-25_26-premier-league.csv",
+        "currentSeason": false,
+        "rows": 380,
+        "missingColumns": [],
+        "counters": {
+          "invalidDate": 0,
+          "missingTeam": 0,
+          "sameTeam": 0,
+          "incompleteScore": 0,
+          "invalidScore": 0,
+          "resultMismatch": 0,
+          "optional": {
+            "HxG": {
+              "missing": 380,
+              "invalid": 0
+            },
+            "AxG": {
+              "missing": 380,
+              "invalid": 0
+            },
+            "HS": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AS": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HST": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AST": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HC": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AC": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HY": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AY": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HR": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AR": {
+              "missing": 0,
+              "invalid": 0
+            }
+          }
+        }
+      },
+      {
+        "file": "season-26_27-premier-league.csv",
+        "currentSeason": true,
+        "rows": 70,
+        "missingColumns": [],
+        "counters": {
+          "invalidDate": 0,
+          "missingTeam": 0,
+          "sameTeam": 0,
+          "incompleteScore": 0,
+          "invalidScore": 0,
+          "resultMismatch": 0,
+          "optional": {
+            "HxG": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AxG": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HS": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AS": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HST": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AST": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HC": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AC": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HY": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AY": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "HR": {
+              "missing": 0,
+              "invalid": 0
+            },
+            "AR": {
+              "missing": 0,
+              "invalid": 0
+            }
+          }
+        }
+      }
+    ],
+    "detectedNameVariants": []
+  },
+  "processed": {
+    "historicalMatches": 1900,
+    "currentSeasonMatches": 70,
+    "historicalSeasons": [
+      "2021/2022",
+      "2022/2023",
+      "2023/2024",
+      "2024/2025",
+      "2025/2026"
+    ],
+    "currentOnlyTeams": [
+      "Coventry",
+      "Hull"
+    ]
+  }
+}

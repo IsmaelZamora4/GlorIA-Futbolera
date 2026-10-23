@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-10-23T08:05:36.952Z",
+  "competition": "Premier League",
+  "historicalSeasons": [
+    "2021/2022",
+    "2022/2023",
+    "2023/2024",
+    "2024/2025",
+    "2025/2026"
+  ],
+  "currentSeason": "2026/2027",
+  "historicalMatches": 1900,
+  "currentSeasonMatches": 70,
+  "currentSeasonFinishedMatches": 70,
+  "currentSeasonScheduledMatches": 0,
+  "sourceFiles": [
+    "season-21_22-premier-league.csv",
+    "season-22_23-premier-league.csv",
+    "season-23_24-premier-league.csv",
+    "season-24_25-premier-league.csv",
+    "season-25_26-premier-league.csv",
+    "season-26_27-premier-league.csv"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-10-23T08:05:36.940Z",
+  "competition": "Ligue 1",
+  "historicalSeasons": [
+    "2021/2022",
+    "2022/2023",
+    "2023/2024",
+    "2024/2025",
+    "2025/2026"
+  ],
+  "currentSeason": "2026/2027",
+  "historicalMatches": 1678,
+  "currentSeasonMatches": 63,
+  "currentSeasonFinishedMatches": 63,
+  "currentSeasonScheduledMatches": 0,
+  "sourceFiles": [
+    "season-21_22-ligue-1.csv",
+    "season-22_23-ligue-1.csv",
+    "season-23_24-ligue-1.csv",
+    "season-24_25-ligue-1.csv",
+    "season-25_26-ligue-1.csv",
+    "season-26_27-ligue-1.csv"
+  ]
+}

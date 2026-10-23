@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-10-23T08:05:36.946Z",
+  "competition": "LaLiga",
+  "historicalSeasons": [
+    "2021/2022",
+    "2022/2023",
+    "2023/2024",
+    "2024/2025",
+    "2025/2026"
+  ],
+  "currentSeason": "2026/2027",
+  "historicalMatches": 1900,
+  "currentSeasonMatches": 89,
+  "currentSeasonFinishedMatches": 89,
+  "currentSeasonScheduledMatches": 0,
+  "sourceFiles": [
+    "season-21_22-la-liga.csv",
+    "season-22_23-la-liga.csv",
+    "season-23_24-la-liga.csv",
+    "season-24_25-la-liga.csv",
+    "season-25_26-la-liga.csv",
+    "season-26_27-la-liga.csv"
+  ]
+}

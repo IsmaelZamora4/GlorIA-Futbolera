@@ -1,0 +1,35 @@
+{
+  "name": "gloria-futbolera",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "normalize:data": "node scripts/normalize-league-data.mjs",
+    "validate:data": "node scripts/validate-league-data.mjs",
+    "validate:teams": "node scripts/validate-team-identities.mjs",
+    "backtest": "node scripts/backtest-league-model.mjs",
+    "test": "node --test tests/analysis-model.test.cjs",
+    "refresh:current": "node scripts/refresh-current-season.mjs",
+    "normalize:premier": "node scripts/normalize-premier-league.mjs",
+    "cache:logos": "node scripts/cache-team-logos.mjs",
+    "sync:peru-teams": "node scripts/sync-peru-demo-teams.mjs"
+  },
+  "dependencies": {
+    "next": "^16.4.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.14",
+    "@types/node": "24.7.2",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.2",
+    "tailwindcss": "4.1.14",
+    "typescript": "5.9.3"
+  }
+}
