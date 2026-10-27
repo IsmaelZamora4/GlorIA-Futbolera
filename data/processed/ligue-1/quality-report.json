@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-24T03:18:19.259Z",
+  "generatedAt": "2026-10-27T23:21:22.094Z",
   "competition": "Ligue 1",
   "status": "passed",
   "critical": [],
@@ -337,7 +337,7 @@
       {
         "file": "season-26_27-ligue-1.csv",
         "currentSeason": true,
-        "rows": 63,
+        "rows": 72,
         "missingColumns": [],
         "counters": {
           "invalidDate": 0,
@@ -403,7 +403,7 @@
   },
   "processed": {
     "historicalMatches": 1678,
-    "currentSeasonMatches": 63,
+    "currentSeasonMatches": 72,
     "historicalSeasons": [
       "2021/2022",
       "2022/2023",

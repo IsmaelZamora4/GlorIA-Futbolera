@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-24T03:18:19.250Z",
+  "generatedAt": "2026-10-27T23:21:22.109Z",
   "competition": "Bundesliga",
   "status": "passed",
   "critical": [],
@@ -338,7 +338,7 @@
       {
         "file": "season-26_27-bundesliga.csv",
         "currentSeason": true,
-        "rows": 54,
+        "rows": 63,
         "missingColumns": [],
         "counters": {
           "invalidDate": 0,
@@ -404,7 +404,7 @@
   },
   "processed": {
     "historicalMatches": 1530,
-    "currentSeasonMatches": 54,
+    "currentSeasonMatches": 63,
     "historicalSeasons": [
       "2021/2022",
       "2022/2023",

@@ -423,7 +423,7 @@ footer span { margin: 0 7px; color: #4d4d4a; }
 .match-detail-team { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 13px; align-items: center; }
 .match-detail-team.away { grid-template-columns: minmax(0, 1fr) auto; text-align: right; }
 .match-detail-team.away .detail-team-mark { grid-column: 2; }
-.match-detail-team.away strong, .match-detail-team.away small { grid-column: 1; }
+.match-detail-team.away strong, .match-detail-team.away small, .match-detail-team.away .detail-team-form, .match-detail-team.away .detail-team-form-empty { grid-column: 1; }
 .detail-team-mark { display: grid; width: 58px; height: 58px; box-sizing: border-box; grid-row: span 2; place-items: center; overflow: hidden; border: 1px solid #9b865f; border-radius: 15px; color: var(--champagne-soft); background: radial-gradient(circle at 50% 20%, #3b3527, #211f1b); font-family: var(--font-plex-sans-condensed), Arial Narrow, sans-serif; font-size: 18px; font-weight: 700; }
 .detail-team-mark.away { border-color: #575b5a; color: #d6d8d5; background: #242627; }
 .detail-team-mark img { display: block; max-width: 82%; max-height: 82%; object-fit: contain; filter: drop-shadow(0 4px 5px rgba(0, 0, 0, .3)); }
@@ -432,15 +432,26 @@ footer span { margin: 0 7px; color: #4d4d4a; }
 .detail-team-mark.compact img { width: 22px; height: 22px; max-width: 22px; max-height: 22px; object-fit: contain; }
 .match-detail-team strong { overflow: hidden; color: var(--ink); font-family: var(--font-plex-sans-condensed), Arial Narrow, sans-serif; font-size: clamp(21px, 3vw, 31px); font-weight: 600; letter-spacing: -.035em; text-overflow: ellipsis; white-space: nowrap; }
 .match-detail-team small { margin-top: 3px; color: var(--muted-dark); font-size: 10px; }
+.detail-team-form { display: inline-flex; grid-column: 2; gap: 4px; margin-top: 8px; }
+.detail-team-form .detail-form-badge { width: 18px; height: 17px; font-size: 8px; }
+.detail-team-form-empty { display: block; grid-column: 2; margin-top: 8px; color: var(--muted-dark); font-size: 8px; }
 .match-detail-center { display: grid; gap: 4px; text-align: center; }
 .match-detail-center time { color: var(--champagne-soft); font-size: 13px; font-variant-numeric: tabular-nums; font-weight: 700; }
 .match-detail-center b { color: var(--ink); font-family: var(--font-plex-sans-condensed), Arial Narrow, sans-serif; font-size: 31px; font-weight: 500; }
 .match-detail-center span { color: var(--muted-dark); font-size: 10px; }
 .match-detail-meta { display: flex; justify-content: center; gap: 18px; padding-top: 14px; border-top: 1px solid #303130; color: var(--muted-dark); font-size: 10px; }
 .detail-hero-support { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(300px, .9fr); align-items: stretch; gap: 14px; margin-top: 20px; }
-.detail-hero-analysis { min-width: 0; }.detail-hero-analysis > .detail-probabilities, .detail-hero-analysis > .model-confidence, .detail-hero-analysis > .detail-local-poll, .detail-hero-analysis > .detail-data-note { max-width: none; margin-right: 0; margin-left: 0; }.detail-hero-analysis > .detail-probabilities { margin-top: 0; }
+.detail-hero-analysis { min-width: 0; }.detail-hero-analysis > .detail-probability-panel, .detail-hero-analysis > .model-confidence, .detail-hero-analysis > .detail-local-poll, .detail-hero-analysis > .detail-data-note { max-width: none; margin-right: 0; margin-left: 0; }
 .detail-venue-card { display: flex; min-height: 100%; flex-direction: column; overflow: hidden; border: 1px solid #514a3c; border-radius: 10px; padding: 15px; background: linear-gradient(145deg, rgba(40, 37, 30, .76), rgba(19, 20, 20, .92)); }.detail-venue-card header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }.detail-venue-card header small { color: var(--muted); font-size: 9px; white-space: nowrap; }.detail-venue-card h2 { margin: 6px 0 13px; color: var(--ink); font-family: var(--font-plex-sans-condensed), Arial Narrow, sans-serif; font-size: clamp(22px, 2.4vw, 30px); font-weight: 600; letter-spacing: -.025em; }.detail-venue-card figure { display: flex; min-height: 0; flex: 1; flex-direction: column; margin: 0; }.detail-venue-photo { position: relative; min-height: 230px; flex: 1; overflow: hidden; border: 1px solid rgba(198, 176, 138, .3); border-radius: 7px; background: #20201e; }.detail-venue-photo img { object-fit: cover; }.detail-venue-card figcaption { margin-top: 7px; color: var(--muted-dark); font-size: 9px; text-align: right; }.detail-venue-card figcaption a { color: var(--champagne-soft); text-decoration: none; }.detail-venue-card figcaption a:hover { color: var(--ink); text-decoration: underline; }.detail-venue-no-photo { display: grid; min-height: 230px; flex: 1; place-items: center; align-content: center; gap: 10px; border: 1px solid rgba(198, 176, 138, .18); border-radius: 7px; background: radial-gradient(circle at 55% 0, rgba(198, 176, 138, .14), transparent 48%), linear-gradient(135deg, #20211e, #161717); text-align: center; }.detail-venue-no-photo span { color: var(--champagne); font-size: 34px; }.detail-venue-no-photo p { max-width: 190px; margin: 0; color: var(--muted); font-size: 10px; line-height: 1.45; }
-.detail-probabilities { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; max-width: 730px; margin: 20px auto 0; }
+.detail-probability-panel { border: 1px solid #4a4438; border-radius: 10px; padding: 13px; background: rgba(14, 15, 15, .45); }
+.detail-probability-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; color: var(--ink); font-family: var(--font-plex-sans-condensed), Arial Narrow, sans-serif; font-size: 16px; font-weight: 600; }
+.detail-probability-heading small { color: var(--muted-dark); font-family: var(--font-plex-sans), "Segoe UI", sans-serif; font-size: 9px; font-weight: 400; }
+.detail-probability-bar { display: flex; height: 11px; overflow: hidden; margin-top: 12px; border: 1px solid #1b1c1b; border-radius: 99px; background: #2b2c2a; }
+.detail-probability-bar span { display: grid; min-width: 0; place-items: center; transition: filter .18s ease; }
+.detail-probability-bar span:hover { filter: brightness(1.12); }
+.detail-probability-bar .home { background: #697f5f; }.detail-probability-bar .draw { background: #817b67; }.detail-probability-bar .away { background: #7b6672; }
+.detail-probability-bar b { position: absolute; clip: rect(0 0 0 0); width: 1px; height: 1px; overflow: hidden; white-space: nowrap; }
+.detail-probabilities { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; max-width: 730px; margin: 12px auto 0; }
 .detail-probabilities span { display: grid; grid-template-columns: 14px 28px minmax(0, 1fr) auto; align-items: center; gap: 7px; border: 1px solid #343433; border-radius: 8px; padding: 9px 11px; color: var(--muted); background: rgba(14, 15, 15, .45); font-size: 10px; }
 .model-confidence { max-width: 730px; margin: 12px auto 0; border: 1px solid #343433; border-radius: 8px; padding: 13px 14px; background: rgba(14, 15, 15, .38); }
 .model-confidence-heading { display: flex; align-items: start; justify-content: space-between; gap: 12px; }

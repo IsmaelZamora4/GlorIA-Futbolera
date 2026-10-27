@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-23T08:05:36.957Z",
+  "generatedAt": "2026-10-27T23:21:08.440Z",
   "competition": "Serie A",
   "historicalSeasons": [
     "2021/2022",
@@ -10,8 +10,8 @@
   ],
   "currentSeason": "2026/2027",
   "historicalMatches": 1900,
-  "currentSeasonMatches": 70,
-  "currentSeasonFinishedMatches": 70,
+  "currentSeasonMatches": 80,
+  "currentSeasonFinishedMatches": 80,
   "currentSeasonScheduledMatches": 0,
   "sourceFiles": [
     "season-21_22-serie-a.csv",

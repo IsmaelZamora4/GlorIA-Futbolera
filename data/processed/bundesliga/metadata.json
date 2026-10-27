@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-23T08:05:36.960Z",
+  "generatedAt": "2026-10-27T23:21:08.406Z",
   "competition": "Bundesliga",
   "historicalSeasons": [
     "2021/2022",
@@ -10,8 +10,8 @@
   ],
   "currentSeason": "2026/2027",
   "historicalMatches": 1530,
-  "currentSeasonMatches": 54,
-  "currentSeasonFinishedMatches": 54,
+  "currentSeasonMatches": 63,
+  "currentSeasonFinishedMatches": 63,
   "currentSeasonScheduledMatches": 0,
   "sourceFiles": [
     "season-21_22-bundesliga.csv",

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-24T03:18:19.269Z",
+  "generatedAt": "2026-10-27T23:21:22.090Z",
   "competition": "LaLiga",
   "status": "passed",
   "critical": [],
@@ -339,7 +339,7 @@
       {
         "file": "season-26_27-la-liga.csv",
         "currentSeason": true,
-        "rows": 89,
+        "rows": 99,
         "missingColumns": [],
         "counters": {
           "invalidDate": 0,
@@ -405,7 +405,7 @@
   },
   "processed": {
     "historicalMatches": 1900,
-    "currentSeasonMatches": 89,
+    "currentSeasonMatches": 99,
     "historicalSeasons": [
       "2021/2022",
       "2022/2023",

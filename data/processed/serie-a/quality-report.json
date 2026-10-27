@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-24T03:18:19.273Z",
+  "generatedAt": "2026-10-27T23:21:22.113Z",
   "competition": "Serie A",
   "status": "passed",
   "critical": [],
@@ -329,7 +329,7 @@
       {
         "file": "season-26_27-serie-a.csv",
         "currentSeason": true,
-        "rows": 70,
+        "rows": 80,
         "missingColumns": [],
         "counters": {
           "invalidDate": 0,
@@ -395,7 +395,7 @@
   },
   "processed": {
     "historicalMatches": 1900,
-    "currentSeasonMatches": 70,
+    "currentSeasonMatches": 80,
     "historicalSeasons": [
       "2021/2022",
       "2022/2023",

@@ -71,6 +71,24 @@ function FormBadge({ outcome }: { outcome: "W" | "D" | "L" }) {
   return <span className={`detail-form-badge ${outcome.toLowerCase()}`}>{outcome === "W" ? "G" : outcome === "D" ? "E" : "P"}</span>;
 }
 
+function TeamFormStrip({ form }: { form: MatchRecentForms["home"] }) {
+  const recentResults = form.matches.slice(0, 5);
+  if (!recentResults.length) return <small className="detail-team-form-empty">Sin forma reciente</small>;
+
+  const readableResults = recentResults.map((match) => match.outcome === "W" ? "ganado" : match.outcome === "D" ? "empatado" : "perdido").join(", ");
+  return <span className="detail-team-form" aria-label={`Últimos ${recentResults.length} resultados: ${readableResults}`}>
+    {recentResults.map((match) => <FormBadge key={match.id} outcome={match.outcome} />)}
+  </span>;
+}
+
+function ProbabilityBar({ home, draw, away, homeTeam, awayTeam }: { home: number; draw: number; away: number; homeTeam: string; awayTeam: string }) {
+  return <div className="detail-probability-bar" role="img" aria-label={`Probabilidades: ${homeTeam} ${home}%, empate ${draw}%, ${awayTeam} ${away}%`}>
+    <span className="home" style={{ width: `${home}%` }}><b>{home}%</b></span>
+    <span className="draw" style={{ width: `${draw}%` }}><b>{draw}%</b></span>
+    <span className="away" style={{ width: `${away}%` }}><b>{away}%</b></span>
+  </div>;
+}
+
 function TeamMark({ team, side, crest, compact = false }: { team: string; side?: "home" | "away"; crest?: string; compact?: boolean }) {
   const source = crest ?? getKnownTeamCrest(team);
   const className = `detail-team-mark${side ? ` ${side}` : ""}${compact ? " compact" : ""}`;
@@ -234,14 +252,14 @@ export function MatchDetailClient({ context, analysis, forms, statistics, standi
     <section className="match-detail-hero">
       <div className="detail-competition"><Image src={logo} alt="" width={26} height={26} unoptimized /><span>{context.fixture.competition}</span><i /> <span>Lectura prepartido</span></div>
       <div className="match-detail-scoreboard">
-        <div className="match-detail-team home"><TeamMark team={home} side="home" crest={homeCrest} /><strong>{home}</strong><small>Local</small></div>
+        <div className="match-detail-team home"><TeamMark team={home} side="home" crest={homeCrest} /><strong>{home}</strong><small>Local</small><TeamFormStrip form={forms.home} /></div>
         <div className="match-detail-center"><time>{kickoff}</time><b>VS</b><span>{formatDate(context.fixture.fixtureDate)}</span></div>
-        <div className="match-detail-team away"><TeamMark team={away} side="away" crest={awayCrest} /><strong>{away}</strong><small>Visitante</small></div>
+        <div className="match-detail-team away"><TeamMark team={away} side="away" crest={awayCrest} /><strong>{away}</strong><small>Visitante</small><TeamFormStrip form={forms.away} /></div>
       </div>
       <div className="match-detail-meta"><span>◷ {formatDate(context.fixture.fixtureDate)} · {kickoff}</span><span>⌖ {venue}</span><span>⌁ Datos hasta {context.coverage.preMatchDataThrough ? formatDate(context.coverage.preMatchDataThrough) : "sin registros"}</span></div>
       <div className="detail-hero-support">
         <div className="detail-hero-analysis">
-          {analysis ? <div className="detail-probabilities"><span><b>1</b><TeamMark team={home} crest={homeCrest} compact />{home}<strong>{analysis.probabilities.home}%</strong></span><span><b>X</b><i className="detail-draw-mark">X</i>Empate<strong>{analysis.probabilities.draw}%</strong></span><span><b>2</b><TeamMark team={away} crest={awayCrest} compact />{away}<strong>{analysis.probabilities.away}%</strong></span></div> : <p className="detail-data-note">El fixture está disponible, pero no hay muestra local suficiente para generar el pronóstico.</p>}
+          {analysis ? <div className="detail-probability-panel"><div className="detail-probability-heading"><span>Probabilidad 1X2</span><small>Estimación del modelo</small></div><ProbabilityBar home={analysis.probabilities.home} draw={analysis.probabilities.draw} away={analysis.probabilities.away} homeTeam={home} awayTeam={away} /><div className="detail-probabilities"><span><b>1</b><TeamMark team={home} crest={homeCrest} compact />{home}<strong>{analysis.probabilities.home}%</strong></span><span><b>X</b><i className="detail-draw-mark">X</i>Empate<strong>{analysis.probabilities.draw}%</strong></span><span><b>2</b><TeamMark team={away} crest={awayCrest} compact />{away}<strong>{analysis.probabilities.away}%</strong></span></div></div> : <p className="detail-data-note">El fixture está disponible, pero no hay muestra local suficiente para generar el pronóstico.</p>}
           <ModelConfidence homeHistorical={transparency.home.historicalMatches} awayHistorical={transparency.away.historicalMatches} homeCurrent={transparency.home.currentMatches} awayCurrent={transparency.away.currentMatches} />
           <LocalPredictionPoll home={home} away={away} homeCrest={homeCrest} awayCrest={awayCrest} storageKey={voteStorageKey} />
         </div>
