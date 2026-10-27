@@ -31,13 +31,21 @@ for (const [competition, directory] of Object.entries(leagueDirectories)) {
   const historical = JSON.parse(await readFile(join(processedRoot, directory, "historical-matches.json"), "utf8"));
   const current = JSON.parse(await readFile(join(processedRoot, directory, "current-season-matches.json"), "utf8"));
   const historicalTeams = new Map();
+  const currentTeams = new Map();
   for (const match of historical) {
     historicalTeams.set(normalizeTeamKey(match.homeTeam), match.homeTeam);
     historicalTeams.set(normalizeTeamKey(match.awayTeam), match.awayTeam);
   }
+  for (const match of current) {
+    currentTeams.set(normalizeTeamKey(match.homeTeam), match.homeTeam);
+    currentTeams.set(normalizeTeamKey(match.awayTeam), match.awayTeam);
+  }
 
   const invalidAliases = Object.keys(aliases[competition] ?? {})
-    .filter((canonicalName) => !historicalTeams.has(normalizeTeamKey(canonicalName)));
+    .filter((canonicalName) => (
+      !historicalTeams.has(normalizeTeamKey(canonicalName))
+      && !currentTeams.has(normalizeTeamKey(canonicalName))
+    ));
   const unresolvedCurrentTeams = [...new Set(current.flatMap((match) => [match.homeTeam, match.awayTeam]))]
     .filter((team) => {
       if (historicalTeams.has(normalizeTeamKey(team))) return false;

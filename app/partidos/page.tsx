@@ -1,10 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { competitions } from "../../data/demo-matches";
+import { resolveFixtureVenue } from "../../data/team-venues";
 import { AppSidebar } from "../../components/AppSidebar";
+import { FixtureState } from "../../components/FixtureState";
 
 const competitionLabels: Record<string, string> = {
   "Todas": "Todas",
@@ -47,8 +50,18 @@ type FixtureCacheEntry = {
   expiresAt: number;
 };
 
-const fixtureCachePrefix = "gloria-fixtures:v2:";
-const requestDelayMs = 7_000;
+const fixtureCachePrefix = "gloria-fixtures:v3:";
+// Dos solicitudes en paralelo reducen el tiempo de arranque sin disparar una
+// ráfaga que pueda agotar el límite de la fuente gratuita.
+const maxConcurrentFixtureRequests = 2;
+
+const localDetailCompetitionSlugs: Record<string, string> = {
+  "Serie A de Italia": "serie-a",
+  "LaLiga de España": "la-liga",
+  "Ligue 1 de Francia": "ligue-1",
+  "Bundesliga de Alemania": "bundesliga",
+  "Premier League": "premier-league",
+};
 
 function readFixtureCache(cacheKey: string, now: number): FixtureCacheEntry | null {
   try {
@@ -71,10 +84,6 @@ function saveFixtureCache(cacheKey: string, entry: FixtureCacheEntry) {
   } catch {
     // La página sigue funcionando si el navegador no permite almacenamiento local.
   }
-}
-
-function wait(milliseconds: number) {
-  return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
 }
 
 type FootballDataFixture = {
@@ -117,7 +126,7 @@ function toFootballDataFixture(fixture: FootballDataFixture, competition: string
     away: fixture.awayTeam.name,
     homeLogo: fixture.homeTeam.crest || "/team-placeholder.svg",
     awayLogo: fixture.awayTeam.crest || "/team-placeholder.svg",
-    venue: fixture.venue || "Estadio por confirmar",
+    venue: resolveFixtureVenue(competition, fixture.homeTeam.name, fixture.venue),
     status: fixture.status === "FINISHED" ? "Finalizado" : "Próximo",
     score: fixture.status === "FINISHED" && home != null && away != null ? [home, away] : undefined,
   };
@@ -137,7 +146,7 @@ function toSportsDbFixture(event: SportsDbEvent, competition: string): Fixture {
     away: event.strAwayTeam,
     homeLogo: event.strHomeTeamBadge || "/team-placeholder.svg",
     awayLogo: event.strAwayTeamBadge || "/team-placeholder.svg",
-    venue: event.strVenue || "Estadio por confirmar",
+    venue: resolveFixtureVenue(competition, event.strHomeTeam, event.strVenue),
     status: finished ? "Finalizado" : "Próximo",
     score: finished && Number.isFinite(home) && Number.isFinite(away) ? [home, away] : undefined,
   };
@@ -163,7 +172,23 @@ function getCompetitionLogo(competition: string, fallback?: string | null) {
   return fallback || "/competition-placeholder.svg";
 }
 
+function getFixtureDetailHref(fixture: Fixture) {
+  const slug = localDetailCompetitionSlugs[fixture.competition];
+  if (!slug || !fixture.date || !fixture.home || !fixture.away) return null;
+  const query = new URLSearchParams({
+    fecha: fixture.date,
+    local: fixture.home,
+    visitante: fixture.away,
+    hora: fixture.kickoff,
+    estadio: fixture.venue,
+  });
+  if (fixture.homeLogo && fixture.homeLogo !== "/team-placeholder.svg") query.set("escudoLocal", fixture.homeLogo);
+  if (fixture.awayLogo && fixture.awayLogo !== "/team-placeholder.svg") query.set("escudoVisitante", fixture.awayLogo);
+  return `/partido/${slug}?${query.toString()}`;
+}
+
 function FixtureRow({ fixture }: { fixture: Fixture }) {
+  const detailHref = getFixtureDetailHref(fixture);
   return <div className="professional-fixture">
     <div className="professional-fixture-time">{fixture.score ? `${fixture.score[0]} — ${fixture.score[1]}` : fixture.kickoff}</div>
     <div className="professional-team"><span>{fixture.home}</span><Image src={fixture.homeLogo} alt={`Escudo de ${fixture.home}`} width={28} height={28} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /></div>
@@ -171,6 +196,7 @@ function FixtureRow({ fixture }: { fixture: Fixture }) {
     <div className="professional-team away"><Image src={fixture.awayLogo} alt={`Escudo de ${fixture.away}`} width={28} height={28} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /><span>{fixture.away}</span></div>
     <div className="professional-venue">{fixture.venue}</div>
     <span className={`professional-status ${fixture.status === "Finalizado" ? "finished" : ""}`}>{fixture.status}</span>
+    {detailHref ? <Link className="professional-detail-link" href={detailHref}>Ver detalle <span aria-hidden="true">→</span></Link> : <span className="professional-no-detail">Sin dataset local</span>}
   </div>;
 }
 
@@ -204,32 +230,43 @@ function PartidosContent() {
     const failures: string[] = [];
     setFixtures(loadedFixtures);
 
-    for (let index = 0; index < missingCompetitions.length; index += 1) {
-      const requestedCompetition = missingCompetitions[index];
+    const loadCompetition = async (requestedCompetition: string) => {
       const endpoint = footballDataCompetitions[requestedCompetition]
         ? `/api/football-data/fixtures?date=${date}&competition=${encodeURIComponent(requestedCompetition)}`
         : `/api/sportsdb/fixtures?date=${date}&league=${encodeURIComponent(requestedCompetition)}`;
-      try {
       const response = await fetch(endpoint);
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error || "Fuente no disponible.");
       const loaded = footballDataCompetitions[requestedCompetition]
         ? (payload.fixtures as FootballDataFixture[]).map((fixture) => toFootballDataFixture(fixture, requestedCompetition))
         : (payload.events as SportsDbEvent[]).map((event) => toSportsDbFixture(event, requestedCompetition));
-      const dayFixtures = loaded.filter((fixture) => fixture.date === date);
+      const fixtures = loaded.filter((fixture) => fixture.date === date);
       const ttlSeconds = Number(payload.cacheTtlSeconds) || 21_600;
-      saveFixtureCache(`${date}:${requestedCompetition}`, {
-        fixtures: dayFixtures,
-        expiresAt: Date.now() + ttlSeconds * 1000,
-      });
-      loadedFixtures = [...loadedFixtures, ...dayFixtures];
-      setFixtures(loadedFixtures);
-      setMessage(`Mostrando ${loadedFixtures.length} partidos. Cargando ${index + 1} de ${missingCompetitions.length} competiciones nuevas…`);
-      } catch (error) {
-        failures.push(`${competitionLabels[requestedCompetition]}: ${error instanceof Error ? error.message : "sin respuesta"}`);
-      }
+      return { requestedCompetition, fixtures, expiresAt: Date.now() + ttlSeconds * 1000 };
+    };
 
-      if (index < missingCompetitions.length - 1) await wait(requestDelayMs);
+    for (let start = 0; start < missingCompetitions.length; start += maxConcurrentFixtureRequests) {
+      const batch = missingCompetitions.slice(start, start + maxConcurrentFixtureRequests);
+      const results = await Promise.allSettled(batch.map(loadCompetition));
+
+      results.forEach((result, index) => {
+        const requestedCompetition = batch[index];
+        if (result.status === "fulfilled") {
+          saveFixtureCache(`${date}:${requestedCompetition}`, {
+            fixtures: result.value.fixtures,
+            expiresAt: result.value.expiresAt,
+          });
+          loadedFixtures = [...loadedFixtures, ...result.value.fixtures];
+          return;
+        }
+        failures.push(`${competitionLabels[requestedCompetition]}: ${result.reason instanceof Error ? result.reason.message : "sin respuesta"}`);
+      });
+
+      setFixtures(loadedFixtures);
+      const completed = Math.min(start + batch.length, missingCompetitions.length);
+      if (completed < missingCompetitions.length) {
+        setMessage(`Mostrando ${loadedFixtures.length} partidos. Consultando ${completed} de ${missingCompetitions.length} competiciones nuevas…`);
+      }
     }
 
     if (failures.length === requestedCompetitions.length && !loadedFixtures.length) {
@@ -265,7 +302,8 @@ function PartidosContent() {
     return current;
   });
 
-  return <div className="app-shell"><PartidosNavigation /><main className="main-area"><header className="topbar"><label className="search-box"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar equipo o liga..." /></label><div className="top-actions"><label className="date-picker"><span>◷</span><input type="date" value={date} onChange={(event) => setDate(event.target.value)} /><span>{date}</span></label><span className="demo-status"><i /> Datos reales</span></div></header><div className="matches-page"><div className="matches-heading"><div><div className="eyebrow">Fixture · {competitionLabels[competition]}</div><h1>Partidos</h1><p>Consulta todos los partidos reales del día y filtra por competición cuando quieras.</p></div><span className="fixtures-source"><i /> Fuente real<br /><small>{state === "loading" ? "Actualizando…" : message}</small></span></div><div className="matches-mode"><button className="active">Partidos</button><button disabled>Ligas</button><button disabled>Equipos</button><button disabled>Rachas</button></div><div className="matches-competitions"><button className={competition === "Todas" ? "active" : ""} onClick={() => setCompetition("Todas")}>{competitionLabels.Todas}</button>{competitions.slice(1).map((item) => <button key={item} className={competition === item ? "active" : ""} onClick={() => setCompetition(item)}>{competitionLabels[item]}</button>)}</div><div className="agenda-date-nav">{dates.map((current) => { const value = current.toISOString().slice(0, 10); return <button key={value} className={value === date ? "active" : ""} onClick={() => setDate(value)}><b>{value === new Date().toISOString().slice(0, 10) ? "Hoy" : new Intl.DateTimeFormat("es-PE", { weekday: "short" }).format(current).replace(".", "")}</b><small>{dateLabel(current)}</small></button>; })}</div><div className="professional-fixtures">{state === "error" ? <div className="empty-state">{message}</div> : grouped.length ? grouped.map(([fixtureDate, dayCompetitions]) => <section key={fixtureDate} className="professional-day"><h2>{formatDate(fixtureDate)} <span>{dayCompetitions.reduce((total, [, dayFixtures]) => total + dayFixtures.length, 0)} partidos</span></h2>{dayCompetitions.map(([fixtureCompetition, competitionFixtures]) => <div className="professional-competition" key={fixtureCompetition}>  <header className="professional-competition-header"><span className={`professional-competition-logo ${fixtureCompetition === "Premier League" ? "premier" : fixtureCompetition === "Ligue 1 de Francia" ? "ligue" : ""}`}><Image src={competitionFixtures[0].competitionLogo} alt={`Logo de ${competitionLabels[fixtureCompetition] || fixtureCompetition}`} width={26} height={26} unoptimized onError={(event) => { event.currentTarget.src = "/competition-placeholder.svg"; }} /></span><strong>{competitionLabels[fixtureCompetition] || fixtureCompetition}</strong><small>Partidos del día</small><span aria-hidden="true">⌄</span></header>{competitionFixtures.map((fixture) => <FixtureRow key={fixture.id} fixture={fixture} />)}</div>)}</section>) : <div className="empty-state">{state === "loading" ? "Consultando partidos reales…" : "No hay partidos para este día."}</div>}</div></div></main></div>;
+  const fixtureState = state === "loading" ? "loading" : state === "error" ? "error" : grouped.length ? null : "empty";
+  return <div className="app-shell"><PartidosNavigation /><main className="main-area"><header className="topbar"><label className="search-box"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar equipo o liga..." /></label><div className="top-actions"><label className="date-picker"><span>◷</span><input type="date" value={date} onChange={(event) => setDate(event.target.value)} /><span>{date}</span></label><span className="demo-status"><i /> Datos reales</span></div></header><div className="matches-page"><div className="matches-heading"><div><div className="eyebrow">Fixture · {competitionLabels[competition]}</div><h1>Partidos</h1><p>Consulta todos los partidos reales del día y filtra por competición cuando quieras.</p></div><span className="fixtures-source"><i /> Fuente real<br /><small>{state === "loading" ? "Actualizando…" : message}</small></span></div><div className="matches-mode"><button className="active">Partidos</button><button disabled>Ligas</button><button disabled>Equipos</button><button disabled>Rachas</button></div><div className="matches-competitions"><button className={competition === "Todas" ? "active" : ""} onClick={() => setCompetition("Todas")}>{competitionLabels.Todas}</button>{competitions.slice(1).map((item) => <button key={item} className={competition === item ? "active" : ""} onClick={() => setCompetition(item)}>{competitionLabels[item]}</button>)}</div><div className="agenda-date-nav">{dates.map((current) => { const value = current.toISOString().slice(0, 10); return <button key={value} className={value === date ? "active" : ""} onClick={() => setDate(value)}><b>{value === new Date().toISOString().slice(0, 10) ? "Hoy" : new Intl.DateTimeFormat("es-PE", { weekday: "short" }).format(current).replace(".", "")}</b><small>{dateLabel(current)}</small></button>; })}</div><div className="professional-fixtures">{fixtureState ? <FixtureState state={fixtureState} onRetry={() => { void loadFixtures(); }} /> : grouped.map(([fixtureDate, dayCompetitions]) => <section key={fixtureDate} className="professional-day"><h2>{formatDate(fixtureDate)} <span>{dayCompetitions.reduce((total, [, dayFixtures]) => total + dayFixtures.length, 0)} partidos</span></h2>{dayCompetitions.map(([fixtureCompetition, competitionFixtures]) => <div className="professional-competition" key={fixtureCompetition}>  <header className="professional-competition-header"><span className={`professional-competition-logo ${fixtureCompetition === "Premier League" ? "premier" : fixtureCompetition === "Ligue 1 de Francia" ? "ligue" : ""}`}><Image src={competitionFixtures[0].competitionLogo} alt={`Logo de ${competitionLabels[fixtureCompetition] || fixtureCompetition}`} width={26} height={26} unoptimized onError={(event) => { event.currentTarget.src = "/competition-placeholder.svg"; }} /></span><strong>{competitionLabels[fixtureCompetition] || fixtureCompetition}</strong><small>Partidos del día</small><span aria-hidden="true">⌄</span></header>{competitionFixtures.map((fixture) => <FixtureRow key={fixture.id} fixture={fixture} />)}</div>)}</section>)}</div></div></main></div>;
 }
 
 export default function PartidosPage() {

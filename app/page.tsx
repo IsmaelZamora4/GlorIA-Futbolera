@@ -2,8 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { competitions, type HistoricalAnalysis, type MarketKey, type Match } from "../data/demo-matches";
+import { resolveFixtureVenue } from "../data/team-venues";
 import { AppSidebar } from "../components/AppSidebar";
+import { FixtureState } from "../components/FixtureState";
+import { FeaturedMatch } from "../components/FeaturedMatch";
 
 type IconName = "home" | "matches" | "trophy" | "book" | "database" | "settings" | "search" | "calendar" | "arrow" | "globe" | "ball" | "trend" | "corner" | "target";
 
@@ -42,8 +46,31 @@ const competitionLogos: Record<string, string> = {
   "Europa League": "/competitions/europa-league.svg",
 };
 
+const localDetailCompetitionSlugs: Record<string, string> = {
+  "Serie A de Italia": "serie-a",
+  "LaLiga de España": "la-liga",
+  "Ligue 1 de Francia": "ligue-1",
+  "Bundesliga de Alemania": "bundesliga",
+  "Premier League": "premier-league",
+};
+
+function getMatchDetailHref(match: Pick<Match, "competition" | "date" | "home" | "away" | "kickoff" | "venue" | "homeLogo" | "awayLogo">) {
+  const slug = localDetailCompetitionSlugs[match.competition];
+  if (!slug || !match.date || !match.home || !match.away) return null;
+  const query = new URLSearchParams({
+    fecha: match.date,
+    local: match.home,
+    visitante: match.away,
+    hora: match.kickoff,
+    estadio: match.venue,
+  });
+  if (match.homeLogo && match.homeLogo !== "/team-placeholder.svg") query.set("escudoLocal", match.homeLogo);
+  if (match.awayLogo && match.awayLogo !== "/team-placeholder.svg") query.set("escudoVisitante", match.awayLogo);
+  return `/partido/${slug}?${query.toString()}`;
+}
+
 const inFlightFixtureRequests = new Set<string>();
-const fixtureCachePrefix = "gloria-home-fixtures:v1:";
+const fixtureCachePrefix = "gloria-home-fixtures:v2:";
 const requestDelayMs = 1_100;
 
 type FootballDataFixture = {
@@ -124,7 +151,7 @@ function toAgendaMatch(fixture: FootballDataFixture, competition: string): Match
     home: fixture.homeTeam.name, away: fixture.awayTeam.name, homeTeamId: fixture.homeTeam.id, awayTeamId: fixture.awayTeam.id,
     homeCode: fixture.homeTeam.name.slice(0, 3).toUpperCase(), awayCode: fixture.awayTeam.name.slice(0, 3).toUpperCase(),
     homeLogo: fixture.homeTeam.crest || "/team-placeholder.svg", awayLogo: fixture.awayTeam.crest || "/team-placeholder.svg",
-    venue: fixture.venue || "Estadio por confirmar", status: finished ? "Finalizado" : "En análisis",
+    venue: resolveFixtureVenue(competition, fixture.homeTeam.name, fixture.venue), status: finished ? "Finalizado" : "En análisis",
     score: finished && homeScore != null && awayScore != null ? [homeScore, awayScore] : undefined,
     probabilities: analysis?.probabilities ?? { home: 0, draw: 0, away: 0 },
     metrics: historicalMetrics ?? { winner: { ...pending, label: "Sin predicción" }, corners: pending, btts: pending, goals: pending, shots: pending },
@@ -159,7 +186,7 @@ function toSportsDbMatch(event: SportsDbEvent, competition: string): Match {
     awayCode: event.strAwayTeam.slice(0, 3).toUpperCase(),
     homeLogo: event.strHomeTeamBadge || "/team-placeholder.svg",
     awayLogo: event.strAwayTeamBadge || "/team-placeholder.svg",
-    venue: event.strVenue || "Estadio por confirmar",
+    venue: resolveFixtureVenue(competition, event.strHomeTeam, event.strVenue),
     status: finished ? "Finalizado" : "En análisis",
     score: finished && Number.isFinite(homeScore) && Number.isFinite(awayScore) ? [homeScore, awayScore] : undefined,
     probabilities: { home: 0, draw: 0, away: 0 },
@@ -204,7 +231,15 @@ function Sidebar({ active }: { active: string }) {
 }
 
 function MatchRow({ match, selected, onSelect }: { match: Match; selected: boolean; onSelect: () => void }) {
-  return <button onClick={onSelect} className={`match-row ${selected ? "selected" : ""}`}><div className="match-row-top"><span className="match-competition"><CompetitionMark competition={match.competition} /><span>{match.shortCompetition}</span></span><span className={match.status === "Finalizado" ? "status-finished" : "status-upcoming"}>{match.status}</span></div><div className="match-teams"><div className="team-line"><Image className="club-mark" src={match.homeLogo} alt={`Escudo de ${match.home}`} width={22} height={22} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /><span>{match.home}</span></div><div className="match-time">{match.score ? `${match.score[0]} — ${match.score[1]}` : match.kickoff}</div><div className="team-line"><Image className="club-mark away" src={match.awayLogo} alt={`Escudo de ${match.away}`} width={22} height={22} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /><span>{match.away}</span></div></div><div className="match-row-foot"><span>{match.date}</span><span>{match.venue}</span><Icon name="arrow" size={14} /></div></button>;
+  const detailHref = getMatchDetailHref(match);
+  return <article className={`match-row gloria-reveal interactive-card ${selected ? "selected" : ""}`}>
+    <button type="button" onClick={onSelect} className="match-row-select" aria-pressed={selected} aria-label={`Seleccionar ${match.home} contra ${match.away}`}>
+      <div className="match-row-top"><span className="match-competition"><CompetitionMark competition={match.competition} /><span>{match.shortCompetition}</span></span><span className={match.status === "Finalizado" ? "status-finished" : "status-upcoming"}>{match.status}</span></div>
+      <div className="match-teams"><div className="team-line"><Image className="club-mark" src={match.homeLogo} alt={`Escudo de ${match.home}`} width={22} height={22} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /><span>{match.home}</span></div><div className="match-time">{match.score ? `${match.score[0]} — ${match.score[1]}` : match.kickoff}</div><div className="team-line"><Image className="club-mark away" src={match.awayLogo} alt={`Escudo de ${match.away}`} width={22} height={22} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /><span>{match.away}</span></div></div>
+      <div className="match-row-foot"><span>{match.date}</span><span>{match.venue}</span><Icon name="arrow" size={14} /></div>
+    </button>
+    {detailHref ? <Link className="match-detail-link" href={detailHref}>Ver detalle <span aria-hidden="true">→</span></Link> : <span className="match-no-detail">Sin dataset local para el detalle estadístico</span>}
+  </article>;
 }
 
 function formatAgendaDate(date: string) {
@@ -234,7 +269,7 @@ function ProbabilityPanel({ match }: { match: Match }) {
 }
 
 function MarketCard({ label, value, confidence, icon, detail }: { label: string; value: string; confidence: number; icon: IconName; detail: string }) {
-  return <div className="market-card"><div className="market-card-label"><Icon name={icon} size={14} /><span>{label}</span><span className="market-arrow">↗</span></div><div className="market-card-value">{value}</div><div className="market-meter"><span style={{ width: `${confidence}%` }} /></div><div className="market-card-foot"><span>{detail}</span><b>{confidence}%</b></div></div>;
+  return <div className="market-card gloria-reveal interactive-card"><div className="market-card-label"><Icon name={icon} size={14} /><span>{label}</span><span className="market-arrow">↗</span></div><div className="market-card-value">{value}</div><div className="market-meter"><span style={{ width: `${confidence}%` }} /></div><div className="market-card-foot"><span>{detail}</span><b>{confidence}%</b></div></div>;
 }
 
 function ModelTransparency({ analysis }: { analysis: HistoricalAnalysis | undefined }) {
@@ -253,13 +288,14 @@ function ModelTransparency({ analysis }: { analysis: HistoricalAnalysis | undefi
 function AnalysisPanel({ match, activeMarket, onMarket }: { match: Match; activeMarket: MarketKey; onMarket: (market: MarketKey) => void }) {
   const result = match.metrics[activeMarket];
   const analysis = match.historicalAnalysis;
+  const detailHref = getMatchDetailHref(match);
   const sourceLabel = analysis ? "Fixture real · modelo histórico local" : match.dataSource === "fixture" ? "Fixture real" : "Demo local";
   return <section id="datos" className="analysis-panel">
-    <div className="analysis-header"><div><div className="competition-line"><span className="mini-crest"><Icon name="ball" size={14} /></span>{match.competition} · {sourceLabel}</div><h2>{match.home} <em>vs</em> {match.away}</h2><div className="match-meta"><span>{match.date}</span><span>·</span><span>{match.kickoff}</span><span>·</span><span>{match.venue}</span></div></div></div>
+    <div className="analysis-header"><div><div className="competition-line"><span className="mini-crest"><Icon name="ball" size={14} /></span>{match.competition} · {sourceLabel}</div><h2>{match.home} <em>vs</em> {match.away}</h2><div className="match-meta"><span>{match.date}</span><span>·</span><span>{match.kickoff}</span><span>·</span><span>{match.venue}</span></div></div>{detailHref ? <Link className="outline-button analysis-detail-link" href={detailHref}>Ver detalle <Icon name="arrow" size={14} /></Link> : <span className="analysis-no-detail">Detalle local no disponible<br /><small>Esta competición aún no tiene datasets procesados.</small></span>}</div>
     <div className="analysis-main"><div className="versus-card"><div className="versus-team"><Image className="large-crest" src={match.homeLogo} alt={`Escudo de ${match.home}`} width={46} height={46} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /><strong>{match.home}</strong><small>Local</small></div><div className="versus-mark">VS</div><div className="versus-team"><Image className="large-crest away" src={match.awayLogo} alt={`Escudo de ${match.away}`} width={46} height={46} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /><strong>{match.away}</strong><small>Visitante</small></div></div><ProbabilityPanel match={match} /></div>
     <div className="market-grid"><MarketCard label="Goles totales" value={match.metrics.goals.label} confidence={match.metrics.goals.confidence} icon="trend" detail={analysis ? `Media ${analysis.expectedGoals.total.toFixed(1)} · +2.5 ${analysis.markets.goals.over25}%` : "Sin dato real"} /><MarketCard label="Ambos anotan" value={match.metrics.btts.label} confidence={match.metrics.btts.confidence} icon="target" detail={analysis ? `Sí ${analysis.markets.btts.yes}% · No ${analysis.markets.btts.no}%` : "Sin dato real"} /><MarketCard label="Córneres totales" value={match.metrics.corners.label} confidence={match.metrics.corners.confidence} icon="corner" detail={analysis ? `Media ${analysis.expectedCorners.total.toFixed(1)} · +8.5 ${analysis.markets.corners.over85}%` : "Sin dato real"} /><MarketCard label={`Tiros a puerta (${match.homeCode})`} value={match.metrics.shots.label} confidence={match.metrics.shots.confidence} icon="target" detail={analysis ? `+2.5: ${analysis.markets.shotsOnTarget.homeOver25}%` : "Sin dato real"} /><MarketCard label={`Tiros a puerta (${match.awayCode})`} value={analysis ? analysis.expectedShotsOnTarget.away.toFixed(1) : "Sin dato"} confidence={analysis ? analysis.markets.shotsOnTarget.awayOver25 : 0} icon="target" detail={analysis ? `+2.5: ${analysis.markets.shotsOnTarget.awayOver25}%` : "Sin dato real"} /></div>
     <ModelTransparency analysis={analysis} />
-    <div className="analysis-tabs">{markets.map((market) => <button key={market.key} onClick={() => onMarket(market.key)} className={activeMarket === market.key ? "active" : ""}>{market.label}</button>)}</div>
+    <div className="analysis-tabs">{markets.map((market) => <button key={market.key} onClick={() => onMarket(market.key)} className={`tab-motion ${activeMarket === market.key ? "active" : ""}`}>{market.label}</button>)}</div>
     <div id="metodologia" className="analysis-detail"><div><div className="eyebrow">Resumen del mercado</div><h3>{result.label}</h3><p>{result.note}</p></div><div className="available-note"><span className="available-dot" />{analysis ? "Modelo histórico local" : "Fixture real"}<br /><small>{analysis ? analysis.usingLeagueBaseline ? "Muestra insuficiente de un club · media de liga" : `5 temporadas + ${analysis.currentSeasonHomeSample}/${analysis.currentSeasonAwaySample} partidos actuales` : "No hay predicción ni estadísticas avanzadas disponibles para esta fuente."}</small></div></div>
   </section>;
 }
@@ -292,6 +328,11 @@ export default function Home() {
     const dateMatch = !date || realMatches !== null || match.date === date;
     return competitionMatch && teamMatch && dateMatch;
   }), [competition, team, date, realMatches]);
+  const hasOtherCachedFixtures = competition !== "Todas" && Object.entries(fixtureCache).some(([cacheKey, entry]) => (
+    cacheKey.endsWith(`:${requestedDate}:day`)
+    && entry.expiresAt > cacheReferenceTime
+    && entry.matches.some((match) => match.competition !== competition)
+  ));
   const matchesByDay = useMemo(() => {
     const grouped = new Map<string, Match[]>();
     for (const match of filtered) {
@@ -311,6 +352,13 @@ export default function Home() {
   };
   const agendaDates = getAgendaDates(requestedDate);
   const selected = filtered.find((match) => match.id === selectedId) || filtered[0];
+  const homeFixtureState = filtered.length
+    ? null
+    : realDataState === "error"
+      ? "error"
+      : realDataState === "success"
+        ? "empty"
+        : "loading";
   const loadRealData = useCallback(async () => {
     const requestKey = `${competition}:${requestedDate}`;
     if (inFlightFixtureRequests.has(requestKey)) return;
@@ -334,7 +382,7 @@ export default function Home() {
     for (let index = 0; index < missingCompetitions.length; index += 1) {
       const requestedCompetition = missingCompetitions[index];
       const endpoint = footballDataCompetitions[requestedCompetition]
-        ? `/api/football-data/fixtures?date=${requestedDate}&competition=${encodeURIComponent(requestedCompetition)}`
+        ? `/api/football-data/fixtures?date=${requestedDate}&competition=${encodeURIComponent(requestedCompetition)}&includeAnalysis=1`
         : `/api/sportsdb/fixtures?date=${requestedDate}&league=${encodeURIComponent(requestedCompetition)}`;
       try {
         const response = await fetch(endpoint, { cache: "no-store" });
@@ -378,5 +426,5 @@ export default function Home() {
     return () => window.clearTimeout(timer);
   }, [competition, loadRealData, requestedDate]);
 
-  return <div className="app-shell"><Sidebar active="Inicio" /><main className="main-area"><header id="configuracion" className="topbar"><div className="mobile-logo"><Logo /></div><label className="search-box"><Icon name="search" size={17} /><input value={team} onChange={(event) => setTeam(event.target.value)} placeholder="Buscar equipo, liga o partido..." /><kbd>⌘ K</kbd></label><div className="top-actions"><label className="date-picker"><Icon name="calendar" size={15} /><input type="date" value={date} onChange={(event) => setDate(event.target.value)} /><span>{date ? date : "Hoy"}</span></label><span className="demo-status"><i /> Datos reales</span></div></header><div className="content"><section id="inicio" className="hero"><div className="hero-image" /><div className="hero-shade" /><div className="hero-copy"><div className="eyebrow light">GlorIA Futbolera</div><h1>Analiza.<br />Comprende.<br /><span>Decide mejor.</span></h1><p>Estadísticas, contexto y probabilidades para entender el fútbol de una manera más clara.</p></div><div className="hero-note"><span><Icon name="database" size={14} /> Datos en directo</span><p>Los partidos se consultan desde fuentes externas.</p></div></section><div id="competiciones" className="competition-strip"><div className="competition-scroll">{competitions.map((item, index) => <button key={item} onClick={() => { setCompetition(item); if (item === "Todas") setDate(today); }} className={competition === item ? "active" : ""}><span className="competition-icon">{index === 0 ? <Icon name="globe" size={15} /> : <Icon name="ball" size={14} />}</span>{competitionLabels[item]}</button>)}</div><div className="real-data-controls"><button className="load-real-button" onClick={loadRealData} disabled={realDataState === "loading"}>{realDataState === "loading" ? "Consultando…" : "Actualizar datos"}</button><span className={`real-data-message ${realDataState}`}>{realDataMessage || "Consultando fuente real…"}</span></div></div><section className="fixtures-intro"><div><div className="eyebrow">Agenda en tiempo real</div><h1>Partidos</h1><p>Consulta los partidos por día y competición. Selecciona un encuentro para ver su lectura estadística.</p></div><span className="fixtures-source"><i /> Fuente real<br /><small>Actualizada automáticamente</small></span></section><nav className="agenda-date-nav" aria-label="Seleccionar día">{agendaDates.map((agendaDate) => { const value = agendaDate.toISOString().slice(0, 10); const isToday = value === new Date().toISOString().slice(0, 10); return <button key={value} className={requestedDate === value ? "active" : ""} onClick={() => setDate(value)}><b>{isToday ? "Hoy" : new Intl.DateTimeFormat("es-PE", { weekday: "short" }).format(agendaDate).replace(".", "")}</b><small>{formatShortDate(agendaDate)}</small></button>; })}</nav><div className="dashboard-grid"><aside id="partidos" className="fixtures-column"><div className="section-heading"><div><div className="eyebrow">Agenda</div><h2>Próximos partidos</h2></div><span>{filtered.length} visibles</span></div><div className="fixture-list">{filtered.length ? matchesByDay.map(([matchDate, dayMatches]) => { const collapsed = collapsedDays.has(matchDate); return <section className="agenda-day" key={matchDate}><button className="agenda-day-toggle" onClick={() => toggleDay(matchDate)} aria-expanded={!collapsed}><h3><span><Icon name="calendar" size={13} />{formatAgendaDate(matchDate)}</span><b>{dayMatches.length} {dayMatches.length === 1 ? "partido" : "partidos"}</b><strong aria-hidden="true">{collapsed ? "+" : "−"}</strong></h3></button>{!collapsed && <div className="agenda-day-matches">{dayMatches.map((match) => <MatchRow key={match.id} match={match} selected={selected?.id === match.id} onSelect={() => setSelectedId(match.id)} />)}</div>}</section>; }) : <div className="empty-state">{realDataState === "error" ? realDataMessage : "Consultando partidos reales…"}</div>}</div></aside><div className="analysis-column"><div className="section-heading"><div><div className="eyebrow">Análisis seleccionado</div><h2>Lectura de partido</h2></div><span className="desktop-only">Actualización automática · fuente real</span></div>{selected ? <AnalysisPanel match={selected} activeMarket={activeMarket} onMarket={setActiveMarket} /> : <div className="empty-state">Selecciona una competición con partidos disponibles para mostrar su análisis.</div>}</div></div></div><footer>GlorIA Futbolera <span>·</span> Datos consultados desde fuentes reales</footer></main></div>;
+  return <div className="app-shell"><Sidebar active="Inicio" /><main className="main-area"><header id="configuracion" className="topbar"><div className="mobile-logo"><Logo /></div><label className="search-box"><Icon name="search" size={17} /><input value={team} onChange={(event) => setTeam(event.target.value)} placeholder="Buscar equipo, liga o partido..." /><kbd>⌘ K</kbd></label><div className="top-actions"><label className="date-picker"><Icon name="calendar" size={15} /><input type="date" value={date} onChange={(event) => setDate(event.target.value)} /><span>{date ? date : "Hoy"}</span></label><span className="demo-status"><i /> Datos reales</span></div></header><div className="content"><section id="inicio" className="hero"><div className="hero-image" /><div className="hero-shade" /><div className="hero-copy"><div className="eyebrow light">GlorIA Futbolera</div><h1>Analiza.<br />Comprende.<br /><span>Decide mejor.</span></h1><p>Estadísticas, contexto y probabilidades para entender el fútbol de una manera más clara.</p></div><div className="hero-note"><span><Icon name="database" size={14} /> Datos en directo</span><p>Los partidos se consultan desde fuentes externas.</p></div></section><div id="competiciones" className="competition-strip"><div className="competition-scroll">{competitions.map((item, index) => <button key={item} onClick={() => { setCompetition(item); if (item === "Todas") setDate(today); }} className={competition === item ? "active" : ""}><span className="competition-icon">{index === 0 ? <Icon name="globe" size={15} /> : <Icon name="ball" size={14} />}</span>{competitionLabels[item]}</button>)}</div><div className="real-data-controls"><button className="load-real-button" onClick={loadRealData} disabled={realDataState === "loading"}>{realDataState === "loading" ? "Consultando…" : "Actualizar datos"}</button><span className={`real-data-message ${realDataState}`}>{realDataMessage || "Consultando fuente real…"}</span></div></div>{selected && <FeaturedMatch match={selected} detailHref={getMatchDetailHref(selected)} />}<section className="fixtures-intro"><div><div className="eyebrow">Agenda en tiempo real</div><h1>Partidos</h1><p>Consulta los partidos por día y competición. Selecciona un encuentro para ver su lectura estadística.</p></div><span className="fixtures-source"><i /> Fuente real<br /><small>Actualizada automáticamente</small></span></section><nav className="agenda-date-nav" aria-label="Seleccionar día">{agendaDates.map((agendaDate) => { const value = agendaDate.toISOString().slice(0, 10); const isToday = value === new Date().toISOString().slice(0, 10); return <button key={value} className={requestedDate === value ? "active" : ""} onClick={() => setDate(value)}><b>{isToday ? "Hoy" : new Intl.DateTimeFormat("es-PE", { weekday: "short" }).format(agendaDate).replace(".", "")}</b><small>{formatShortDate(agendaDate)}</small></button>; })}</nav><div className="dashboard-grid"><aside id="partidos" className="fixtures-column"><div className="section-heading"><div><div className="eyebrow">Agenda</div><h2>Próximos partidos</h2></div><span>{filtered.length} visibles</span></div><div className="fixture-list">{realDataState === "success" && realDataMessage.includes("reutilizando caché") && <FixtureState state="stale" />}{homeFixtureState ? <FixtureState state={homeFixtureState} contextLabel={competitionLabels[competition]} hasOtherFixtures={hasOtherCachedFixtures} onRetry={() => { void loadRealData(); }} /> : matchesByDay.map(([matchDate, dayMatches]) => { const collapsed = collapsedDays.has(matchDate); return <section className="agenda-day" key={matchDate}><button className="agenda-day-toggle" onClick={() => toggleDay(matchDate)} aria-expanded={!collapsed}><h3><span><Icon name="calendar" size={13} />{formatAgendaDate(matchDate)}</span><b>{dayMatches.length} {dayMatches.length === 1 ? "partido" : "partidos"}</b><strong aria-hidden="true">{collapsed ? "+" : "−"}</strong></h3></button>{!collapsed && <div className="agenda-day-matches">{dayMatches.map((match) => <MatchRow key={match.id} match={match} selected={selected?.id === match.id} onSelect={() => setSelectedId(match.id)} />)}</div>}</section>; })}</div></aside><div className="analysis-column"><div className="section-heading"><div><div className="eyebrow">Análisis seleccionado</div><h2>Lectura de partido</h2></div><span className="desktop-only">Actualización automática · fuente real</span></div>{selected ? <AnalysisPanel match={selected} activeMarket={activeMarket} onMarket={activeMarket => setActiveMarket(activeMarket)} /> : <div className="empty-state">Selecciona una competición con partidos disponibles para mostrar su análisis.</div>}</div></div></div><footer>GlorIA Futbolera <span>·</span> Datos consultados desde fuentes reales</footer></main></div>;
 }
