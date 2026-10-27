@@ -82,6 +82,14 @@ export type LocalLeagueAnalysis = {
   bttsProbability: number;
   expectedCorners: { home: number; away: number; total: number };
   expectedShotsOnTarget: { home: number; away: number };
+  leagueBenchmarks: {
+    goalsPerMatch: number | null;
+    cornersPerMatch: number | null;
+    shotsOnTargetPerMatch: number | null;
+    goalsOver15: number | null;
+    goalsOver25: number | null;
+    bttsYes: number | null;
+  };
   markets: DerivedMarkets;
   teamIdentity: {
     home: TeamIdentitySource;
@@ -120,6 +128,33 @@ function average(values: Array<number | null>) {
   const available = values.filter((value): value is number => value != null && Number.isFinite(value));
   if (!available.length) return null;
   return available.reduce((total, value) => total + value, 0) / available.length;
+}
+
+function percentOf(matches: LocalMatch[], predicate: (match: LocalMatch) => boolean | null) {
+  const eligible = matches.filter((match) => predicate(match) != null);
+  if (!eligible.length) return null;
+  return Math.round((eligible.filter((match) => predicate(match) === true).length / eligible.length) * 100);
+}
+
+function getLeagueBenchmarks(matches: LocalMatch[]) {
+  const totalGoals = (match: LocalMatch) => match.homeGoals == null || match.awayGoals == null ? null : match.homeGoals + match.awayGoals;
+  const totalCorners = (match: LocalMatch) => match.homeCorners == null || match.awayCorners == null ? null : match.homeCorners + match.awayCorners;
+  const totalShotsOnTarget = (match: LocalMatch) => match.homeShotsOnTarget == null || match.awayShotsOnTarget == null ? null : match.homeShotsOnTarget + match.awayShotsOnTarget;
+
+  return {
+    goalsPerMatch: average(matches.map(totalGoals)),
+    cornersPerMatch: average(matches.map(totalCorners)),
+    shotsOnTargetPerMatch: average(matches.map(totalShotsOnTarget)),
+    goalsOver15: percentOf(matches, (match) => {
+      const total = totalGoals(match);
+      return total == null ? null : total > 1.5;
+    }),
+    goalsOver25: percentOf(matches, (match) => {
+      const total = totalGoals(match);
+      return total == null ? null : total > 2.5;
+    }),
+    bttsYes: percentOf(matches, (match) => match.homeGoals == null || match.awayGoals == null ? null : match.homeGoals > 0 && match.awayGoals > 0),
+  };
 }
 
 function smoothedAverage(values: Array<number | null>, leagueAverage: number) {
@@ -290,6 +325,7 @@ export async function getLocalLeagueAnalysis(
   const totalGoals = expectedHomeGoals + expectedAwayGoals;
   const totalCorners = expectedHomeCorners + expectedAwayCorners;
   const totalShots = expectedHomeShots + expectedAwayShots;
+  const leagueBenchmarks = getLeagueBenchmarks([...dataset.historical, ...currentMatches]);
   const bttsYes = percent((1 - Math.exp(-expectedHomeGoals)) * (1 - Math.exp(-expectedAwayGoals)));
   const rawResultProbabilities = outcomeProbabilities(expectedHomeGoals, expectedAwayGoals);
   const rawGoalsOver25 = overLineProbability(totalGoals, 2.5);
@@ -334,6 +370,14 @@ export async function getLocalLeagueAnalysis(
     expectedShotsOnTarget: {
       home: round(expectedHomeShots),
       away: round(expectedAwayShots),
+    },
+    leagueBenchmarks: {
+      goalsPerMatch: leagueBenchmarks.goalsPerMatch == null ? null : round(leagueBenchmarks.goalsPerMatch),
+      cornersPerMatch: leagueBenchmarks.cornersPerMatch == null ? null : round(leagueBenchmarks.cornersPerMatch),
+      shotsOnTargetPerMatch: leagueBenchmarks.shotsOnTargetPerMatch == null ? null : round(leagueBenchmarks.shotsOnTargetPerMatch),
+      goalsOver15: leagueBenchmarks.goalsOver15,
+      goalsOver25: leagueBenchmarks.goalsOver25,
+      bttsYes: leagueBenchmarks.bttsYes,
     },
     markets: {
       goals: {

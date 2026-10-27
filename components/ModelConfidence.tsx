@@ -45,9 +45,13 @@ const levelContent: Record<ConfidenceLevel, { label: string; explanation: string
   },
 };
 
+export function getModelConfidenceContent(homeHistorical: number, awayHistorical: number, homeCurrent: number, awayCurrent: number) {
+  return levelContent[getConfidenceLevel(homeHistorical, awayHistorical, homeCurrent, awayCurrent)];
+}
+
 export function ModelConfidence({ homeHistorical, awayHistorical, homeCurrent, awayCurrent }: ModelConfidenceProps) {
   const level = getConfidenceLevel(homeHistorical, awayHistorical, homeCurrent, awayCurrent);
-  const content = levelContent[level];
+  const content = getModelConfidenceContent(homeHistorical, awayHistorical, homeCurrent, awayCurrent);
   const tooltipId = "model-confidence-tooltip";
 
   return (

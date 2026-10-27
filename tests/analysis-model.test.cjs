@@ -51,6 +51,11 @@ test("cada liga devuelve probabilidades y mercados matemáticamente coherentes",
     assert.equal(analysis.markets.btts.yes + analysis.markets.btts.no, 100);
     assert.ok(analysis.over25Probability >= 0 && analysis.over25Probability <= 100);
     assert.ok(analysis.expectedGoals.total > 0);
+    assert.ok(analysis.leagueBenchmarks.goalsPerMatch > 0);
+    assert.ok(analysis.leagueBenchmarks.cornersPerMatch > 0);
+    assert.ok(analysis.leagueBenchmarks.shotsOnTargetPerMatch > 0);
+    assert.ok(analysis.leagueBenchmarks.goalsOver15 >= analysis.leagueBenchmarks.goalsOver25);
+    assert.ok(analysis.leagueBenchmarks.bttsYes >= 0 && analysis.leagueBenchmarks.bttsYes <= 100);
     assert.equal(analysis.calibration.applied, true);
   }
 });
