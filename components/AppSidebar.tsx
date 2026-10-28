@@ -11,7 +11,7 @@ const items: [string, SidebarIconName, string][] = [
   ["Inicio", "home", "/"],
   ["Partidos", "matches", "/partidos"],
   ["Competiciones", "trophy", "/competiciones"],
-  ["Metodología", "book", "/#metodologia"],
+  ["Metodología", "book", "/metodologia"],
   ["Datos", "database", "/#datos"],
   ["Configuración", "settings", "/configuracion"],
 ];

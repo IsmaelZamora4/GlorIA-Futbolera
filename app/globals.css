@@ -795,3 +795,85 @@ footer span { margin: 0 7px; color: #4d4d4a; }
 @keyframes gloria-shimmer {
   to { background-position: -200% 0; }
 }
+
+.methodology-topbar-title { display: grid; gap: 3px; margin-right: auto; }
+.methodology-topbar-title strong { color: var(--ink); font-size: 13px; font-weight: 600; }
+.methodology-topbar-link, .methodology-footer a { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #5b4a2d; border-radius: 7px; padding: 9px 12px; color: var(--champagne-soft); background: #28231d; font-size: 11px; font-weight: 600; text-decoration: none; transition: .2s ease; }
+.methodology-topbar-link:hover, .methodology-footer a:hover { border-color: var(--champagne); background: #332d25; }
+.methodology-content { width: min(1120px, calc(100% - 64px)); margin: 0 auto; padding: 48px 0 64px; }
+.methodology-intro { max-width: 820px; padding: 10px 0 32px; }
+.methodology-intro h1 { margin: 10px 0 12px; color: var(--ink); font-family: var(--font-plex-sans-condensed), "Arial Narrow", sans-serif; font-size: clamp(38px, 5vw, 58px); font-weight: 600; letter-spacing: -.04em; line-height: 1.03; }
+.methodology-intro > p { max-width: 710px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.75; }
+.methodology-intro-note { display: flex; align-items: center; gap: 12px; max-width: 650px; margin-top: 22px; border: 1px solid rgba(198, 176, 138, .25); border-radius: 9px; padding: 12px 14px; background: rgba(198, 176, 138, .06); }
+.methodology-intro-note > span { display: grid; width: 23px; height: 23px; flex: 0 0 auto; place-items: center; border: 1px solid rgba(198, 176, 138, .55); border-radius: 50%; color: var(--champagne-soft); font-family: Georgia, serif; font-size: 13px; font-style: italic; }
+.methodology-intro-note p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.methodology-section { margin-top: 38px; scroll-margin-top: 24px; }
+.methodology-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 17px; }
+.methodology-section-heading h2, .methodology-limits h2 { margin: 6px 0 0; color: var(--ink); font-family: var(--font-plex-sans-condensed), "Arial Narrow", sans-serif; font-size: clamp(25px, 3vw, 32px); font-weight: 600; letter-spacing: -.025em; }
+.methodology-section-heading > p { max-width: 440px; margin: 0; color: var(--muted-dark); font-size: 11px; line-height: 1.6; text-align: right; }
+.methodology-coverage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 12px; }
+.methodology-coverage-card, .methodology-scope-card { min-width: 0; border: 1px solid var(--line); border-radius: var(--gloria-radius-card); padding: 17px; background: var(--panel); }
+.methodology-coverage-title { display: flex; align-items: center; gap: 11px; }
+.methodology-coverage-title img { width: 34px; height: 34px; object-fit: contain; }
+.methodology-coverage-title h3, .methodology-scope-card h3 { margin: 0; color: var(--ink); font-size: 14px; font-weight: 600; }
+.methodology-coverage-title span { display: block; margin-top: 4px; color: var(--muted-dark); font-size: 10px; }
+.methodology-coverage-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 17px 0 10px; }
+.methodology-coverage-stats div { min-width: 0; border-left: 1px solid var(--line); padding-left: 9px; }
+.methodology-coverage-stats dt { color: var(--muted-dark); font-size: 9px; line-height: 1.4; }
+.methodology-coverage-stats dd { margin: 5px 0 0; color: var(--champagne-soft); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.methodology-season-list { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+.methodology-market-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 13px 0 11px; padding: 0; list-style: none; }
+.methodology-market-list li { border: 1px solid var(--line); border-radius: 999px; padding: 5px 8px; color: var(--muted); font-size: 9px; }
+.methodology-updated { color: var(--muted-dark); font-size: 9px; }
+.methodology-source-note { margin: 13px 0 0; border-left: 2px solid var(--champagne); padding: 10px 13px; color: var(--muted); background: rgba(198, 176, 138, .045); font-size: 11px; line-height: 1.6; }
+.methodology-source-note strong { color: var(--ink); font-weight: 600; }
+.methodology-steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.methodology-steps li { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; border: 1px solid var(--line); border-radius: var(--gloria-radius-card); padding: 17px; background: var(--panel); }
+.methodology-steps li > span { color: var(--champagne-soft); font-family: var(--font-plex-sans-condensed), "Arial Narrow", sans-serif; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.methodology-steps h3 { margin: 2px 0 7px; color: var(--ink); font-size: 12px; font-weight: 600; }
+.methodology-steps p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.65; }
+.methodology-formula { margin-top: 10px; border: 1px solid var(--line); border-radius: var(--gloria-radius-card); padding: 16px 18px; background: var(--panel-deep); }
+.methodology-formula code { display: block; margin-top: 9px; color: var(--champagne-soft); font-family: var(--font-plex-sans), "Segoe UI", Arial, sans-serif; font-size: clamp(13px, 2vw, 17px); font-weight: 600; }
+.methodology-formula sup { font-size: .7em; }
+.methodology-formula p { margin: 8px 0 0; color: var(--muted-dark); font-size: 10px; line-height: 1.5; }
+.methodology-scope-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.methodology-scope-card h3 { margin-bottom: 9px; }
+.methodology-scope-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+.methodology-scope-card a { color: var(--champagne-soft); text-underline-offset: 3px; }
+.methodology-scope-card-muted { background: var(--panel-deep); }
+.methodology-scope-card ul { display: grid; gap: 0; margin: 12px 0 0; padding: 0; list-style: none; }
+.methodology-scope-card li { display: flex; justify-content: space-between; gap: 14px; border-top: 1px solid var(--line); padding: 9px 0; color: var(--ink); font-size: 10px; }
+.methodology-scope-card li small { color: var(--muted-dark); font-size: 9px; text-align: right; }
+.methodology-limits { display: grid; grid-template-columns: minmax(190px, .8fr) minmax(0, 1.6fr); gap: 30px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 22px 0; }
+.methodology-limits > ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px 20px; margin: 0; padding: 0; list-style: none; }
+.methodology-limits li { color: var(--muted); font-size: 10px; line-height: 1.65; }
+.methodology-limits li strong { color: var(--ink); font-weight: 600; }
+.methodology-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 24px; color: var(--muted); font-size: 12px; }
+.methodology-content a:focus-visible, .methodology-topbar-link:focus-visible { outline: 2px solid var(--champagne); outline-offset: 3px; }
+:root[data-theme="light"] .methodology-coverage-card, :root[data-theme="light"] .methodology-scope-card { border-color: #d9d4cb; background: #fff; }
+:root[data-theme="light"] .methodology-scope-card-muted, :root[data-theme="light"] .methodology-formula { background: #f8f6f1; }
+:root[data-theme="light"] .methodology-topbar-link, :root[data-theme="light"] .methodology-footer a { border-color: #d5c7aa; background: #f4efe5; }
+@media (max-width: 820px) {
+  .methodology-content { width: calc(100% - 32px); padding-top: 34px; }
+  .methodology-topbar-title { display: none; }
+  .methodology-section-heading { align-items: start; flex-direction: column; gap: 8px; }
+  .methodology-section-heading > p { max-width: 600px; text-align: left; }
+  .methodology-limits { grid-template-columns: 1fr; gap: 17px; }
+}
+@media (max-width: 560px) {
+  .methodology-content { width: calc(100% - 28px); padding-top: 24px; padding-bottom: 40px; }
+  .methodology-topbar { padding-right: 14px; padding-left: 14px; }
+  .methodology-topbar-link { padding: 8px 9px; font-size: 10px; }
+  .methodology-intro { padding-bottom: 22px; }
+  .methodology-intro h1 { font-size: clamp(35px, 10vw, 44px); }
+  .methodology-intro > p { font-size: 12px; }
+  .methodology-section { margin-top: 29px; }
+  .methodology-coverage-grid, .methodology-steps, .methodology-scope-grid { grid-template-columns: 1fr; }
+  .methodology-coverage-card, .methodology-scope-card, .methodology-steps li { padding: 14px; }
+  .methodology-coverage-stats { gap: 5px; }
+  .methodology-coverage-stats div { padding-left: 7px; }
+  .methodology-coverage-stats dt { font-size: 8px; }
+  .methodology-coverage-stats dd { font-size: 11px; }
+  .methodology-limits > ul { grid-template-columns: 1fr; gap: 9px; }
+  .methodology-footer { align-items: flex-start; flex-direction: column; }
+}

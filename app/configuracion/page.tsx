@@ -17,7 +17,7 @@ const availableCompetitions = [
   "Europa League",
 ];
 
-const fixtureCachePrefix = "gloria-fixtures:v2:";
+const fixtureCachePrefixes = ["gloria-fixtures:", "gloria-home-fixtures:"];
 
 function savePreferences(preferences: Preferences) {
   window.localStorage.setItem(preferenceKey, JSON.stringify(preferences));
@@ -66,7 +66,7 @@ export default function SettingsPage() {
   };
 
   const clearFixtureCache = () => {
-    const keys = Object.keys(window.localStorage).filter((key) => key.startsWith(fixtureCachePrefix));
+    const keys = Object.keys(window.localStorage).filter((key) => fixtureCachePrefixes.some((prefix) => key.startsWith(prefix)));
     keys.forEach((key) => window.localStorage.removeItem(key));
     const text = translations[preferences.language].settings;
     setCacheMessage(keys.length ? text.removed.replace("{count}", String(keys.length)) : text.emptyCache);
@@ -151,7 +151,7 @@ export default function SettingsPage() {
             <h2>{translations[preferences.language].settings.about}</h2>
             <p><strong>GlorIA Futbolera · Beta v0.1.0</strong></p>
             <p>{translations[preferences.language].settings.aboutText}</p>
-            <Link href="/#metodologia">{translations[preferences.language].settings.methodology}</Link>
+            <Link href="/metodologia">{translations[preferences.language].settings.methodology}</Link>
           </section>
         </div>
       </section>
