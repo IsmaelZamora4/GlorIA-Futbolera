@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { resolveTeamIdentity, type TeamIdentitySource } from "./team-identity";
 import { calibrateProbability, calibrateResultProbabilities } from "./calibration";
+import { datasetInfoByCompetition, type DatasetInfo } from "../data/datasets";
 
 type LocalMatch = {
   season: string;
@@ -76,6 +77,7 @@ export type DerivedMarkets = {
 };
 
 export type LocalLeagueAnalysis = {
+  dataset: DatasetInfo;
   source: "local-5-seasons-plus-current";
   usingLeagueBaseline: boolean;
   probabilities: { home: number; draw: number; away: number };
@@ -354,6 +356,7 @@ export async function getLocalLeagueAnalysis(
   const calibratedShotsTotalOver75Percent = percent(calibratedShotsTotalOver75);
 
   return {
+    dataset: datasetInfoByCompetition[competition],
     source: "local-5-seasons-plus-current",
     usingLeagueBaseline: historicalHomeMatches.length < priorMatches || historicalAwayMatches.length < priorMatches,
     probabilities: percentageDistribution(calibratedResult),

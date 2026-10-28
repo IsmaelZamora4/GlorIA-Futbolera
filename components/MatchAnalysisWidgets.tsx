@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 type ProbabilityBarProps = { home: number; draw: number; away: number; homeTeam: string; awayTeam: string };
 
 export function ProbabilityBar({ home, draw, away, homeTeam, awayTeam }: ProbabilityBarProps) {
@@ -8,8 +10,18 @@ export function ProbabilityBar({ home, draw, away, homeTeam, awayTeam }: Probabi
 
 type InsightCardProps = { label: string; value: string; probability: number; probabilityLabel: string; reference: string; confidence: string };
 
+const metricIcons: Record<string, string> = {
+  "Más de 1.5 goles": "/icons/metrics/goals-over-15.svg",
+  "Más de 2.5 goles": "/icons/metrics/goals-over-25.svg",
+  "Ambos anotan": "/icons/metrics/both-teams-score.svg",
+  "Goles esperados": "/icons/metrics/expected-goals.svg",
+  "Córneres esperados": "/icons/metrics/corners.svg",
+  "Tiros a puerta esperados": "/icons/metrics/shots-on-target.svg",
+};
+
 export function InsightCard({ label, value, probability, probabilityLabel, reference, confidence }: InsightCardProps) {
-  return <article className="detail-key-metric"><header><span>{label}</span><small>{confidence}</small></header><strong>{value}</strong><div className="detail-key-metric-probability"><span>{probabilityLabel}</span><b>{probability}%</b></div><div className="detail-key-metric-bar" role="img" aria-label={`Probabilidad estimada: ${probability}%`}><i style={{ width: `${probability}%` }} /></div><footer>{reference}</footer></article>;
+  const icon = metricIcons[label];
+  return <article className="detail-key-metric"><header><span className="detail-key-metric-label">{icon && <Image className={label.startsWith("Más de") ? "metric-icon-goals" : ""} src={icon} alt="" width={24} height={24} aria-hidden="true" unoptimized />}{label}</span><small>{confidence}</small></header><strong>{value}</strong><div className="detail-key-metric-probability"><span>{probabilityLabel}</span><b>{probability}%</b></div><div className="detail-key-metric-bar" role="img" aria-label={`Probabilidad estimada: ${probability}%`}><i style={{ width: `${probability}%` }} /></div><footer>{reference}</footer></article>;
 }
 
 type MetricComparisonProps = { label: string; home: string | number; away: string | number; homeValue: number | null; awayValue: number | null };

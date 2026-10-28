@@ -498,28 +498,28 @@ Codex debe completar esta tabla después de inspeccionar el repositorio. No debe
 
 | ID | Objetivo / entregable | Estado | Evidencia verificable | Próxima acción |
 |---|---|---|---|---|
-| OBJ-01 | Proyecto ejecutable localmente | EN PROGRESO | `npm run dev`, `typecheck` y `lint` pasan; `next build` falla en Turbopack/CSS | Resolver build de producción |
-| OBJ-02 | Dashboard responsive | IMPLEMENTADO SIN VERIFICAR | Dashboard y media queries en `app/page.tsx`/`app/globals.css`; falta matriz visual completa | Verificar escritorio, tablet y móvil |
-| OBJ-03 | Filtros de fecha y competición funcionales | IMPLEMENTADO SIN VERIFICAR | Estado y filtrado demo en `app/page.tsx` | Verificar fecha y datos reales |
-| OBJ-04 | Lista de partidos seleccionables | IMPLEMENTADO SIN VERIFICAR | `MatchRow` actualiza partido seleccionado en `app/page.tsx` | Añadir prueba reproducible |
-| OBJ-05 | Panel de análisis del partido | EN PROGRESO | Panel demo funcional; aún sin análisis real ni estados completos | Conectar modelo normalizado |
-| OBJ-06 | Mercado 1X2 | PENDIENTE | Función de cálculo y pruebas | Implementar/validar |
-| OBJ-07 | Mercado de córners | PENDIENTE | Fuente, función y pruebas | Comprobar cobertura de datos |
-| OBJ-08 | Mercado BTTS | PENDIENTE | Función de cálculo y pruebas | Implementar/validar |
-| OBJ-09 | Mercado de goles | PENDIENTE | Función de cálculo y pruebas | Implementar/validar |
-| OBJ-10 | Mercado de tiros a puerta | PENDIENTE | Fuente, función y pruebas | Comprobar cobertura de datos |
-| OBJ-11 | Ocho competiciones objetivo | EN PROGRESO | IDs centralizados en `lib/football.ts`; cobertura real aún no verificada | Comprobar acceso por competición |
-| OBJ-12 | Etiquetado de datos demo/reales | EN PROGRESO | UI etiqueta demo y endpoint devuelve `source`; falta modelo común | Normalizar `source` y fecha |
-| OBJ-13 | API key protegida en servidor | COMPLETADO | `.env.local` ignorado; endpoint lee `process.env` y no expone la clave | Regenerar clave antes de publicar |
-| OBJ-14 | Caché de respuestas | EN PROGRESO | `fetch` con `revalidate: 21600` y endpoint con `s-maxage` | Probar reutilización sin repetir request |
-| OBJ-15 | Sin llamadas automáticas al cargar | IMPLEMENTADO SIN VERIFICAR | Consulta API solo tras pulsar `Cargar datos reales`; una liga por petición | Verificar red en navegador |
-| OBJ-16 | Estados de error, vacío y datos insuficientes | EN PROGRESO | Error API, vacío demo y mensaje manual parcial | Completar loading/cache/insuficiente |
-| OBJ-17 | Pruebas unitarias de análisis | IMPLEMENTADO Y VERIFICADO | `npm test` valida coherencia de mercados, ausencia de fuga temporal y calibración monótona en las cinco ligas | Ampliar con casos de datos incompletos |
-| OBJ-18 | Diseño visual coherente con la marca | IMPLEMENTADO SIN VERIFICAR | Revisión visual desktop y estilos responsive | Revisar tablet/móvil/accesibilidad |
-| OBJ-19 | Documentación de instalación | PENDIENTE | Existe documentación de caché, no README | Documentar instalación y comandos |
-| OBJ-20 | Presupuesto objetivo S/ 0 | EN PROGRESO | Stack local y API Free; sin infraestructura de pago | Definir límites de uso y despliegue |
+| OBJ-01 | Proyecto ejecutable localmente | COMPLETADO | `README.md`; `npm test`, `npm run typecheck`, `npm run lint` y `npm run build` pasan. Build configurado con `next build --webpack`. | Mantener comprobaciones al modificar el proyecto |
+| OBJ-02 | Dashboard responsive | IMPLEMENTADO SIN VERIFICAR | Dashboard y media queries en `app/page.tsx`/`app/globals.css`; esta auditoría no hizo recorrido visual en escritorio, tablet y móvil | Validar visualmente los tres tamaños y accesibilidad |
+| OBJ-03 | Filtros de fecha y competición funcionales | IMPLEMENTADO SIN VERIFICAR | `app/page.tsx`, `app/partidos/page.tsx`; filtros conectados al dataset local y consulta explícita | Verificar interacción visual |
+| OBJ-04 | Lista de partidos seleccionables | IMPLEMENTADO SIN VERIFICAR | La selección actualiza `AnalysisPanel` en `app/page.tsx`; sin prueba de navegador en esta auditoría | Verificar selección, búsqueda, fecha y vacíos en navegador |
+| OBJ-05 | Panel de análisis del partido | IMPLEMENTADO SIN VERIFICAR | `lib/match-detail.ts`, `lib/league-analysis.ts`, `components/MatchDetailClient.tsx`; análisis local en cinco ligas | Verificar recorrido visual y estados sin análisis |
+| OBJ-06 | Mercado 1X2 | IMPLEMENTADO Y VERIFICADO | Cálculo y pruebas en `lib/league-analysis.ts` y `tests/analysis-model.test.cjs`; las probabilidades suman 100 % en las cinco ligas probadas | Validar visualización y cobertura insuficiente en interfaz |
+| OBJ-07 | Mercado de córners | IMPLEMENTADO Y VERIFICADO | Esperados y líneas +5.5 a +12.5 en `lib/league-analysis.ts` y `components/MatchDetailClient.tsx`; prueba de orden monotónico; +8.5 calibrada | Mostrar “sin dato” si falta cobertura y conservar la nota de metodología |
+| OBJ-08 | Mercado BTTS | IMPLEMENTADO Y VERIFICADO | Sí/No suman 100 % en las cinco ligas probadas; `lib/league-analysis.ts`, `tests/analysis-model.test.cjs` | Validar UI en detalle y fixtures sin muestra |
+| OBJ-09 | Mercado de goles | IMPLEMENTADO Y VERIFICADO | Esperados por equipo/total y líneas +1.5/+2.5/+3.5; coherencia comprobada en `tests/analysis-model.test.cjs` | Verificar etiqueta de muestra y estados sin datos en UI |
+| OBJ-10 | Mercado de tiros a puerta | IMPLEMENTADO Y VERIFICADO | Proyección por equipo y líneas en `lib/league-analysis.ts`; la prueba valida métricas y corte temporal en cinco ligas | Validar cobertura por partido y presentación de datos ausentes |
+| OBJ-11 | Ocho competiciones objetivo | IMPLEMENTADO SIN VERIFICAR | Catálogo en `data/demo-matches.ts`; datasets y cobertura declarados en `data/datasets.ts`; análisis local para cinco ligas | Verificar visualmente las tres competiciones sin dataset analítico |
+| OBJ-12 | Etiquetado de datos demo/reales | IMPLEMENTADO SIN VERIFICAR | `data/datasets.ts`, `HistoricalAnalysis.dataset`, `DatasetInfo`; fuente, temporadas, fecha y mercados declarados | Limpiar textos heredados y validar UI |
+| OBJ-13 | API key protegida en servidor | NO APLICA | MVP local sin API key; no se creó `.env.example` | Revisar solo si se reactiva integración externa |
+| OBJ-14 | Caché de respuestas | IMPLEMENTADO SIN VERIFICAR | Dataset local y caché de fixtures en `app/page.tsx`/`app/partidos/page.tsx`; endpoint local en `app/api/local-fixtures/route.ts` | Verificar reutilización en navegador |
+| OBJ-15 | Sin llamadas automáticas al cargar | COMPLETADO | `app/page.tsx` y `app/partidos/page.tsx` solo consultan `/api/local-fixtures` mediante acción explícita; no hay API externa en el flujo principal | Mantener prueba manual al cambiar el flujo |
+| OBJ-16 | Estados de error, vacío y datos insuficientes | IMPLEMENTADO SIN VERIFICAR | `components/FixtureState.tsx`, `app/page.tsx`; no muestra cero cuando falta análisis o mercado | Validar visualmente cada estado |
+| OBJ-17 | Pruebas unitarias de análisis | IMPLEMENTADO Y VERIFICADO | `npm test`: 24 pruebas aprobadas; incluye coherencia, calibración, corte temporal, alias, estadísticas ausentes y cinco ligas | Añadir pruebas de interacción y estados UI |
+| OBJ-18 | Diseño visual coherente con la marca | IMPLEMENTADO SIN VERIFICAR | Estilos y componentes existentes; fallos de layout reportados recientemente y no se hizo pasada visual completa en esta auditoría | Revisar todas las rutas en escritorio/móvil, teclado, contraste y desbordamientos |
+| OBJ-19 | Documentación de instalación | COMPLETADO | `README.md`, `docs/historical-data.md` | Mantener documentación sincronizada |
+| OBJ-20 | Presupuesto objetivo S/ 0 | COMPLETADO | Datasets locales, sin API key ni infraestructura paga; decisión documentada en `README.md` | Mantener el MVP sin servicios obligatorios de pago |
 
-**Importante:** estos estados son valores iniciales de plantilla, no una afirmación sobre el estado actual del código. Codex debe actualizarlos con evidencia real.
+**Auditoría 2026-10-28:** 4 objetivos `COMPLETADOS`, 9 `IMPLEMENTADOS SIN VERIFICAR`, 6 `IMPLEMENTADOS Y VERIFICADOS` y 1 `NO APLICA`. El bloqueo restante es la validación visual completa en navegador; no se declara la web visualmente sólida hasta ejecutarla en escritorio, tablet y móvil.
 
 ---
 
@@ -657,3 +657,5 @@ Al modificar este documento, añade al final una entrada breve con fecha, cambio
 - **2026-10-23:** pipeline histórico multiliga, backtest temporal, calibración local y pruebas reproducibles incorporados. Verificados con `normalize:data`, validadores de datos/equipos, `backtest`, `npm test`, `typecheck` y `lint`. Pendiente: resolver el bloqueo de build de Turbopack/CSS y completar validación visual en dispositivos.
 - **2026-10-23:** rutina semanal local `npm run refresh:current` incorporada para reemplazar un CSV de temporada actual con respaldo automático y regenerar el pipeline sin consumir API.
 - **2026-10-23:** protección de cuota de football-data.org reforzada: se eliminaron consultas de estadio por fixture, se añadió deduplicación/caché de servidor y Home carga ligas de forma secuencial con caché persistente en el navegador.
+- **2026-10-27:** auditoría del estado real. `npm test` (24), `npm run typecheck` y `npm run lint` pasan; `npm run build` falla por descarga de Google Fonts y luego por un panic de Turbopack al procesar CSS. El modelo y los cinco mercados existen para cinco ligas; el catálogo incluye ocho. Se detectó carga automática de fixtures en Inicio y Partidos, falta README y `.env.example`, y falta validación visual completa. No se hicieron llamadas a API.
+- **2026-10-28:** cierre técnico del MVP local. Se añadieron contrato y metadata de datasets, endpoint local de fixtures, estados de insuficiencia/mercado no disponible, documentación de fórmulas y `README.md`. `npm test` (24), `npm run typecheck`, `npm run lint` y `npm run build` pasan; el build usa Webpack por un fallo reproducible de Turbopack con `app/globals.css`. No se hicieron llamadas externas. Pendiente: validación visual manual completa y limpieza de textos heredados como `Datos reales`.

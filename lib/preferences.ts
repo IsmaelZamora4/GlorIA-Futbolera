@@ -52,9 +52,9 @@ export function applyPreferences(preferences: Preferences) {
 export const translations = {
   es: {
     nav: { home: "Inicio", matches: "Partidos", competitions: "Competiciones", methodology: "Metodología", data: "Datos", settings: "Configuración" },
-    sources: "Fuentes reales",
-    onlineData: "Datos consultados online",
-    cacheSixHours: "Con caché de 6 horas",
+    sources: "Dataset local",
+    onlineData: "Datos históricos procesados",
+    cacheSixHours: "Actualización manual",
     backToAnalysis: "← Volver al análisis",
     settings: {
       eyebrow: "Preferencias personales", title: "Configuración", subtitle: "Personaliza tu experiencia sin aumentar las consultas a las fuentes de datos.",
@@ -62,9 +62,9 @@ export const translations = {
       dark: "Modo oscuro", light: "Modo claro", system: "Usar sistema", matches: "Partidos", timezone: "Zona horaria",
       hourFormat: "Formato horario", hours24: "24 horas · 18:30", hours12: "12 horas · 6:30 PM",
       favoriteCompetitions: "Competiciones favoritas", favoriteHint: "Se usarán para priorizar futuras vistas personalizadas.",
-      dataCache: "Datos y caché", cacheHint: "Los fixtures se guardan durante 6 horas para no repetir llamadas a las APIs.",
+      dataCache: "Datos y caché", cacheHint: "Los fixtures locales se reutilizan durante la sesión.",
       sourceWarnings: "Mostrar avisos si una fuente no responde", clearCache: "Limpiar caché de partidos", about: "Acerca de GlorIA",
-      aboutText: "Proyecto personal de análisis deportivo. Los datos se consultan en football-data.org y TheSportsDB.",
+      aboutText: "Proyecto personal de análisis deportivo con datasets históricos locales.",
       methodology: "Ver metodología →", removed: "Se eliminaron {count} entradas de caché de GlorIA.", emptyCache: "No había datos de partidos guardados en la caché.",
     },
   },

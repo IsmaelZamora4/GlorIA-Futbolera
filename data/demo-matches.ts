@@ -6,6 +6,8 @@
  * análisis se obtienen desde las fuentes locales o remotas de la aplicación.
  */
 
+import type { DatasetInfo } from "./datasets";
+
 export const competitions = [
   "Todas",
   "Liga 1 de Perú",
@@ -21,6 +23,7 @@ export const competitions = [
 export type MarketKey = "winner" | "goals" | "btts" | "corners" | "shots";
 
 export type HistoricalAnalysis = {
+  dataset: DatasetInfo;
   usingLeagueBaseline: boolean;
   probabilities: {
     home: number;
@@ -83,7 +86,7 @@ export type HistoricalAnalysis = {
 
 export type MarketMetric = {
   label: string;
-  confidence: number;
+  confidence: number | null;
   note: string;
 };
 

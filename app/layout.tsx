@@ -29,9 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           try {
             const saved = localStorage.getItem("gloria-preferences:v1");
             const preferences = saved ? JSON.parse(saved) : {};
-            const theme = preferences.theme === "light" || preferences.theme === "dark"
-              ? preferences.theme
-              : window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+            const theme = preferences.theme === "light" ? "light" : "dark";
             document.documentElement.dataset.theme = theme;
             document.documentElement.lang = preferences.language === "en" ? "en" : "es";
           } catch {}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { competitions, type HistoricalAnalysis, type MarketKey, type Match } from "../data/demo-matches";
@@ -8,6 +8,7 @@ import { resolveFixtureVenue } from "../data/team-venues";
 import { AppSidebar } from "../components/AppSidebar";
 import { FixtureState } from "../components/FixtureState";
 import { FeaturedMatch } from "../components/FeaturedMatch";
+import { getLocalDate } from "../lib/local-date";
 
 type IconName = "home" | "matches" | "trophy" | "book" | "database" | "settings" | "search" | "calendar" | "arrow" | "globe" | "ball" | "trend" | "corner" | "target";
 
@@ -29,10 +30,6 @@ const competitionLabels: Record<string, string> = {
   "Premier League": "Premier League",
   "Champions League": "Champions League",
   "Europa League": "Europa League",
-};
-
-const footballDataCompetitions: Record<string, string> = {
-  "Serie A de Italia": "SA", "LaLiga de España": "PD", "Ligue 1 de Francia": "FL1", "Bundesliga de Alemania": "BL1", "Premier League": "PL", "Champions League": "CL",
 };
 
 const competitionLogos: Record<string, string> = {
@@ -70,7 +67,7 @@ function getMatchDetailHref(match: Pick<Match, "competition" | "date" | "home" |
 }
 
 const inFlightFixtureRequests = new Set<string>();
-const fixtureCachePrefix = "gloria-home-fixtures:v2:";
+const fixtureCachePrefix = "gloria-home-fixtures:v3:";
 const requestDelayMs = 1_100;
 
 type FootballDataFixture = {
@@ -79,22 +76,6 @@ type FootballDataFixture = {
   awayTeam: { id: number; name: string; crest?: string | null };
   score?: { fullTime?: { home?: number | null; away?: number | null } };
   historicalAnalysis?: HistoricalAnalysis | null;
-};
-
-type SportsDbEvent = {
-  idEvent: string;
-  dateEvent?: string;
-  strTime?: string | null;
-  strStatus?: string | null;
-  intHomeScore?: string | null;
-  intAwayScore?: string | null;
-  strHomeTeam: string;
-  strAwayTeam: string;
-  idHomeTeam?: string | null;
-  idAwayTeam?: string | null;
-  strHomeTeamBadge?: string | null;
-  strAwayTeamBadge?: string | null;
-  strVenue?: string | null;
 };
 
 type FixtureCacheEntry = { matches: Match[]; expiresAt: number; dateFrom: string; dateTo: string };
@@ -132,7 +113,7 @@ function toAgendaMatch(fixture: FootballDataFixture, competition: string): Match
   const homeScore = fixture.score?.fullTime?.home;
   const awayScore = fixture.score?.fullTime?.away;
   const analysis = fixture.historicalAnalysis ?? undefined;
-  const pending = { label: "Sin dato", confidence: 0, note: "Fixture real cargado; el análisis aún no está disponible." };
+  const pending = { label: "Sin dato", confidence: null, note: "Fixture cargado; el análisis aún no está disponible." };
   const candidates: [string, number][] = analysis
     ? [[fixture.homeTeam.name, analysis.probabilities.home], ["Empate", analysis.probabilities.draw], [fixture.awayTeam.name, analysis.probabilities.away]]
     : [];
@@ -162,37 +143,6 @@ function toAgendaMatch(fixture: FootballDataFixture, competition: string): Match
       { label: "Muestra histórica", home: `${analysis.homeSample} local`, away: `${analysis.awaySample} visita`, available: true },
     ] : [{ label: "Análisis", home: "Pendiente", away: "Pendiente", available: false }],
     dataSource: "fixture", historicalAnalysis: analysis,
-  };
-}
-
-function toSportsDbMatch(event: SportsDbEvent, competition: string): Match {
-  const date = event.dateEvent ?? new Date().toISOString().slice(0, 10);
-  const kickoff = event.strTime?.slice(0, 5) || "Hora por confirmar";
-  const homeScore = event.intHomeScore != null ? Number(event.intHomeScore) : NaN;
-  const awayScore = event.intAwayScore != null ? Number(event.intAwayScore) : NaN;
-  const finished = /finished|ended|finalizado/i.test(event.strStatus ?? "") || (Number.isFinite(homeScore) && Number.isFinite(awayScore));
-  const pending = { label: "Sin dato", confidence: 0, note: "Partido real cargado; no hay un modelo disponible para este encuentro." };
-  return {
-    id: `sportsdb-${event.idEvent}`,
-    competition,
-    shortCompetition: competitionLabels[competition],
-    date,
-    kickoff,
-    home: event.strHomeTeam,
-    away: event.strAwayTeam,
-    homeTeamId: Number(event.idHomeTeam) || 0,
-    awayTeamId: Number(event.idAwayTeam) || 0,
-    homeCode: event.strHomeTeam.slice(0, 3).toUpperCase(),
-    awayCode: event.strAwayTeam.slice(0, 3).toUpperCase(),
-    homeLogo: event.strHomeTeamBadge || "/team-placeholder.svg",
-    awayLogo: event.strAwayTeamBadge || "/team-placeholder.svg",
-    venue: resolveFixtureVenue(competition, event.strHomeTeam, event.strVenue),
-    status: finished ? "Finalizado" : "En análisis",
-    score: finished && Number.isFinite(homeScore) && Number.isFinite(awayScore) ? [homeScore, awayScore] : undefined,
-    probabilities: { home: 0, draw: 0, away: 0 },
-    metrics: { winner: pending, corners: pending, btts: pending, goals: pending, shots: pending },
-    stats: [{ label: "Análisis", home: "No disponible", away: "No disponible", available: false }],
-    dataSource: "fixture",
   };
 }
 
@@ -264,12 +214,15 @@ function getAgendaDates(date: string) {
 }
 
 function ProbabilityPanel({ match }: { match: Match }) {
+  if (!match.historicalAnalysis) {
+    return <div className="subpanel probability-panel"><div className="subpanel-title">Probabilidad de resultado</div><p className="detail-data-note">Mercado no disponible: dataset insuficiente para este partido.</p></div>;
+  }
   const values = [["1", match.home, match.probabilities.home], ["X", "Empate", match.probabilities.draw], ["2", match.away, match.probabilities.away]];
   return <div className="subpanel probability-panel"><div className="subpanel-title">Probabilidad de resultado <span className="info-dot">i</span></div><div className="space-y-3">{values.map(([key, label, value]) => <div key={key} className="prob-row"><span className="prob-label"><b>{key}</b>{label}</span><div className="prob-track"><div className="prob-fill" style={{ width: `${value}%` }} /></div><strong>{value}%</strong></div>)}</div></div>;
 }
 
-function MarketCard({ label, value, confidence, icon, detail }: { label: string; value: string; confidence: number; icon: IconName; detail: string }) {
-  return <div className="market-card gloria-reveal interactive-card"><div className="market-card-label"><Icon name={icon} size={14} /><span>{label}</span><span className="market-arrow">↗</span></div><div className="market-card-value">{value}</div><div className="market-meter"><span style={{ width: `${confidence}%` }} /></div><div className="market-card-foot"><span>{detail}</span><b>{confidence}%</b></div></div>;
+function MarketCard({ label, value, confidence, icon, detail }: { label: string; value: string; confidence: number | null; icon: IconName; detail: string }) {
+  return <div className="market-card gloria-reveal interactive-card"><div className="market-card-label"><Icon name={icon} size={14} /><span>{label}</span><span className="market-arrow">↗</span></div><div className="market-card-value">{value}</div>{confidence == null ? <div className="market-card-foot"><span>{detail}</span></div> : <><div className="market-meter"><span style={{ width: `${confidence}%` }} /></div><div className="market-card-foot"><span>{detail}</span><b>{confidence}%</b></div></>}</div>;
 }
 
 function ModelTransparency({ analysis }: { analysis: HistoricalAnalysis | undefined }) {
@@ -289,12 +242,14 @@ function AnalysisPanel({ match, activeMarket, onMarket }: { match: Match; active
   const result = match.metrics[activeMarket];
   const analysis = match.historicalAnalysis;
   const detailHref = getMatchDetailHref(match);
-  const sourceLabel = analysis ? "Fixture real · modelo histórico local" : match.dataSource === "fixture" ? "Fixture real" : "Demo local";
+  const sourceLabel = analysis ? "Dataset histórico · modelo local" : match.dataSource === "demo" ? "Datos demo" : "Dataset insuficiente";
+  const dataset = analysis?.dataset;
   return <section id="datos" className="analysis-panel">
     <div className="analysis-header"><div><div className="competition-line"><span className="mini-crest"><Icon name="ball" size={14} /></span>{match.competition} · {sourceLabel}</div><h2>{match.home} <em>vs</em> {match.away}</h2><div className="match-meta"><span>{match.date}</span><span>·</span><span>{match.kickoff}</span><span>·</span><span>{match.venue}</span></div></div>{detailHref ? <Link className="outline-button analysis-detail-link" href={detailHref}>Ver detalle <Icon name="arrow" size={14} /></Link> : <span className="analysis-no-detail">Detalle local no disponible<br /><small>Esta competición aún no tiene datasets procesados.</small></span>}</div>
     <div className="analysis-main"><div className="versus-card"><div className="versus-team"><Image className="large-crest" src={match.homeLogo} alt={`Escudo de ${match.home}`} width={46} height={46} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /><strong>{match.home}</strong><small>Local</small></div><div className="versus-mark">VS</div><div className="versus-team"><Image className="large-crest away" src={match.awayLogo} alt={`Escudo de ${match.away}`} width={46} height={46} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /><strong>{match.away}</strong><small>Visitante</small></div></div><ProbabilityPanel match={match} /></div>
-    <div className="market-grid"><MarketCard label="Goles totales" value={match.metrics.goals.label} confidence={match.metrics.goals.confidence} icon="trend" detail={analysis ? `Media ${analysis.expectedGoals.total.toFixed(1)} · +2.5 ${analysis.markets.goals.over25}%` : "Sin dato real"} /><MarketCard label="Ambos anotan" value={match.metrics.btts.label} confidence={match.metrics.btts.confidence} icon="target" detail={analysis ? `Sí ${analysis.markets.btts.yes}% · No ${analysis.markets.btts.no}%` : "Sin dato real"} /><MarketCard label="Córneres totales" value={match.metrics.corners.label} confidence={match.metrics.corners.confidence} icon="corner" detail={analysis ? `Media ${analysis.expectedCorners.total.toFixed(1)} · +8.5 ${analysis.markets.corners.over85}%` : "Sin dato real"} /><MarketCard label={`Tiros a puerta (${match.homeCode})`} value={match.metrics.shots.label} confidence={match.metrics.shots.confidence} icon="target" detail={analysis ? `+2.5: ${analysis.markets.shotsOnTarget.homeOver25}%` : "Sin dato real"} /><MarketCard label={`Tiros a puerta (${match.awayCode})`} value={analysis ? analysis.expectedShotsOnTarget.away.toFixed(1) : "Sin dato"} confidence={analysis ? analysis.markets.shotsOnTarget.awayOver25 : 0} icon="target" detail={analysis ? `+2.5: ${analysis.markets.shotsOnTarget.awayOver25}%` : "Sin dato real"} /></div>
+    <div className="market-grid"><MarketCard label="Goles totales" value={match.metrics.goals.label} confidence={match.metrics.goals.confidence} icon="trend" detail={analysis ? `Media ${analysis.expectedGoals.total.toFixed(1)} · +2.5 ${analysis.markets.goals.over25}%` : "Mercado no disponible"} /><MarketCard label="Ambos anotan" value={match.metrics.btts.label} confidence={match.metrics.btts.confidence} icon="target" detail={analysis ? `Sí ${analysis.markets.btts.yes}% · No ${analysis.markets.btts.no}%` : "Mercado no disponible"} /><MarketCard label="Córneres totales" value={match.metrics.corners.label} confidence={match.metrics.corners.confidence} icon="corner" detail={analysis ? `Media ${analysis.expectedCorners.total.toFixed(1)} · +8.5 ${analysis.markets.corners.over85}%` : "Mercado no disponible"} /><MarketCard label={`Tiros a puerta (${match.homeCode})`} value={match.metrics.shots.label} confidence={match.metrics.shots.confidence} icon="target" detail={analysis ? `+2.5: ${analysis.markets.shotsOnTarget.homeOver25}%` : "Mercado no disponible"} /><MarketCard label={`Tiros a puerta (${match.awayCode})`} value={analysis ? analysis.expectedShotsOnTarget.away.toFixed(1) : "Sin dato"} confidence={analysis ? analysis.markets.shotsOnTarget.awayOver25 : null} icon="target" detail={analysis ? `+2.5: ${analysis.markets.shotsOnTarget.awayOver25}%` : "Mercado no disponible"} /></div>
     <ModelTransparency analysis={analysis} />
+    <div className="available-note"><span className="available-dot" />{dataset ? `Fuente: ${dataset.source}` : "Dataset insuficiente"}<br /><small>{dataset ? `${dataset.seasons.length} temporadas · Mercados: ${dataset.markets.length}` : "No existe dataset local compatible con esta competición."}</small></div>
     <div className="analysis-tabs">{markets.map((market) => <button key={market.key} onClick={() => onMarket(market.key)} className={`tab-motion ${activeMarket === market.key ? "active" : ""}`}>{market.label}</button>)}</div>
     <div id="metodologia" className="analysis-detail"><div><div className="eyebrow">Resumen del mercado</div><h3>{result.label}</h3><p>{result.note}</p></div><div className="available-note"><span className="available-dot" />{analysis ? "Modelo histórico local" : "Fixture real"}<br /><small>{analysis ? analysis.usingLeagueBaseline ? "Muestra insuficiente de un club · media de liga" : `5 temporadas + ${analysis.currentSeasonHomeSample}/${analysis.currentSeasonAwaySample} partidos actuales` : "No hay predicción ni estadísticas avanzadas disponibles para esta fuente."}</small></div></div>
   </section>;
@@ -303,17 +258,17 @@ function AnalysisPanel({ match, activeMarket, onMarket }: { match: Match; active
 export default function Home() {
   const [competition, setCompetition] = useState("Premier League");
   const [team, setTeam] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(getLocalDate);
   const [selectedId, setSelectedId] = useState("");
   const [activeMarket, setActiveMarket] = useState<MarketKey>("winner");
   const [realDataState, setRealDataState] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [realDataMessage, setRealDataMessage] = useState("");
+  const [realDataMessage, setRealDataMessage] = useState("Pulsa Actualizar datos para cargar el dataset local.");
   const [fixtureCache, setFixtureCache] = useState<Record<string, FixtureCacheEntry>>({});
   const fixtureCacheRef = useRef(fixtureCache);
   const [cacheReferenceTime, setCacheReferenceTime] = useState(0);
   const [collapsedDays, setCollapsedDays] = useState<Set<string>>(new Set());
-  const today = new Date().toISOString().slice(0, 10);
-  const requestedDate = competition === "Todas" ? today : date || today;
+  const today = date || getLocalDate();
+  const requestedDate = date || today;
   const fixtureCacheKey = `${competition}:${requestedDate}:day`;
   const realMatches = competition === "Todas"
     ? Object.entries(fixtureCache)
@@ -358,7 +313,7 @@ export default function Home() {
       ? "error"
       : realDataState === "success"
         ? "empty"
-        : "loading";
+      : "empty";
   const loadRealData = useCallback(async () => {
     const requestKey = `${competition}:${requestedDate}`;
     if (inFlightFixtureRequests.has(requestKey)) return;
@@ -381,16 +336,12 @@ export default function Home() {
     const fetchedMatches: Match[] = [];
     for (let index = 0; index < missingCompetitions.length; index += 1) {
       const requestedCompetition = missingCompetitions[index];
-      const endpoint = footballDataCompetitions[requestedCompetition]
-        ? `/api/football-data/fixtures?date=${requestedDate}&competition=${encodeURIComponent(requestedCompetition)}&includeAnalysis=1`
-        : `/api/sportsdb/fixtures?date=${requestedDate}&league=${encodeURIComponent(requestedCompetition)}`;
+      const endpoint = `/api/local-fixtures?date=${requestedDate}&competition=${encodeURIComponent(requestedCompetition)}`;
       try {
         const response = await fetch(endpoint, { cache: "no-store" });
         const payload = await response.json();
         if (!response.ok) throw new Error(`${requestedCompetition}: ${payload.error || "fuente no disponible"}`);
-        const rawMatches = footballDataCompetitions[requestedCompetition]
-          ? (payload.fixtures as FootballDataFixture[]).map((fixture) => toAgendaMatch(fixture, requestedCompetition))
-          : (payload.events as SportsDbEvent[]).map((event) => toSportsDbMatch(event, requestedCompetition));
+        const rawMatches = (payload.fixtures as FootballDataFixture[]).map((fixture) => toAgendaMatch(fixture, requestedCompetition));
         const matches = rawMatches.filter((match) => match.date === requestedDate);
         const cacheKey = `${requestedCompetition}:${requestedDate}:day`;
         const entry = { matches, dateFrom: requestedDate, dateTo: requestedDate, expiresAt: Date.now() + (Number(payload.cacheTtlSeconds) || 21_600) * 1000 };
@@ -415,16 +366,11 @@ export default function Home() {
       return;
     }
     setRealDataState("success");
-    setRealDataMessage(`${allMatches.length} partidos reales del ${requestedDate}${cachedMatches.length ? " · reutilizando caché" : ""}${failures.length ? ` · ${failures.length} fuente(s) sin respuesta` : ""}.`);
+    setRealDataMessage(`${allMatches.length} partidos del dataset local del ${requestedDate}${cachedMatches.length ? " · reutilizando caché" : ""}${failures.length ? ` · ${failures.length} fuente(s) sin respuesta` : ""}.`);
     } finally {
       inFlightFixtureRequests.delete(requestKey);
     }
   }, [competition, requestedDate]);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => { void loadRealData(); }, 0);
-    return () => window.clearTimeout(timer);
-  }, [competition, loadRealData, requestedDate]);
 
   return <div className="app-shell"><Sidebar active="Inicio" /><main className="main-area"><header id="configuracion" className="topbar"><div className="mobile-logo"><Logo /></div><label className="search-box"><Icon name="search" size={17} /><input value={team} onChange={(event) => setTeam(event.target.value)} placeholder="Buscar equipo, liga o partido..." /><kbd>⌘ K</kbd></label><div className="top-actions"><label className="date-picker"><Icon name="calendar" size={15} /><input type="date" value={date} onChange={(event) => setDate(event.target.value)} /><span>{date ? date : "Hoy"}</span></label><span className="demo-status"><i /> Datos reales</span></div></header><div className="content"><section id="inicio" className="hero"><div className="hero-image" /><div className="hero-shade" /><div className="hero-copy"><div className="eyebrow light">GlorIA Futbolera</div><h1>Analiza.<br />Comprende.<br /><span>Decide mejor.</span></h1><p>Estadísticas, contexto y probabilidades para entender el fútbol de una manera más clara.</p></div><div className="hero-note"><span><Icon name="database" size={14} /> Datos en directo</span><p>Los partidos se consultan desde fuentes externas.</p></div></section><div id="competiciones" className="competition-strip"><div className="competition-scroll">{competitions.map((item, index) => <button key={item} onClick={() => { setCompetition(item); if (item === "Todas") setDate(today); }} className={competition === item ? "active" : ""}><span className="competition-icon">{index === 0 ? <Icon name="globe" size={15} /> : <Icon name="ball" size={14} />}</span>{competitionLabels[item]}</button>)}</div><div className="real-data-controls"><button className="load-real-button" onClick={loadRealData} disabled={realDataState === "loading"}>{realDataState === "loading" ? "Consultando…" : "Actualizar datos"}</button><span className={`real-data-message ${realDataState}`}>{realDataMessage || "Consultando fuente real…"}</span></div></div>{selected && <FeaturedMatch match={selected} detailHref={getMatchDetailHref(selected)} />}<section className="fixtures-intro"><div><div className="eyebrow">Agenda en tiempo real</div><h1>Partidos</h1><p>Consulta los partidos por día y competición. Selecciona un encuentro para ver su lectura estadística.</p></div><span className="fixtures-source"><i /> Fuente real<br /><small>Actualizada automáticamente</small></span></section><nav className="agenda-date-nav" aria-label="Seleccionar día">{agendaDates.map((agendaDate) => { const value = agendaDate.toISOString().slice(0, 10); const isToday = value === new Date().toISOString().slice(0, 10); return <button key={value} className={requestedDate === value ? "active" : ""} onClick={() => setDate(value)}><b>{isToday ? "Hoy" : new Intl.DateTimeFormat("es-PE", { weekday: "short" }).format(agendaDate).replace(".", "")}</b><small>{formatShortDate(agendaDate)}</small></button>; })}</nav><div className="dashboard-grid"><aside id="partidos" className="fixtures-column"><div className="section-heading"><div><div className="eyebrow">Agenda</div><h2>Próximos partidos</h2></div><span>{filtered.length} visibles</span></div><div className="fixture-list">{realDataState === "success" && realDataMessage.includes("reutilizando caché") && <FixtureState state="stale" />}{homeFixtureState ? <FixtureState state={homeFixtureState} contextLabel={competitionLabels[competition]} hasOtherFixtures={hasOtherCachedFixtures} onRetry={() => { void loadRealData(); }} /> : matchesByDay.map(([matchDate, dayMatches]) => { const collapsed = collapsedDays.has(matchDate); return <section className="agenda-day" key={matchDate}><button className="agenda-day-toggle" onClick={() => toggleDay(matchDate)} aria-expanded={!collapsed}><h3><span><Icon name="calendar" size={13} />{formatAgendaDate(matchDate)}</span><b>{dayMatches.length} {dayMatches.length === 1 ? "partido" : "partidos"}</b><strong aria-hidden="true">{collapsed ? "+" : "−"}</strong></h3></button>{!collapsed && <div className="agenda-day-matches">{dayMatches.map((match) => <MatchRow key={match.id} match={match} selected={selected?.id === match.id} onSelect={() => setSelectedId(match.id)} />)}</div>}</section>; })}</div></aside><div className="analysis-column"><div className="section-heading"><div><div className="eyebrow">Análisis seleccionado</div><h2>Lectura de partido</h2></div><span className="desktop-only">Actualización automática · fuente real</span></div>{selected ? <AnalysisPanel match={selected} activeMarket={activeMarket} onMarket={activeMarket => setActiveMarket(activeMarket)} /> : <div className="empty-state">Selecciona una competición con partidos disponibles para mostrar su análisis.</div>}</div></div></div><footer>GlorIA Futbolera <span>·</span> Datos consultados desde fuentes reales</footer></main></div>;
 }
