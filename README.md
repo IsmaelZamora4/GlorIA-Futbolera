@@ -22,8 +22,10 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/dashboard.png" width="1000" alt="Dashboard de GlorIA Futbolera con partidos, competiciones y análisis prepartido">
+  <img src="home-screenshot.jpg" width="1100" alt="Inicio de GlorIA Futbolera: menú lateral, competiciones y partido recomendado">
 </p>
+
+<p align="center"><strong>Inicio.</strong> El menú lateral organiza las secciones principales; el partido recomendado resume el encuentro destacado y sus probabilidades.</p>
 
 GlorIA Futbolera es una aplicación web de análisis estadístico prepartido. Elige una competición, consulta su calendario y abre un encuentro para revisar probabilidades, métricas y contexto histórico.
 
@@ -40,6 +42,26 @@ El modelo busca ser transparente: muestra de dónde salen los datos, cuánto his
 | Córneres | Media esperada y líneas de córneres. |
 | Tiros a puerta | Estimación por equipo y total. |
 | Contexto | Forma reciente, posición, enfrentamientos y rendimiento local/visitante cuando hay datos. |
+
+## Recorrido visual
+
+### Partidos del día
+
+![Agenda de partidos por fecha y competición](matches-screenshot.jpg)
+
+La vista **Partidos** reúne los encuentros del día y permite cambiar la fecha o filtrar por competición. Cada bloque agrupa los partidos por liga, con horario, equipos y acceso al análisis disponible.
+
+### Detalle del encuentro
+
+![Detalle prepartido con probabilidades, estadio y calidad de muestra](match-info-screenshot.jpg)
+
+Al abrir un encuentro, la ficha presenta el pronóstico 1X2, el estado de la muestra y el contexto del estadio. La imagen del recinto complementa la lectura; la calidad de muestra indica cuántos datos respaldan el análisis.
+
+### Métricas y secciones del análisis
+
+![Métricas clave del partido y navegación por resumen, forma, goles, tiros, córneres, estadísticas, posiciones y enfrentamientos](metrica-match-screenshot.jpg)
+
+La pestaña **Resumen** reúne las probabilidades de más de 1.5 y 2.5 goles, ambos anotan, goles esperados, córneres esperados y tiros a puerta esperados. Las pestañas superiores permiten ampliar la lectura con forma, goles, tiros, córneres, estadísticas, posiciones y enfrentamientos directos (H2H).
 
 ## Cobertura y fuentes
 

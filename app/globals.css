@@ -629,12 +629,15 @@ footer span { margin: 0 7px; color: #4d4d4a; }
 .professional-day h2 { display: flex; align-items: center; justify-content: space-between; margin: 0; padding: 12px 15px; color: var(--ink); background: #141516; font-family: var(--font-plex-sans-condensed), "Arial Narrow", sans-serif; font-size: 16px; font-weight: 600; text-transform: capitalize; }
 .professional-day h2 span { color: var(--muted-dark); font-family: var(--font-plex-sans), "Segoe UI", sans-serif; font-size: 9px; font-weight: 400; text-transform: none; }
 .professional-competition { border-top: 1px solid #292a2c; }
-.professional-competition-header { display: flex; align-items: center; gap: 9px; padding: 9px 15px; color: var(--ink); background: #1d1e20; }
+.professional-competition-header { position: relative; display: flex; min-height: 46px; align-items: center; justify-content: center; padding: 9px 15px; color: var(--ink); background: #1d1e20; }
+.professional-competition-info { display: flex; align-items: center; gap: 9px; }
 .professional-competition-logo { display: grid; width: 26px; height: 26px; place-items: center; overflow: hidden; flex: 0 0 26px; }
 .professional-competition-logo img { width: 26px; height: 26px; object-fit: contain; }
 .professional-competition-header strong { font-size: 11px; }
 .professional-competition-header small { color: var(--muted-dark); font-size: 9px; }
-.professional-competition-header span { margin-left: auto; color: var(--muted-dark); font-size: 14px; }
+.professional-competition-toggle { position: absolute; top: 50%; right: 12px; display: grid; width: 34px; height: 34px; transform: translateY(-50%); padding: 0; place-items: center; border: 1px solid #49433a; border-radius: 50%; color: var(--champagne-soft); background: rgba(198, 176, 138, .08); cursor: pointer; transition: .18s ease; }
+.professional-competition-toggle:hover, .professional-competition-toggle:focus-visible { border-color: var(--champagne); color: var(--ink); background: rgba(198, 176, 138, .18); outline: none; }
+.professional-competition-toggle span { font-size: 18px; line-height: 1; }
 .professional-fixture { display: grid; grid-template-columns: 70px minmax(130px, 1fr) 35px minmax(130px, 1fr) minmax(110px, .7fr) 68px 92px; align-items: center; gap: 12px; border-top: 1px solid #292a2c; padding: 12px 15px; color: var(--muted); font-size: 11px; }
 .professional-fixture:hover { background: #202122; }
 .professional-fixture-time { color: var(--champagne-soft); font-variant-numeric: tabular-nums; font-weight: 700; }

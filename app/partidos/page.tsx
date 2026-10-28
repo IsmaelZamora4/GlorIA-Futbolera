@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense, useCallback, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { competitions } from "../../data/demo-matches";
 import { resolveFixtureVenue } from "../../data/team-venues";
@@ -172,6 +172,7 @@ function PartidosContent() {
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
   const [state, setState] = useState<"loading" | "success" | "error">("success");
   const [message, setMessage] = useState("");
+  const [collapsedCompetitions, setCollapsedCompetitions] = useState<Set<string>>(new Set());
   const loadFixtures = useCallback(async () => {
     setState("loading");
     const now = Date.now();
@@ -231,6 +232,13 @@ function PartidosContent() {
     setState("success");
   }, [competition, date]);
 
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      void loadFixtures();
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [loadFixtures]);
+
   const filtered = useMemo(() => fixtures.filter((fixture) => `${fixture.home} ${fixture.away}`.toLowerCase().includes(search.toLowerCase())), [fixtures, search]);
   const grouped = useMemo(() => {
     const days = new Map<string, Map<string, Fixture[]>>();
@@ -244,6 +252,14 @@ function PartidosContent() {
       .map(([fixtureDate, competitionsForDay]) => [fixtureDate, [...competitionsForDay.entries()]] as const);
   }, [filtered]);
   const today = getLocalDate();
+  const toggleCompetition = (competitionName: string) => {
+    setCollapsedCompetitions((current) => {
+      const next = new Set(current);
+      if (next.has(competitionName)) next.delete(competitionName);
+      else next.add(competitionName);
+      return next;
+    });
+  };
   const dates = Array.from({ length: 7 }, (_, index) => {
     const current = new Date(`${date}T12:00:00Z`);
     current.setUTCDate(current.getUTCDate() + index - 2);
@@ -251,7 +267,7 @@ function PartidosContent() {
   });
 
   const fixtureState = state === "loading" ? "loading" : state === "error" ? "error" : grouped.length ? null : "empty";
-  return <div className="app-shell"><PartidosNavigation /><main className="main-area"><header className="topbar"><label className="search-box"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar equipo o liga..." /></label><div className="top-actions"><label className="date-picker"><span>◷</span><input type="date" value={date} onChange={(event) => setDate(event.target.value)} /><span>{date}</span></label><span className="demo-status"><i /> Datos reales</span></div></header><div className="matches-page"><div className="matches-heading"><div><div className="eyebrow">Fixture · {competitionLabels[competition]}</div><h1>Partidos</h1><p>Consulta todos los partidos reales del día y filtra por competición cuando quieras.</p></div><span className="fixtures-source"><i /> Fuente real<br /><small>{state === "loading" ? "Actualizando…" : message}</small></span></div><div className="matches-mode"><button className="active">Partidos</button><button disabled>Ligas</button><button disabled>Equipos</button><button disabled>Rachas</button></div><div className="matches-competitions"><button className={competition === "Todas" ? "active" : ""} onClick={() => setCompetition("Todas")}>{competitionLabels.Todas}</button>{competitions.slice(1).map((item) => <button key={item} className={competition === item ? "active" : ""} onClick={() => setCompetition(item)}>{competitionLabels[item]}</button>)}</div><div className="agenda-date-nav">{dates.map((current) => { const value = current.toISOString().slice(0, 10); return <button key={value} className={value === date ? "active" : ""} onClick={() => setDate(value)}><b>{value === today ? "Hoy" : new Intl.DateTimeFormat("es-PE", { weekday: "short" }).format(current).replace(".", "")}</b><small>{dateLabel(current)}</small></button>; })}</div><div className="professional-fixtures">{fixtureState ? <FixtureState state={fixtureState} onRetry={() => { void loadFixtures(); }} /> : grouped.map(([fixtureDate, dayCompetitions]) => <section key={fixtureDate} className="professional-day"><h2>{formatDate(fixtureDate)} <span>{dayCompetitions.reduce((total, [, dayFixtures]) => total + dayFixtures.length, 0)} partidos</span></h2>{dayCompetitions.map(([fixtureCompetition, competitionFixtures]) => <div className="professional-competition" key={fixtureCompetition}>  <header className="professional-competition-header"><span className={`professional-competition-logo ${fixtureCompetition === "Premier League" ? "premier" : fixtureCompetition === "Ligue 1 de Francia" ? "ligue" : ""}`}><Image src={competitionFixtures[0].competitionLogo} alt={`Logo de ${competitionLabels[fixtureCompetition] || fixtureCompetition}`} width={26} height={26} unoptimized onError={(event) => { event.currentTarget.src = "/competition-placeholder.svg"; }} /></span><strong>{competitionLabels[fixtureCompetition] || fixtureCompetition}</strong><small>Partidos del día</small><span aria-hidden="true">⌄</span></header>{competitionFixtures.map((fixture) => <FixtureRow key={fixture.id} fixture={fixture} />)}</div>)}</section>)}</div></div></main></div>;
+  return <div className="app-shell"><PartidosNavigation /><main className="main-area"><header className="topbar"><label className="search-box"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar equipo o liga..." /></label><div className="top-actions"><label className="date-picker"><span>◷</span><input type="date" value={date} onChange={(event) => setDate(event.target.value)} /><span>{date}</span></label><span className="demo-status"><i /> Datos reales</span></div></header><div className="matches-page"><div className="matches-heading"><div><div className="eyebrow">Fixture · {competitionLabels[competition]}</div><h1>Partidos</h1><p>Consulta todos los partidos reales del día y filtra por competición cuando quieras.</p></div><span className="fixtures-source"><i /> Fuente real<br /><small>{state === "loading" ? "Actualizando…" : message}</small></span></div><div className="matches-mode"><button className="active">Partidos</button><button disabled>Ligas</button><button disabled>Equipos</button><button disabled>Rachas</button></div><div className="matches-competitions"><button className={competition === "Todas" ? "active" : ""} onClick={() => setCompetition("Todas")}>{competitionLabels.Todas}</button>{competitions.slice(1).map((item) => <button key={item} className={competition === item ? "active" : ""} onClick={() => setCompetition(item)}>{competitionLabels[item]}</button>)}</div><div className="agenda-date-nav">{dates.map((current) => { const value = current.toISOString().slice(0, 10); return <button key={value} className={value === date ? "active" : ""} onClick={() => setDate(value)}><b>{value === today ? "Hoy" : new Intl.DateTimeFormat("es-PE", { weekday: "short" }).format(current).replace(".", "")}</b><small>{dateLabel(current)}</small></button>; })}</div><div className="professional-fixtures">{fixtureState ? <FixtureState state={fixtureState} onRetry={() => { void loadFixtures(); }} /> : grouped.map(([fixtureDate, dayCompetitions]) => <section key={fixtureDate} className="professional-day"><h2>{formatDate(fixtureDate)} <span>{dayCompetitions.reduce((total, [, dayFixtures]) => total + dayFixtures.length, 0)} partidos</span></h2>{dayCompetitions.map(([fixtureCompetition, competitionFixtures]) => <div className="professional-competition" key={fixtureCompetition}>    <header className="professional-competition-header"><div className="professional-competition-info"><span className={`professional-competition-logo ${fixtureCompetition === "Premier League" ? "premier" : fixtureCompetition === "Ligue 1 de Francia" ? "ligue" : ""}`}><Image src={competitionFixtures[0].competitionLogo} alt={`Logo de ${competitionLabels[fixtureCompetition] || fixtureCompetition}`} width={26} height={26} unoptimized onError={(event) => { event.currentTarget.src = "/competition-placeholder.svg"; }} /></span><strong>{competitionLabels[fixtureCompetition] || fixtureCompetition}</strong><small>Partidos del día</small></div><button type="button" className="professional-competition-toggle" onClick={() => toggleCompetition(fixtureCompetition)} aria-expanded={!collapsedCompetitions.has(fixtureCompetition)} aria-label={`${collapsedCompetitions.has(fixtureCompetition) ? "Expandir" : "Contraer"} ${competitionLabels[fixtureCompetition] || fixtureCompetition}`}><span aria-hidden="true">{collapsedCompetitions.has(fixtureCompetition) ? "▾" : "▴"}</span></button></header>{!collapsedCompetitions.has(fixtureCompetition) && competitionFixtures.map((fixture) => <FixtureRow key={fixture.id} fixture={fixture} />)}</div>)}</section>)}</div></div></main></div>;
 }
 
 export default function PartidosPage() {
