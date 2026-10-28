@@ -1,132 +1,125 @@
-# GlorIA Futbolera
+<p align="center">
+  <img src="public/logo-gloria.png" width="112" alt="GlorIA Futbolera">
+</p>
 
-Aplicación web de análisis estadístico prepartido de fútbol. Permite explorar partidos, seleccionar un encuentro y consultar cinco mercados estadísticos usando datasets locales.
+<h1 align="center">GlorIA Futbolera</h1>
 
-Proyecto de portafolio: reproducible, sin cuentas, sin API keys y sin infraestructura de pago.
+<p align="center">
+  Estadísticas para entender el partido antes del pitazo inicial.
+</p>
 
-## Demo local
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16-111111?logo=next.js" alt="Next.js 16">
+  <img src="https://img.shields.io/badge/React-19-111111?logo=react" alt="React 19">
+  <img src="https://img.shields.io/badge/TypeScript-5.9-111111?logo=typescript" alt="TypeScript 5.9">
+  <img src="https://img.shields.io/badge/Análisis-5%20ligas-C6B08A" alt="Análisis histórico para cinco ligas">
+</p>
 
-Requisitos: Node.js compatible con Next.js 16.
+<p align="center">
+  <a href="#empezar">Empezar</a> ·
+  <a href="#qué-puedes-consultar">Qué puedes consultar</a> ·
+  <a href="docs/historical-data.md">Metodología y datos</a>
+</p>
 
-```powershell
+<p align="center">
+  <img src="docs/images/dashboard.png" width="1000" alt="Dashboard de GlorIA Futbolera con partidos, competiciones y análisis prepartido">
+</p>
+
+GlorIA Futbolera es una aplicación web de análisis estadístico prepartido. Elige una competición, consulta su calendario y abre un encuentro para revisar probabilidades, métricas y contexto histórico.
+
+El modelo busca ser transparente: muestra de dónde salen los datos, cuánto historial tiene y cuándo una métrica no está disponible. Sus estimaciones describen tendencias; no garantizan resultados.
+
+## Qué puedes consultar
+
+| Área | Incluye |
+| --- | --- |
+| Agenda | Partidos por competición y fecha, con calendario actual para las ligas conectadas. |
+| Resultado 1X2 | Probabilidades de victoria local, empate y victoria visitante. |
+| Goles | Goles esperados y líneas de más de 1.5, 2.5 y 3.5 goles. |
+| Ambos anotan | Probabilidad de que ambos equipos marquen. |
+| Córneres | Media esperada y líneas de córneres. |
+| Tiros a puerta | Estimación por equipo y total. |
+| Contexto | Forma reciente, posición, enfrentamientos y rendimiento local/visitante cuando hay datos. |
+
+## Cobertura y fuentes
+
+El análisis local está disponible para Bundesliga, LaLiga, Ligue 1, Premier League y Serie A. Cada dataset combina temporadas históricas desde 2021/2022 hasta 2025/2026 con los registros disponibles de la temporada actual 2026/2027.
+
+Los partidos de hoy y fechas futuras de esas cinco ligas se consultan en football-data.org. Para habilitar esa agenda, configura `FOOTBALL_DATA_KEY`. La clave se usa en el servidor y no se envía al navegador. Sin ella, puedes iniciar la app y consultar análisis con los datasets locales; la agenda actual puede quedar vacía.
+
+Liga 1 de Perú, Champions League y Europa League aparecen en el catálogo, pero todavía no tienen análisis local conectado en la agenda principal. La cobertura real por competencia está definida en [`data/datasets.ts`](data/datasets.ts).
+
+```mermaid
+flowchart LR
+  A[Competición y fecha] --> B{Tipo de consulta}
+  B -->|Hoy o futuro| C[football-data.org]
+  B -->|Historial| D[data/processed]
+  C --> E[Fixture del partido]
+  D --> F[Modelo estadístico local]
+  E --> F
+  F --> G[Probabilidades y métricas]
+```
+
+## Empezar
+
+Requisitos: Node.js 20.9 o posterior y npm.
+
+```bash
 npm install
 npm run dev
 ```
 
-Abrir `http://localhost:3000`.
+Abre [http://localhost:3000](http://localhost:3000).
 
-Comprobación de producción:
+Para consultar fixtures actuales, crea `.env.local` en la raíz:
 
-```powershell
-npm test
-npm run typecheck
-npm run lint
-npm run build
+```dotenv
+FOOTBALL_DATA_KEY=tu_clave_de_football_data
 ```
 
-El build usa Webpack porque el proceso Turbopack del entorno fallaba al procesar CSS.
+Reinicia el servidor después de agregar la clave. No subas `.env.local` ni claves al repositorio.
 
-## Funcionalidad
+## Cómo se calcula
 
-Flujo principal:
+El análisis usa partidos finalizados antes de la fecha del encuentro. Las medias de ataque y defensa se ajustan por localía y se suavizan con la media de la liga cuando la muestra es pequeña. La distribución de Poisson estima marcadores y mercados de goles; BTTS deriva de las probabilidades de gol de cada equipo. Córneres y tiros a puerta usan sus propios datos históricos.
 
-1. Abrir el dashboard.
-2. Elegir competición.
-3. Elegir fecha.
-4. Cargar partidos del dataset local.
-5. Seleccionar un partido.
-6. Consultar el análisis.
-7. Revisar fuente, muestra, metodología y cobertura.
+La temporada actual aporta forma reciente con peso limitado. Las variables de cada partido se calculan con un corte previo al encuentro, para evitar que el modelo use resultados futuros. Si faltan observaciones, la interfaz muestra `Sin dato` o `Mercado no disponible`; no los sustituye por cero.
 
-Mercados:
+Consulta fórmulas, validación y actualización de temporadas en [`docs/historical-data.md`](docs/historical-data.md).
 
-- Resultado 1X2.
-- Goles.
-- Ambos equipos marcan (BTTS).
-- Córners.
-- Tiros a puerta.
+## Comandos
 
-Los datos ausentes aparecen como `Sin dato` o `Mercado no disponible`. Nunca se convierten en cero.
+| Comando | Uso |
+| --- | --- |
+| `npm run dev` | Iniciar el entorno local. |
+| `npm run build` | Crear el build de producción con Webpack. |
+| `npm run typecheck` | Comprobar tipos TypeScript. |
+| `npm run lint` | Revisar estilo y reglas de ESLint. |
+| `npm test` | Ejecutar pruebas del modelo estadístico. |
+| `npm run validate:data` | Validar datasets procesados. |
+| `npm run validate:teams` | Revisar identidades y aliases de equipos. |
+| `npm run backtest` | Ejecutar evaluación temporal del modelo. |
 
-## Datasets y cobertura
+Para actualizar los datos de una liga, sigue el procedimiento con respaldo y validación descrito en [`docs/historical-data.md`](docs/historical-data.md). Los JSON de `data/processed/` son derivados: no los edites manualmente.
 
-Datasets procesados en `data/processed/`:
+## Organización del proyecto
 
-- Bundesliga.
-- LaLiga.
-- Ligue 1.
-- Premier League.
-- Serie A.
-
-Cada liga contiene cinco temporadas históricas, de `2021/2022` a `2025/2026`, y una temporada actual procesada `2026/2027`.
-
-Análisis disponible: las cinco ligas anteriores.
-
-Liga 1 de Perú, Champions League y Europa League aparecen en el catálogo, pero no tienen dataset analítico local. La interfaz no promete análisis para esas competiciones.
-
-La procedencia y cobertura de cada dataset están definidas en `data/datasets.ts`. El pipeline y las reglas de actualización están documentados en `docs/historical-data.md`.
-
-## Metodología estadística
-
-El modelo usa datos terminados anteriores al partido consultado.
-
-- 1X2: expectativas de goles local/visitante y distribución de Poisson independiente para estimar victoria local, empate y victoria visitante.
-- Goles: suma de goles esperados y líneas Poisson de `+1.5`, `+2.5` y `+3.5`.
-- BTTS: probabilidad de que ambos equipos marquen al menos un gol.
-- Córners: expectativas por condición local/visitante y líneas Poisson.
-- Tiros a puerta: expectativas por condición local/visitante y líneas Poisson.
-
-Las muestras pequeñas usan suavizado con la media de liga. La temporada actual tiene peso limitado. La calibración walk-forward se aplica a las métricas configuradas y evita utilizar resultados posteriores al fixture.
-
-Detalles y fórmulas: `docs/historical-data.md`.
-
-## Decisiones técnicas
-
-- Next.js App Router, React y TypeScript.
-- JSON procesado localmente; no se requiere base de datos.
-- Rutas server-side para leer datasets sin exponer archivos innecesarios al cliente.
-- Lógica estadística separada de los componentes visuales.
-- Caché local del navegador solo para evitar repetir lecturas durante la sesión.
-- Sin llamadas automáticas a APIs externas.
-- Estados explícitos para carga, error, vacío, demo, insuficiencia y ausencia de análisis.
-- `next build --webpack` para un build reproducible en este entorno.
-
-## Limitaciones
-
-- No es una predicción garantizada ni una recomendación de apuestas.
-- No incorpora lesiones, alineaciones, clima ni cambios recientes de plantel.
-- La cobertura depende de los campos presentes en cada dataset.
-- Tres competiciones del catálogo no tienen análisis local.
-- La temporada actual es una muestra parcial y puede cambiar al regenerar los datos.
-- La validación visual en navegador debe repetirse en cada entorno de presentación.
-
-## Datos y actualización
-
-Los CSV de entrada viven en `data/raw/`. No editar manualmente los JSON derivados.
-
-```powershell
-npm run normalize:data
-npm run validate:data
-npm run validate:teams
-npm run backtest
-npm test
+```text
+app/                 Páginas y rutas de la aplicación
+components/          Interfaz y visualizaciones de análisis
+data/raw/            CSV fuente por competición
+data/processed/      Datasets y estadísticas normalizados
+docs/                Metodología y documentación
+lib/                 Acceso a datos y lógica del modelo
+scripts/             Normalización, validación y backtesting
+tests/               Pruebas del modelo estadístico
 ```
 
-El pipeline no consume APIs. Las pruebas comprueban coherencia matemática, aliases, cobertura estadística y corte temporal prepartido.
+## Límites del modelo
 
-## Capturas y presentación
+- Es una lectura estadística, no una predicción segura ni una recomendación de apuestas.
+- No incluye lesiones, alineaciones confirmadas, clima ni cambios de plantel en tiempo real.
+- La temporada en curso es parcial; el tamaño de muestra aparece en el análisis.
+- El calendario depende de la disponibilidad y cobertura de football-data.org.
 
-La demo se presenta ejecutando el proyecto localmente con `npm run dev`.
-
-Capturas recomendadas para el portafolio:
-
-1. Dashboard con lista de partidos y selector de competición.
-2. Panel de análisis con los cinco mercados.
-3. Vista de detalle con metodología, muestra y limitaciones.
-4. Estado de competición sin dataset analítico.
-
-No se incluyen capturas generadas automáticamente en el repositorio; deben tomarse después de la validación visual final del entorno de presentación.
-
-## Estado del proyecto
-
-MVP local de portafolio en desarrollo. El modelo, datasets, pruebas, build y documentación base están implementados. La validación visual completa en escritorio, tablet y móvil sigue siendo el último control manual.
+<p align="center"><sub>Hecho para mirar el fútbol con más contexto y menos humo.</sub></p>
