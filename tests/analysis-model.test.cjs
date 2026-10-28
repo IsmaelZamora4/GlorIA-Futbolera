@@ -48,6 +48,13 @@ test("cada liga devuelve probabilidades y mercados matemáticamente coherentes",
     assert.equal(analysis.probabilities.home + analysis.probabilities.draw + analysis.probabilities.away, 100);
     assert.ok(analysis.markets.goals.over15 >= analysis.markets.goals.over25);
     assert.ok(analysis.markets.goals.over25 >= analysis.markets.goals.over35);
+    assert.ok(analysis.markets.corners.over55 >= analysis.markets.corners.over65);
+    assert.ok(analysis.markets.corners.over65 >= analysis.markets.corners.over75);
+    assert.ok(analysis.markets.corners.over75 >= analysis.markets.corners.over85);
+    assert.ok(analysis.markets.corners.over85 >= analysis.markets.corners.over95);
+    assert.ok(analysis.markets.corners.over95 >= analysis.markets.corners.over105);
+    assert.ok(analysis.markets.corners.over105 >= analysis.markets.corners.over115);
+    assert.ok(analysis.markets.corners.over115 >= analysis.markets.corners.over125);
     assert.equal(analysis.markets.btts.yes + analysis.markets.btts.no, 100);
     assert.ok(analysis.over25Probability >= 0 && analysis.over25Probability <= 100);
     assert.ok(analysis.expectedGoals.total > 0);

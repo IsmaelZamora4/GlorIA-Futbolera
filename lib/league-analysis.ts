@@ -59,8 +59,14 @@ export type DerivedMarkets = {
     no: number;
   };
   corners: {
+    over55: number;
+    over65: number;
+    over75: number;
     over85: number;
     over95: number;
+    over105: number;
+    over115: number;
+    over125: number;
   };
   shotsOnTarget: {
     homeOver25: number;
@@ -391,8 +397,14 @@ export async function getLocalLeagueAnalysis(
       // Corners and shots use the same count-distribution approximation. Their
       // calibration is assessed separately in the backtesting step.
       corners: {
+        over55: Math.max(overLineProbability(totalCorners, 5.5), calibratedCornersOver85Percent),
+        over65: Math.max(overLineProbability(totalCorners, 6.5), calibratedCornersOver85Percent),
+        over75: Math.max(overLineProbability(totalCorners, 7.5), calibratedCornersOver85Percent),
         over85: calibratedCornersOver85Percent,
-        over95: overLineProbability(totalCorners, 9.5),
+        over95: Math.min(overLineProbability(totalCorners, 9.5), calibratedCornersOver85Percent),
+        over105: Math.min(overLineProbability(totalCorners, 10.5), calibratedCornersOver85Percent),
+        over115: Math.min(overLineProbability(totalCorners, 11.5), calibratedCornersOver85Percent),
+        over125: Math.min(overLineProbability(totalCorners, 12.5), calibratedCornersOver85Percent),
       },
       shotsOnTarget: {
         homeOver25: overLineProbability(expectedHomeShots, 2.5),
