@@ -19,7 +19,7 @@
   - Verificar: cuenta de prueba y sesión tras recargar.
   - Dependencias: 1.
 
-- [ ] **3. Protección de navegación.**
+- [x] **3. Protección de navegación.**
   - Aceptación: Bank exige sesión; partidos y metodología siguen públicos.
   - Verificar: navegación anónima, autenticada y tras logout.
   - Dependencias: 2.

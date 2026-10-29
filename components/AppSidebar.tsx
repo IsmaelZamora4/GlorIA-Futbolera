@@ -13,6 +13,7 @@ const items: [string, SidebarIconName, string][] = [
   ["Partidos", "matches", "/partidos"],
   ["Competiciones", "trophy", "/competiciones"],
   ["Metodología", "book", "/metodologia"],
+  ["Mi Bank", "database", "/bank"],
   ["Datos", "database", "/#datos"],
   ["Configuración", "settings", "/configuracion"],
 ];
@@ -40,7 +41,7 @@ export function AppSidebar({ active }: { active: string }) {
   const text = translations[language];
   const labels: Record<string, string> = {
     Inicio: text.nav.home, Partidos: text.nav.matches, Competiciones: text.nav.competitions,
-    Metodología: text.nav.methodology, Datos: text.nav.data, Configuración: text.nav.settings,
+    Metodología: text.nav.methodology, "Mi Bank": "Mi Bank", Datos: text.nav.data, Configuración: text.nav.settings,
   };
   return <aside className="sidebar">
     <div className="px-5 pb-8 pt-6"><Link href="/"><Image className="logo-image" src="/logo-gloria.png" alt="GlorIA Futbolera" width={136} height={84} priority /></Link></div>

@@ -47,7 +47,7 @@ Build order: `supabase-foundation` → `identity` → `bank-ledger` → `bank-ui
   - Dependencias: Tarea 1.
   - Archivos probables: `app/(auth)/*`, `app/perfil/*`, `components/*`, `lib/supabase/*`.
 
-- [ ] **Tarea 3: Protección de navegación.** Añadir acceso a Bank solo para usuarios autenticados y mantener públicas partidos y metodología.
+- [x] **Tarea 3: Protección de navegación.** Añadir acceso a Bank solo para usuarios autenticados y mantener públicas partidos y metodología.
   - Aceptación: anónimo recibe ruta a login; autenticado accede a Bank; logout invalida el acceso.
   - Verificar: navegación anónima, autenticada y después de logout.
   - Dependencias: Tarea 2.

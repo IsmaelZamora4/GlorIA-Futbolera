@@ -821,6 +821,12 @@ footer span { margin: 0 7px; color: #4d4d4a; }
 }
 
 .methodology-topbar-title { display: grid; gap: 3px; margin-right: auto; }
+.bank-page { width: min(900px, calc(100% - 64px)); margin: 0 auto; padding: 70px 0; }
+.bank-page h1 { max-width: 600px; margin: 10px 0 14px; color: var(--ink); font-family: var(--font-plex-sans-condensed), sans-serif; font-size: clamp(42px, 6vw, 68px); letter-spacing: -.045em; line-height: .95; }
+.bank-page > p { max-width: 520px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.bank-coming-soon { display: grid; gap: 7px; max-width: 460px; margin-top: 34px; border: 1px solid rgba(198,176,138,.25); border-radius: var(--gloria-radius-card); padding: 18px; background: rgba(198,176,138,.06); }
+.bank-coming-soon strong { color: var(--champagne-soft); font-size: 13px; }
+.bank-coming-soon span { color: var(--muted); font-size: 11px; line-height: 1.5; }
 .methodology-topbar-title strong { color: var(--ink); font-size: 13px; font-weight: 600; }
 .methodology-topbar-link, .methodology-footer a { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #5b4a2d; border-radius: 7px; padding: 9px 12px; color: var(--champagne-soft); background: #28231d; font-size: 11px; font-weight: 600; text-decoration: none; transition: .2s ease; }
 .methodology-topbar-link:hover, .methodology-footer a:hover { border-color: var(--champagne); background: #332d25; }
@@ -886,6 +892,7 @@ footer span { margin: 0 7px; color: #4d4d4a; }
 }
 @media (max-width: 560px) {
   .methodology-content { width: calc(100% - 28px); padding-top: 24px; padding-bottom: 40px; }
+  .bank-page { width: calc(100% - 28px); padding: 42px 0; }
   .methodology-topbar { padding-right: 14px; padding-left: 14px; }
   .methodology-topbar-link { padding: 8px 9px; font-size: 10px; }
   .methodology-intro { padding-bottom: 22px; }
