@@ -7,3 +7,11 @@ node_modules/
 
 .vscode/
 graphify-out/
+
+# Supabase local CLI temp (expone project-ref y pooler URL)
+supabase/.temp/
+
+# Artefactos locales (capturas y tests)
+.playwright-cli/
+*.png
+!docs/images/*.png
