@@ -36,7 +36,7 @@
   - Verificar: migración, advisors y prueba con dos usuarios.
   - Dependencias: 2.
 
-- [ ] **5. Reglas de cálculo y operaciones.**
+- [x] **5. Reglas de cálculo y operaciones.**
   - Aceptación: alta de bank, apuestas, ajustes, liquidación y métricas correctas.
   - Verificar: ganada, perdida, anulada, pendiente, ajuste y vacío.
   - Dependencias: 4.

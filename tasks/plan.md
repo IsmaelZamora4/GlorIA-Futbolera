@@ -67,7 +67,7 @@ Build order: `supabase-foundation` → `identity` → `bank-ledger` → `bank-ui
   - Dependencias: Tarea 2.
   - Archivos probables: `supabase/migrations/*`, `docs/specs/bank.md`.
 
-- [ ] **Tarea 5: Reglas de cálculo y operaciones.** Implementar validación, creación del bank, alta de apuesta, ajustes y liquidación.
+- [x] **Tarea 5: Reglas de cálculo y operaciones.** Implementar validación y cálculos base del bank; las operaciones persistentes se conectarán en la siguiente rebanada de interfaz.
   - Aceptación: capital total, pendiente, disponible, beneficio y yield coinciden con la especificación; no se mezclan monedas.
   - Verificar: pruebas de ganada, perdida, anulada, pendiente, ajuste y datos vacíos.
   - Dependencias: Tarea 4.
