@@ -1,0 +1,19 @@
+"use client";
+
+import { useState } from "react";
+import { createBank, createBet } from "../app/bank/actions";
+import type { BankSummary } from "../lib/bank/calculations";
+
+const money = (value: number, currency: string) => new Intl.NumberFormat("es-PE", { style: "currency", currency }).format(value);
+
+export function BankDashboard({ bank, bets, summary, error }: { bank: { currency: string; initial_capital: number } | null; bets: Array<{ event: string; market: string; selection: string; stake: number; decimal_odds: number; status: string }>; summary: BankSummary | null; error?: string }) {
+  const [feedback, setFeedback] = useState("");
+  const [formError, setFormError] = useState("");
+  const submit = async (action: typeof createBank | typeof createBet, formData: FormData) => { setFeedback(""); setFormError(""); const result = await action(formData); if (result.error) setFormError(result.error); else setFeedback(result.success ?? "Guardado."); };
+  if (!bank) return <section className="bank-panel"><div className="eyebrow">Primer paso</div><h2>Configura tu Bank</h2><p>Elige una moneda y define tu capital inicial. La moneda quedará fija para este Bank.</p><form action={(data) => void submit(createBank, data)} className="bank-form"><label>Capital inicial<input name="initialCapital" type="number" min="0" step="0.01" required /></label><label>Moneda<select name="currency" defaultValue="PEN"><option value="PEN">Soles (PEN)</option><option value="USD">Dólares (USD)</option><option value="EUR">Euros (EUR)</option></select></label><button className="auth-submit">Crear Bank</button></form><Feedback error={formError} success={feedback} errorFallback={error} /></section>;
+  const currency = bank.currency;
+  return <><section className="bank-metrics"><Metric label="Capital total" value={money(summary?.capitalTotal ?? bank.initial_capital, currency)} /><Metric label="Disponible" value={money(summary?.availableBalance ?? bank.initial_capital, currency)} /><Metric label="Pendiente" value={money(summary?.pendingAmount ?? 0, currency)} /><Metric label="Yield" value={summary?.yieldPercent == null ? "Sin datos" : `${summary.yieldPercent}%`} /></section><section className="bank-layout"><div className="bank-panel"><div className="eyebrow">Nueva apuesta</div><h2>Registrar apuesta</h2><form action={(data) => void submit(createBet, data)} className="bank-form"><label>Evento<input name="event" required placeholder="Equipo local — Equipo visitante" /></label><label>Mercado<input name="market" required placeholder="Más de 2.5 goles" /></label><label>Selección<input name="selection" required placeholder="Sí / Más de 2.5" /></label><div className="bank-form-grid"><label>Importe<input name="stake" type="number" min="0.01" step="0.01" required /></label><label>Cuota<input name="decimalOdds" type="number" min="1.001" step="0.001" required /></label></div><button className="auth-submit">Guardar apuesta</button></form><Feedback error={formError} success={feedback} /></div><div className="bank-panel"><div className="eyebrow">Historial</div><h2>Últimas apuestas</h2>{bets.length === 0 ? <p className="bank-empty">Todavía no tienes apuestas registradas.</p> : <ul className="bank-bets">{bets.map((bet, index) => <li key={`${bet.event}-${index}`}><span><strong>{bet.event}</strong><small>{bet.market} · {bet.selection}</small></span><b>{money(Number(bet.stake), currency)} · {bet.status}</b></li>)}</ul>}</div></section></>;
+}
+
+function Metric({ label, value }: { label: string; value: string }) { return <div><span>{label}</span><strong>{value}</strong></div>; }
+function Feedback({ error, success, errorFallback }: { error?: string; success?: string; errorFallback?: string }) { return <>{(error || errorFallback) && <p className="auth-error" role="alert">{error || errorFallback}</p>}{success && <p className="auth-message" role="status">{success}</p>}</>; }
