@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed } from "next/font/google";
+import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
 const plexSans = IBM_Plex_Sans({
@@ -16,6 +16,13 @@ const plexSansCondensed = IBM_Plex_Sans_Condensed({
   weight: ["400", "500", "600", "700"],
 });
 
+const jakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-jakarta-sans",
+  weight: ["400", "500", "600", "700", "800"],
+});
+
 export const metadata: Metadata = {
   title: "GlorIA Futbolera — lectura de partido",
   description: "Agenda y análisis futbolístico con datos consultados desde fuentes reales.",
@@ -23,7 +30,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" suppressHydrationWarning className={`${plexSans.variable} ${plexSansCondensed.variable}`}>
+    <html lang="es" suppressHydrationWarning className={`${plexSans.variable} ${plexSansCondensed.variable} ${jakartaSans.variable}`}>
       <body suppressHydrationWarning>
         <script dangerouslySetInnerHTML={{ __html: `(() => {
           try {

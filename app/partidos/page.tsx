@@ -54,6 +54,20 @@ const localDetailCompetitionSlugs: Record<string, string> = {
   "Premier League": "premier-league",
 };
 
+const featuredMatch: Fixture = {
+  id: "featured-villarreal-espanyol",
+  competition: "LaLiga de España",
+  competitionLogo: "/competitions/laliga.svg",
+  date: "2026-10-30",
+  kickoff: "15:00",
+  home: "Villarreal CF",
+  away: "RCD Espanyol de Barcelona",
+  homeLogo: "https://crests.football-data.org/94.png",
+  awayLogo: "https://crests.football-data.org/80.png",
+  venue: "Estadio de la Cerámica",
+  status: "Próximo",
+};
+
 function readFixtureCache(cacheKey: string, now: number): FixtureCacheEntry | null {
   try {
     const stored = window.localStorage.getItem(`${fixtureCachePrefix}${cacheKey}`);
@@ -143,16 +157,37 @@ function getFixtureDetailHref(fixture: Fixture) {
   return `/partido/${slug}?${query.toString()}`;
 }
 
+type MatchesIconName = "calendar" | "football" | "trophy" | "teams" | "form" | "competitions" | "star" | "pin" | "chevron";
+
+function MatchesIcon({ name, size = 16 }: { name: MatchesIconName; size?: number }) {
+  const paths: Record<MatchesIconName, React.ReactNode> = {
+    calendar: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 10h18" /></>,
+    football: <><circle cx="12" cy="12" r="9" /><path d="m9 9 3-2 3 2v4l-3 2-3-2zM3.5 9.5l5.5-.5M15 9l5.5.5M9 13l-2 5M15 13l2 5" /></>,
+    trophy: <><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v2a4 4 0 0 0 4 4M17 6h3v2a4 4 0 0 1-4 4" /></>,
+    teams: <><circle cx="9" cy="8" r="3" /><path d="M3 20v-1a6 6 0 0 1 12 0v1M16 5.5a3 3 0 0 1 0 5.8M18 14a5 5 0 0 1 3 5v1" /></>,
+    form: <><path d="M4 19V5M4 19h17M8 15l4-4 3 2 5-6" /></>,
+    competitions: <><path d="M4 19h16M6 16V7l6-3 6 3v9M9 16v-5h6v5M3 8l9 5 9-5" /></>,
+    star: <path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" />,
+    pin: <><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></>,
+    chevron: <path d="m19 9-7 7-7-7" />,
+  };
+
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>;
+}
+
 function FixtureRow({ fixture }: { fixture: Fixture }) {
   const detailHref = getFixtureDetailHref(fixture);
-  return <div className="professional-fixture">
-    <div className="professional-fixture-time">{fixture.score ? `${fixture.score[0]} — ${fixture.score[1]}` : fixture.kickoff}</div>
-    <div className="professional-team"><span>{fixture.home}</span><Image src={fixture.homeLogo} alt={`Escudo de ${fixture.home}`} width={28} height={28} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /></div>
-    <div className="professional-vs">VS</div>
-    <div className="professional-team away"><Image src={fixture.awayLogo} alt={`Escudo de ${fixture.away}`} width={28} height={28} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /><span>{fixture.away}</span></div>
-    <div className="professional-venue">{fixture.venue}</div>
-    <span className={`professional-status ${fixture.status === "Finalizado" ? "finished" : ""}`}>{fixture.status}</span>
-    {detailHref ? <Link className="professional-detail-link" href={detailHref}>Ver detalle <span aria-hidden="true">→</span></Link> : <span className="professional-no-detail">Sin dataset local</span>}
+  return <div className="sportia-match-row matches-schedule-row">
+    <div className="sportia-match-side">
+      <span className="sportia-kickoff">{fixture.score ? `${fixture.score[0]} — ${fixture.score[1]}` : fixture.kickoff}</span>
+      <span className="sportia-team-name"><Image className="sportia-team-badge sportia-team-crest" src={fixture.homeLogo} alt={`Escudo de ${fixture.home}`} width={20} height={20} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /><span>{fixture.home}</span></span>
+    </div>
+    <strong className="sportia-score">VS</strong>
+    <div className="sportia-match-side away"><span className="sportia-team-name"><span>{fixture.away}</span><Image className="sportia-team-badge sportia-team-crest" src={fixture.awayLogo} alt={`Escudo de ${fixture.away}`} width={20} height={20} onError={(event) => { event.currentTarget.src = "/team-placeholder.svg"; }} /></span></div>
+    <div className="matches-fixture-meta">
+      <span className="matches-fixture-venue"><MatchesIcon name="pin" size={13} />{fixture.venue || "Estadio por confirmar"}</span>
+      {detailHref ? <Link className="matches-fixture-detail" href={detailHref}>Ver detalle <span aria-hidden="true">→</span></Link> : <span className="matches-fixture-unavailable">Sin dataset local</span>}
+    </div>
   </div>;
 }
 
@@ -170,11 +205,12 @@ function PartidosContent() {
   const [date, setDate] = useState(getLocalDate);
   const [search, setSearch] = useState("");
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
-  const [state, setState] = useState<"loading" | "success" | "error">("success");
+  const [state, setState] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("");
   const [collapsedCompetitions, setCollapsedCompetitions] = useState<Set<string>>(new Set());
   const loadFixtures = useCallback(async () => {
     setState("loading");
+    setMessage("");
     const now = Date.now();
     const requestedCompetitions = competition === "Todas" ? competitions.slice(1) : [competition];
     const cachedFixtures = requestedCompetitions.flatMap((item) => (
@@ -228,7 +264,7 @@ function PartidosContent() {
       return;
     }
 
-    setMessage(`${loadedFixtures.length} partidos reales disponibles desde la caché y consultas controladas.${failures.length ? ` · ${failures.length} competición(es) no respondió` : ""}`);
+    setMessage(`Agenda actualizada.${failures.length ? ` ${failures.length} competición(es) no respondieron.` : ""}`);
     setState("success");
   }, [competition, date]);
 
@@ -266,8 +302,37 @@ function PartidosContent() {
     return current;
   });
 
+  const activeCompetitions = [...new Set(fixtures.map((fixture) => fixture.competition))];
+  const recommendedDetailHref = getFixtureDetailHref(featuredMatch);
   const fixtureState = state === "loading" ? "loading" : state === "error" ? "error" : grouped.length ? null : "empty";
-  return <div className="app-shell"><PartidosNavigation /><main className="main-area"><header className="topbar"><label className="search-box"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar equipo o liga..." /></label><div className="top-actions"><label className="date-picker"><span>◷</span><input type="date" value={date} onChange={(event) => setDate(event.target.value)} /><span>{date}</span></label><span className="demo-status"><i /> Datos reales</span></div></header><div className="matches-page"><div className="matches-heading"><div><div className="eyebrow">Fixture · {competitionLabels[competition]}</div><h1>Partidos</h1><p>Consulta todos los partidos reales del día y filtra por competición cuando quieras.</p></div><span className="fixtures-source"><i /> Fuente real<br /><small>{state === "loading" ? "Actualizando…" : message}</small></span></div><div className="matches-mode"><button className="active">Partidos</button><button disabled>Ligas</button><button disabled>Equipos</button><button disabled>Rachas</button></div><div className="matches-competitions"><button className={competition === "Todas" ? "active" : ""} onClick={() => setCompetition("Todas")}>{competitionLabels.Todas}</button>{competitions.slice(1).map((item) => <button key={item} className={competition === item ? "active" : ""} onClick={() => setCompetition(item)}>{competitionLabels[item]}</button>)}</div><div className="agenda-date-nav">{dates.map((current) => { const value = current.toISOString().slice(0, 10); return <button key={value} className={value === date ? "active" : ""} onClick={() => setDate(value)}><b>{value === today ? "Hoy" : new Intl.DateTimeFormat("es-PE", { weekday: "short" }).format(current).replace(".", "")}</b><small>{dateLabel(current)}</small></button>; })}</div><div className="professional-fixtures">{fixtureState ? <FixtureState state={fixtureState} onRetry={() => { void loadFixtures(); }} /> : grouped.map(([fixtureDate, dayCompetitions]) => <section key={fixtureDate} className="professional-day"><h2>{formatDate(fixtureDate)} <span>{dayCompetitions.reduce((total, [, dayFixtures]) => total + dayFixtures.length, 0)} partidos</span></h2>{dayCompetitions.map(([fixtureCompetition, competitionFixtures]) => <div className="professional-competition" key={fixtureCompetition}>    <header className="professional-competition-header"><div className="professional-competition-info"><span className={`professional-competition-logo ${fixtureCompetition === "Premier League" ? "premier" : fixtureCompetition === "Ligue 1 de Francia" ? "ligue" : ""}`}><Image src={competitionFixtures[0].competitionLogo} alt={`Logo de ${competitionLabels[fixtureCompetition] || fixtureCompetition}`} width={26} height={26} unoptimized onError={(event) => { event.currentTarget.src = "/competition-placeholder.svg"; }} /></span><strong>{competitionLabels[fixtureCompetition] || fixtureCompetition}</strong><small>Partidos del día</small></div><button type="button" className="professional-competition-toggle" onClick={() => toggleCompetition(fixtureCompetition)} aria-expanded={!collapsedCompetitions.has(fixtureCompetition)} aria-label={`${collapsedCompetitions.has(fixtureCompetition) ? "Expandir" : "Contraer"} ${competitionLabels[fixtureCompetition] || fixtureCompetition}`}><span aria-hidden="true">{collapsedCompetitions.has(fixtureCompetition) ? "▾" : "▴"}</span></button></header>{!collapsedCompetitions.has(fixtureCompetition) && competitionFixtures.map((fixture) => <FixtureRow key={fixture.id} fixture={fixture} />)}</div>)}</section>)}</div></div></main></div>;
+  return (
+    <div className="app-shell matches-shell">
+      <PartidosNavigation />
+      <main className="main-area">
+        <header className="topbar matches-topbar">
+          <label className="search-box"><span aria-hidden="true">⌕</span><input aria-label="Buscar equipo" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar equipo..." /><kbd>Ctrl K</kbd></label>
+          <div className="top-actions"><label className="date-picker"><MatchesIcon name="calendar" /><input aria-label="Elegir fecha" type="date" value={date} onChange={(event) => setDate(event.target.value)} /><span>{date}</span></label><span className="demo-status"><i /> Agenda</span></div>
+        </header>
+        <div className="matches-layout">
+          <section className="matches-page">
+            <div className="matches-heading"><div><h1>Partidos</h1><p>Consulta la agenda de fútbol y encuentra los partidos de la fecha que elijas.</p></div></div>
+            <div className="matches-filters" aria-label="Filtros de partidos">
+              <div className="matches-mode" aria-label="Secciones de agenda"><button className="active" type="button" aria-pressed="true"><MatchesIcon name="calendar" size={14} />Partidos</button><button type="button" disabled><MatchesIcon name="trophy" size={14} />Ligas</button><button type="button" disabled><MatchesIcon name="teams" size={14} />Equipos</button><button type="button" disabled><MatchesIcon name="form" size={14} />Rachas</button></div>
+              <div className="matches-competitions" aria-label="Filtrar por competición"><button aria-pressed={competition === "Todas"} className={competition === "Todas" ? "active" : ""} onClick={() => setCompetition("Todas")}>Todas</button>{competitions.slice(1).map((item) => <button key={item} aria-pressed={competition === item} className={competition === item ? "active" : ""} onClick={() => setCompetition(item)}>{competitionLabels[item]}</button>)}</div>
+            </div>
+            <div className="agenda-date-nav" aria-label="Elegir día">{dates.map((current) => { const value = current.toISOString().slice(0, 10); return <button key={value} aria-pressed={value === date} className={value === date ? "active" : ""} onClick={() => setDate(value)}><b>{value === today ? "Hoy" : new Intl.DateTimeFormat("es-PE", { weekday: "short" }).format(current).replace(".", "")}</b><small>{dateLabel(current)}</small></button>; })}</div>
+            {message && <p className="matches-feed-status" role="status">{message}</p>}
+            <div className="professional-fixtures">{fixtureState ? <FixtureState state={fixtureState} onRetry={() => { void loadFixtures(); }} /> : grouped.map(([fixtureDate, dayCompetitions]) => <section key={fixtureDate} className="professional-day"><h2>{formatDate(fixtureDate)} <span>{dayCompetitions.reduce((total, [, dayFixtures]) => total + dayFixtures.length, 0)} partidos</span></h2>{dayCompetitions.map(([fixtureCompetition, competitionFixtures]) => { const collapsed = collapsedCompetitions.has(fixtureCompetition); return <div className="professional-competition" key={fixtureCompetition}><header className="professional-competition-header"><div className="professional-competition-info"><span className="professional-competition-logo"><Image src={competitionFixtures[0].competitionLogo} alt={`Logo de ${competitionLabels[fixtureCompetition] || fixtureCompetition}`} width={26} height={26} unoptimized onError={(event) => { event.currentTarget.src = "/competition-placeholder.svg"; }} /></span><strong>{competitionLabels[fixtureCompetition] || fixtureCompetition}</strong><small>{competitionLabels[fixtureCompetition] || fixtureCompetition} · {competitionFixtures.length} {competitionFixtures.length === 1 ? "partido" : "partidos"}</small></div><button type="button" className="professional-competition-toggle" onClick={() => toggleCompetition(fixtureCompetition)} aria-expanded={!collapsed} aria-label={`${collapsed ? "Mostrar" : "Ocultar"} ${competitionLabels[fixtureCompetition] || fixtureCompetition} partidos`}><MatchesIcon name="chevron" size={15} /></button></header>{!collapsed && competitionFixtures.map((fixture) => <FixtureRow key={fixture.id} fixture={fixture} />)}</div>; })}</section>)}</div>
+          </section>
+          <aside className="matches-aside">
+            <section className="matches-summary-card"><div className="matches-aside-title"><span className="matches-aside-icon"><MatchesIcon name="football" /></span><div><h2>Resumen del día</h2><p>{formatDate(date)}</p></div></div><div className="matches-summary-stats"><div><strong>{filtered.length}</strong><span>Partidos</span></div><div><strong>{activeCompetitions.length}</strong><span>Ligas</span></div><div><strong className="summary-green">●</strong><span>Fuente real</span><small>Agenda actualizada</small></div></div></section>
+            <section className="matches-active-card"><div className="matches-aside-title"><span className="matches-aside-icon"><MatchesIcon name="competitions" /></span><div><h2>Competiciones del día</h2></div><small>{activeCompetitions.length} {activeCompetitions.length === 1 ? "liga" : "ligas"}</small></div><div className="active-competition-list">{activeCompetitions.length ? activeCompetitions.map((item) => <div key={item}><Image src={getCompetitionLogo(item)} alt="" width={24} height={24} unoptimized /><strong>{competitionLabels[item]}</strong><span>Con partidos</span></div>) : <p className="matches-aside-empty">Todavía no hay partidos para esta fecha.</p>}</div></section>
+            <section className="matches-recommended-card"><div className="recommended-card-header"><span className="matches-aside-icon"><MatchesIcon name="star" /></span><div><h2>Partido recomendado</h2><p>Destacado del día</p></div><span className="recommended-league">LaLiga</span></div><div className="recommended-match"><div><Image src={featuredMatch.homeLogo} alt="" width={42} height={42} unoptimized /><strong>{featuredMatch.home}</strong></div><span>VS</span><div><Image src={featuredMatch.awayLogo} alt="" width={42} height={42} unoptimized /><strong>{featuredMatch.away}</strong></div></div><p className="recommended-venue"><MatchesIcon name="pin" size={13} /> {featuredMatch.venue}</p><Link className="recommended-action" href={recommendedDetailHref ?? "/partidos"}>Ver análisis <span aria-hidden="true">→</span></Link></section>
+          </aside>
+        </div>
+      </main>
+    </div>
+  );
 }
 
 export default function PartidosPage() {

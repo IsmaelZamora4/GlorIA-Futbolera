@@ -32,14 +32,21 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "date y competition son obligatorios" }, { status: 400 });
   }
 
-  const slug = datasets[competition];
-  if (!slug) {
-    return NextResponse.json({ date, competition, fixtures: [], source: "local-dataset", status: "insufficient" });
+  const parsedDate = new Date(`${date}T12:00:00Z`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== date) {
+    return NextResponse.json({ error: "date debe usar formato YYYY-MM-DD." }, { status: 400 });
   }
+
+  const slug = datasets[competition];
+  const analysisAvailable = supportsLocalLeagueAnalysis(competition);
 
   try {
     if (date >= getLocalDate() && footballDataCompetitions[competition]) {
-      const matches = await getFootballDataFixtures(date, date, competition) as Array<{
+      const dateFrom = new Date(`${date}T12:00:00Z`);
+      dateFrom.setUTCDate(dateFrom.getUTCDate() - 1);
+      const dateTo = new Date(`${date}T12:00:00Z`);
+      dateTo.setUTCDate(dateTo.getUTCDate() + 1);
+      const matches = await getFootballDataFixtures(dateFrom.toISOString().slice(0, 10), dateTo.toISOString().slice(0, 10), competition) as Array<{
         id: number;
         utcDate: string;
         status: string;
@@ -48,7 +55,9 @@ export async function GET(request: Request) {
         awayTeam: { id: number; name: string; crest?: string | null };
         score?: { fullTime?: { home?: number | null; away?: number | null } };
       }>;
-      const fixtures = await Promise.all(matches.map(async (match) => ({
+      const fixtures = await Promise.all(matches
+        .filter((match) => getLocalDate(new Date(match.utcDate)) === date)
+        .map(async (match) => ({
         id: String(match.id),
         utcDate: match.utcDate,
         status: match.status,
@@ -56,11 +65,23 @@ export async function GET(request: Request) {
         homeTeam: match.homeTeam,
         awayTeam: match.awayTeam,
         score: match.score,
-        historicalAnalysis: supportsLocalLeagueAnalysis(competition)
+        historicalAnalysis: analysisAvailable
           ? await getLocalLeagueAnalysis(competition, match.homeTeam.name, match.awayTeam.name, date)
           : undefined,
       })));
-      return NextResponse.json({ date, competition, fixtures, source: "football-data.org", status: "current", cacheTtlSeconds: 21_600 });
+      return NextResponse.json({ date, competition, fixtures, source: "football-data.org", status: "current", analysisAvailable, cacheTtlSeconds: 21_600 });
+    }
+
+    if (!slug) {
+      return NextResponse.json({
+        date,
+        competition,
+        fixtures: [],
+        source: "unavailable",
+        status: date >= getLocalDate() ? "unavailable" : "insufficient",
+        analysisAvailable,
+        message: "Esta competición aún no tiene una fuente de partidos actuales configurada.",
+      });
     }
 
     const file = path.join(process.cwd(), "data", "processed", slug, "current-season-matches.json");
@@ -75,12 +96,17 @@ export async function GET(request: Request) {
         homeTeam: { id: 0, name: match.homeTeam, crest: null },
         awayTeam: { id: 0, name: match.awayTeam, crest: null },
         score: { fullTime: { home: match.homeGoals, away: match.awayGoals } },
-        historicalAnalysis: supportsLocalLeagueAnalysis(competition)
+        historicalAnalysis: analysisAvailable
           ? await getLocalLeagueAnalysis(competition, match.homeTeam, match.awayTeam, match.date)
           : undefined,
       })));
-    return NextResponse.json({ date, competition, fixtures, source: "local-dataset", status: "historical" });
+    return NextResponse.json({ date, competition, fixtures, source: "local-dataset", status: "historical", analysisAvailable });
   } catch {
-    return NextResponse.json({ error: "dataset local no disponible" }, { status: 500 });
+    return NextResponse.json({
+      error: "No se pudieron obtener los partidos de esta competición.",
+      date,
+      competition,
+      analysisAvailable,
+    }, { status: 503 });
   }
 }

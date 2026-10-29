@@ -62,11 +62,18 @@ export default function MethodologyPage() {
 
         <div className="methodology-content">
           <section className="methodology-intro" aria-labelledby="methodology-title">
-            <div className="eyebrow">Cómo leer el análisis</div>
+            <div className="methodology-intro-kicker"><span className="eyebrow">Cómo leer el análisis</span><span className="methodology-record-mark" aria-hidden="true">GF / DATOS</span></div>
             <h1 id="methodology-title">Datos, contexto y estimaciones</h1>
             <p>Te contamos qué competiciones tienen análisis histórico, cómo calculamos sus probabilidades y qué cosas no puede saber un modelo basado en resultados pasados.</p>
             <div className="methodology-intro-note"><span aria-hidden="true">i</span><p>Una probabilidad resume datos disponibles; no garantiza lo que ocurrirá en un partido.</p></div>
           </section>
+
+          <nav className="methodology-index" aria-label="Secciones de metodología">
+            <a href="#cobertura"><span>01</span> Cobertura</a>
+            <a href="#proceso"><span>02</span> Cálculo</a>
+            <a href="#alcance"><span>03</span> Fuentes</a>
+            <a href="#limites"><span>04</span> Límites</a>
+          </nav>
 
           <section className="methodology-section" id="cobertura" aria-labelledby="coverage-title">
             <div className="methodology-section-heading">

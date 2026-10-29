@@ -3,9 +3,10 @@ type FixtureStateProps = {
   onRetry?: () => void;
   contextLabel?: string;
   hasOtherFixtures?: boolean;
+  dateLabel?: string;
 };
 
-export function FixtureState({ state, onRetry, contextLabel, hasOtherFixtures = false }: FixtureStateProps) {
+export function FixtureState({ state, onRetry, contextLabel, hasOtherFixtures = false, dateLabel }: FixtureStateProps) {
   if (state === "loading") {
     return (
       <section className="fixture-state fixture-state-loading" role="status" aria-busy="true" aria-label="Cargando partidos">
@@ -27,7 +28,7 @@ export function FixtureState({ state, onRetry, contextLabel, hasOtherFixtures = 
     return (
       <section className="fixture-state" role="status">
         <span className="fixture-state-kicker">Agenda local</span>
-        <h2>{hasSpecificContext ? `No hay partidos de ${contextLabel} para esta fecha` : "Hoy no hay partidos en esta cobertura"}</h2>
+        <h2>{hasSpecificContext ? `No hay partidos de ${contextLabel} para esta fecha` : dateLabel ? `No hay partidos para el ${dateLabel}` : "Hoy no hay partidos en esta cobertura"}</h2>
         <p>{hasOtherFixtures ? "Sí hay encuentros guardados en otras competiciones; cambia el filtro para verlos." : "Elige otra fecha o revisa el próximo encuentro disponible."}</p>
       </section>
     );

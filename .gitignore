@@ -13,5 +13,8 @@ supabase/.temp/
 
 # Artefactos locales (capturas y tests)
 .playwright-cli/
+.codex/
+.taste-skill/
 *.png
 !docs/images/*.png
+!public/login-wallpaperr.png

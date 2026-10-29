@@ -8,16 +8,6 @@ import { createClient } from "../../lib/supabase/browser";
 
 type Mode = "login" | "register" | "recovery";
 
-const competitions = [
-  ["Premier League", "/competitions/premier-league.svg"],
-  ["LaLiga", "/competitions/laliga.svg"],
-  ["Serie A", "/competitions/serie-a.svg"],
-  ["Bundesliga", "/competitions/bundesliga.svg"],
-  ["Ligue 1", "/competitions/ligue-1.svg"],
-  ["Champions League", "/competitions/champions-league.svg"],
-  ["Europa League", "/competitions/europa-league.svg"],
-];
-
 export default function LoginPage() {
   const [mode, setMode] = useState<Mode>("login");
   const [name, setName] = useState("");
@@ -134,29 +124,37 @@ export default function LoginPage() {
   return (
     <main className="auth-page">
       <section className="auth-visual" aria-label="GlorIA Futbolera: fútbol y análisis con datos reales">
-        <Image className="auth-wallpaper" src="/login-wallpaper.webp" alt="Balón de fútbol en un estadio iluminado" fill priority sizes="(max-width: 760px) 100vw, 49vw" />
+        <Image className="auth-wallpaper" src="/login-wallpaperr.png" alt="" fill priority unoptimized sizes="(max-width: 820px) 100vw, 56vw" />
         <div className="auth-visual-shade" />
         <Link className="auth-visual-brand" href="/" aria-label="GlorIA Futbolera, inicio">
           <span className="auth-brand-mark"><Image src="/logo-gloria.png" alt="" width={96} height={96} priority /></span>
           <span><strong>GlorIA</strong><small>FUTBOLERA</small></span>
         </Link>
-        <div className="auth-hero-copy">
-          <span className="auth-kicker">ANÁLISIS · ESTADÍSTICAS · PREDICCIONES</span>
-          <h1 aria-label="El fútbol, con datos reales.">El fútbol,<br />con <em>datos reales.</em></h1>
-          <p>Accede a tu cuenta y continúa analizando<br className="auth-desktop-break" /> las principales ligas del mundo.</p>
+        <div className="auth-hero-content">
+          <div className="auth-hero-copy">
+            <span className="auth-kicker">ANÁLISIS · ESTADÍSTICAS · PREDICCIONES</span>
+            <h1 aria-label="El fútbol, con datos reales.">El fútbol,<br />con <em>datos reales.</em></h1>
+            <p>Accede a tu cuenta y continúa analizando las principales ligas del mundo.</p>
+          </div>
+          <ul className="auth-feature-list" aria-label="Lo que encontrarás en GlorIA Futbolera">
+            <li>
+              <span className="auth-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19V9m5 10V5m5 14v-7m5 7V3" /></svg></span>
+              <span><strong>Partidos del día</strong><small>Consulta los encuentros de las principales ligas.</small></span>
+            </li>
+            <li>
+              <span className="auth-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5h16M6 16V8l6-3 6 3v8M9 16v-4h6v4" /></svg></span>
+              <span><strong>Datos para analizar</strong><small>Explora métricas y tendencias de cada partido.</small></span>
+            </li>
+            <li>
+              <span className="auth-feature-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" /></svg></span>
+              <span><strong>Tus competiciones</strong><small>Sigue Liga 1 y los torneos más importantes de Europa.</small></span>
+            </li>
+          </ul>
         </div>
-        <ul className="auth-competitions" aria-label="Competiciones disponibles">
-          {competitions.map(([name, src]) => <li key={name}><Image src={src} alt="" width={24} height={24} /><span>{name}</span></li>)}
-        </ul>
-        <span className="auth-visual-footnote">DATOS PARA ENTENDER MEJOR EL JUEGO</span>
       </section>
 
       <section className="auth-form-side">
         <div className="auth-card">
-          <Link className="auth-card-brand" href="/" aria-label="GlorIA Futbolera, inicio">
-            <span className="auth-brand-mark"><Image src="/logo-gloria.png" alt="" width={96} height={96} priority /></span>
-            <span><strong>GlorIA</strong><small>FUTBOLERA</small></span>
-          </Link>
           <header className="auth-heading">
             <h2>{title}</h2>
             <p>{description}</p>
@@ -164,34 +162,28 @@ export default function LoginPage() {
 
           <form className="auth-form" onSubmit={submit}>
             {mode === "register" && <>
-              <label className="auth-field">
-                <span className="auth-field-icon" aria-hidden="true"><UserIcon /></span>
-                <span className="sr-only">Nombre</span>
-                <input type="text" required minLength={2} maxLength={80} autoComplete="name" placeholder="Nombre" value={name} onChange={(event) => setName(event.target.value)} />
-              </label>
-              <label className="auth-field">
-                <span className="auth-field-icon" aria-hidden="true"><AtIcon /></span>
-                <span className="sr-only">Username</span>
-                <input type="text" required minLength={3} maxLength={20} pattern="[A-Za-z0-9_]{3,20}" autoComplete="username" placeholder="Username" value={username} onChange={(event) => setUsername(event.target.value)} aria-describedby="username-help" />
-              </label>
+              <div className="auth-field-group">
+                <label className="auth-field-label" htmlFor="auth-name">Nombre</label>
+                <div className="auth-field"><span className="auth-field-icon" aria-hidden="true"><UserIcon /></span><input id="auth-name" type="text" required minLength={2} maxLength={80} autoComplete="name" placeholder="Tu nombre" value={name} onChange={(event) => setName(event.target.value)} /></div>
+              </div>
+              <div className="auth-field-group">
+                <label className="auth-field-label" htmlFor="auth-username">Username</label>
+                <div className="auth-field"><span className="auth-field-icon" aria-hidden="true"><AtIcon /></span><input id="auth-username" type="text" required minLength={3} maxLength={20} pattern="[A-Za-z0-9_]{3,20}" autoComplete="username" placeholder="Elige un username" value={username} onChange={(event) => setUsername(event.target.value)} aria-describedby="username-help" /></div>
+              </div>
               <span className="sr-only" id="username-help">De 3 a 20 caracteres: letras, números o guion bajo.</span>
             </>}
-            <label className="auth-field">
-              <span className="auth-field-icon" aria-hidden="true"><MailIcon /></span>
-              <span className="sr-only">Correo electrónico</span>
-              <input type="email" required maxLength={254} autoComplete="email" placeholder="Correo electrónico" value={email} onChange={(event) => setEmail(event.target.value)} />
-            </label>
-            {mode !== "recovery" && <label className="auth-field">
-              <span className="auth-field-icon" aria-hidden="true"><LockIcon /></span>
-              <span className="sr-only">Contraseña</span>
-              <input type={showPassword ? "text" : "password"} required minLength={mode === "register" ? 8 : 6} maxLength={72} autoComplete={isLogin ? "current-password" : "new-password"} placeholder="Contraseña" value={password} onChange={(event) => setPassword(event.target.value)} />
-              <button className="auth-password-toggle" type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"} aria-pressed={showPassword}><EyeIcon hidden={!showPassword} /></button>
-            </label>}
-            {mode === "register" && <label className="auth-field">
-              <span className="auth-field-icon" aria-hidden="true"><LockIcon /></span>
-              <span className="sr-only">Confirmar contraseña</span>
-              <input type="password" required minLength={8} maxLength={72} autoComplete="new-password" placeholder="Confirmar contraseña" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} />
-            </label>}
+            <div className="auth-field-group">
+              <label className="auth-field-label" htmlFor="auth-email">Correo electrónico</label>
+              <div className="auth-field"><span className="auth-field-icon" aria-hidden="true"><MailIcon /></span><input id="auth-email" type="email" required maxLength={254} autoComplete="email" placeholder="tu@correo.com" value={email} onChange={(event) => setEmail(event.target.value)} /></div>
+            </div>
+            {mode !== "recovery" && <div className="auth-field-group">
+              <label className="auth-field-label" htmlFor="auth-password">Contraseña</label>
+              <div className="auth-field"><span className="auth-field-icon" aria-hidden="true"><LockIcon /></span><input id="auth-password" type={showPassword ? "text" : "password"} required minLength={mode === "register" ? 8 : 6} maxLength={72} autoComplete={isLogin ? "current-password" : "new-password"} placeholder="Escribe tu contraseña" value={password} onChange={(event) => setPassword(event.target.value)} /><button className="auth-password-toggle" type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"} aria-pressed={showPassword}><EyeIcon hidden={!showPassword} /></button></div>
+            </div>}
+            {mode === "register" && <div className="auth-field-group">
+              <label className="auth-field-label" htmlFor="auth-confirm-password">Confirmar contraseña</label>
+              <div className="auth-field"><span className="auth-field-icon" aria-hidden="true"><LockIcon /></span><input id="auth-confirm-password" type="password" required minLength={8} maxLength={72} autoComplete="new-password" placeholder="Repite tu contraseña" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} /></div>
+            </div>}
 
             {isLogin && <div className="auth-options"><span><LockIcon /> Sesión protegida</span><button type="button" onClick={() => changeMode("recovery")}>¿Olvidaste tu contraseña?</button></div>}
             <button className="auth-submit" type="submit" disabled={pending}>
