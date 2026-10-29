@@ -1,0 +1,86 @@
+{
+  "competition": "LaLiga de España",
+  "competitionLogo": "/competitions/laliga.svg",
+  "label": "Lectura prepartido",
+  "date": "30 oct. 2026",
+  "time": "15:00",
+  "stadium": "Estadio de la Cerámica",
+  "city": "Vila-real",
+  "stadiumImage": "/stadiums/la-liga/villareal.webp",
+  "dataUntil": "26 oct. 2026",
+  "detailHref": "/partido/la-liga?fecha=2026-10-30&local=Villarreal+CF&visitante=RCD+Espanyol+de+Barcelona&hora=15%3A00&estadio=Estadio+de+la+Cer%C3%A1mica&escudoLocal=https%3A%2F%2Fcrests.football-data.org%2F94.png&escudoVisitante=https%3A%2F%2Fcrests.football-data.org%2F80.png",
+  "home": {
+    "name": "Villarreal",
+    "fullName": "Villarreal CF",
+    "crest": "https://crests.football-data.org/94.png",
+    "form": ["G", "E", "P", "G", "G"],
+    "position": 10,
+    "points": 12,
+    "condition": { "label": "Como local", "matches": 4, "record": "1/1/2", "goals": "6–6", "points": 4, "pointsPerMatch": "1.00" },
+    "conditionMatches": [
+      { "date": "17 oct.", "opponent": "Elche", "score": "0–0", "result": "E" },
+      { "date": "20 set.", "opponent": "Levante", "score": "3–1", "result": "G" },
+      { "date": "14 set.", "opponent": "Betis", "score": "1–2", "result": "P" },
+      { "date": "05 set.", "opponent": "La Coruña", "score": "2–3", "result": "P" }
+    ],
+    "recentPoints": "10 pts / 5",
+    "recentGoals": "8 GF · 4 GC",
+    "recent": [
+      { "date": "24 oct.", "opponent": "Valencia", "score": "2–1", "result": "G" },
+      { "date": "17 oct.", "opponent": "Elche", "score": "0–0", "result": "E" },
+      { "date": "10 oct.", "opponent": "Real Madrid", "score": "0–1", "result": "P" },
+      { "date": "20 set.", "opponent": "Levante", "score": "3–1", "result": "G" },
+      { "date": "17 set.", "opponent": "Málaga", "score": "3–1", "result": "G" }
+    ]
+  },
+  "away": {
+    "name": "Espanol",
+    "fullName": "RCD Espanyol de Barcelona",
+    "crest": "https://crests.football-data.org/80.png",
+    "form": ["P", "P", "E", "P", "P"],
+    "position": 18,
+    "points": 8,
+    "condition": { "label": "Como visitante", "matches": 5, "record": "1/1/3", "goals": "6–7", "points": 4, "pointsPerMatch": "0.80" },
+    "conditionMatches": [
+      { "date": "24 oct.", "opponent": "Santander", "score": "1–2", "result": "P" },
+      { "date": "09 oct.", "opponent": "Málaga", "score": "1–1", "result": "E" },
+      { "date": "15 set.", "opponent": "Vallecano", "score": "1–2", "result": "P" },
+      { "date": "12 set.", "opponent": "Osasuna", "score": "2–0", "result": "G" },
+      { "date": "29 ago.", "opponent": "Sociedad", "score": "1–2", "result": "P" }
+    ],
+    "recentPoints": "1 pts / 5",
+    "recentGoals": "4 GF · 9 GC",
+    "recent": [
+      { "date": "24 oct.", "opponent": "Santander", "score": "1–2", "result": "P" },
+      { "date": "17 oct.", "opponent": "Ath Madrid", "score": "0–1", "result": "P" },
+      { "date": "09 oct.", "opponent": "Málaga", "score": "1–1", "result": "E" },
+      { "date": "18 set.", "opponent": "Elche", "score": "1–3", "result": "P" },
+      { "date": "15 set.", "opponent": "Vallecano", "score": "1–2", "result": "P" }
+    ]
+  },
+  "probabilities": { "home": 56, "draw": 22, "away": 22 },
+  "sample": {
+    "label": "Muestra sólida",
+    "coverage": 84,
+    "description": "El modelo cuenta con historial suficiente de ambos equipos. La barra indica cobertura de datos, no certeza del resultado."
+  },
+  "modelReading": "Modelo local con cinco temporadas y datos actuales previos al partido. Muestra actual: 4 partidos de local y 5 de visita.",
+  "metrics": [
+    { "id": "over15", "title": "Más de 1.5 goles", "value": "80%", "probabilityLabel": "Probabilidad modelo", "probability": 80, "league": "Liga: 73%", "tab": "Goles" },
+    { "id": "over25", "title": "Más de 2.5 goles", "value": "57%", "probabilityLabel": "Probabilidad modelo", "probability": 57, "league": "Liga: 48%", "tab": "Goles" },
+    { "id": "btts", "title": "Ambos anotan", "value": "55%", "probabilityLabel": "Probabilidad modelo", "probability": 55, "league": "Liga: 52%", "tab": "Goles" },
+    { "id": "goals", "title": "Goles esperados", "value": "2.99", "probabilityLabel": "Probabilidad +2.5", "probability": 57, "league": "Liga: 2.62 goles/partido", "tab": "Goles" },
+    { "id": "corners", "title": "Córneres esperados", "value": "9.8", "probabilityLabel": "Probabilidad +8.5", "probability": 61, "league": "Liga: 9.5 córneres/partido", "tab": "Córneres" },
+    { "id": "shots", "title": "Tiros a puerta esperados", "value": "9.2", "probabilityLabel": "Probabilidad +7.5", "probability": 74, "league": "Liga: 8.4 tiros/partido", "tab": "Tiros" }
+  ],
+  "reasons": [
+    { "title": "Localía", "text": "Villarreal: 1.00 pts/PJ como local · Espanol: 0.80 pts/PJ como visitante." },
+    { "title": "Forma reciente", "text": "Villarreal: 10/15 pts en sus últimos 5 · Espanol: 1/15 pts en sus últimos 5." },
+    { "title": "Muestra", "text": "Villarreal: 190 históricos + 10 actuales · Espanol: 152 históricos + 10 actuales." },
+    { "title": "Diferencia estadística", "text": "Villarreal: 1.50 · Espanol: 1.20 goles por partido. Diferencia: 0.30." }
+  ],
+  "headToHead": { "home": 7, "draw": 1, "away": 0 },
+  "positionGap": "4 pts · 8 puestos de diferencia",
+  "localData": "El análisis prepartido incluye resultados hasta 26 oct. 2026. El CSV actual llega hasta 26 oct. 2026.",
+  "disclaimer": "Modelo informativo basado en datos históricos y temporada actual; no garantiza resultados ni constituye recomendación de apuesta."
+}

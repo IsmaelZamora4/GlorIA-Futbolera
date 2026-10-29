@@ -24,8 +24,8 @@ const jakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "GlorIA Futbolera — lectura de partido",
-  description: "Agenda y análisis futbolístico con datos consultados desde fuentes reales.",
+  title: "GlorIA Futbolera | Fútbol con contexto",
+  description: "Consulta partidos, competiciones y análisis estadístico del fútbol con GlorIA Futbolera.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { AppSidebar } from "../../../components/AppSidebar";
 import { MatchDetailClient } from "../../../components/MatchDetailClient";
+import { SportiaSidebar } from "../../../components/SportiaSidebar";
 import { getTeamVenue, resolveFixtureVenue } from "../../../data/team-venues";
 import {
   getHeadToHead,
@@ -74,5 +74,22 @@ export default async function MatchDetailPage({
       currentMatches: countTeamMatches(away, context.currentMatchesBeforeFixture),
     },
   };
-  return <div className="app-shell"><AppSidebar active="Partidos" /><div className="main-area"><header className="match-detail-topbar"><Link href="/" className="detail-back">← Volver al análisis</Link><span>GlorIA · Detalle de partido</span><Link href="/partidos" className="detail-all-matches">Todos los partidos →</Link></header><MatchDetailClient context={{ fixture: context.fixture, coverage: context.coverage }} analysis={analysis} forms={forms} statistics={statistics} standings={standings} h2h={h2h} kickoff={query.hora || "Por confirmar"} venue={venue} venueCity={localVenue?.stadium === venue ? localVenue.city : undefined} venuePhoto={stadiumPhoto} homeCrest={safeCrest(query.escudoLocal)} awayCrest={safeCrest(query.escudoVisitante)} transparency={transparency} /></div></div>;
+  return (
+    <div className="app-shell match-detail-shell">
+      <SportiaSidebar active="Partidos" />
+      <div className="main-area sportia-main match-detail-main">
+        <header className="sportia-topbar match-detail-header">
+          <div>
+            <h1>Detalle del partido</h1>
+            <p>{context.fixture.competition} · Lectura prepartido</p>
+          </div>
+          <div className="sportia-top-actions match-detail-header-actions">
+            <Link href="/" className="match-detail-header-link">Volver al análisis</Link>
+            <Link href="/partidos" className="match-detail-header-link primary">Todos los partidos</Link>
+          </div>
+        </header>
+        <MatchDetailClient context={{ fixture: context.fixture, coverage: context.coverage }} analysis={analysis} forms={forms} statistics={statistics} standings={standings} h2h={h2h} kickoff={query.hora || "Por confirmar"} venue={venue} venueCity={localVenue?.stadium === venue ? localVenue.city : undefined} venuePhoto={stadiumPhoto} homeCrest={safeCrest(query.escudoLocal)} awayCrest={safeCrest(query.escudoVisitante)} transparency={transparency} />
+      </div>
+    </div>
+  );
 }
