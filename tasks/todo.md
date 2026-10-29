@@ -31,7 +31,7 @@
 
 ## Fase 2: Bank y seguridad de datos
 
-- [ ] **4. Modelo SQL y migración inicial.**
+- [x] **4. Modelo SQL y migración inicial.**
   - Aceptación: tablas, restricciones, índices y RLS por propietario.
   - Verificar: migración, advisors y prueba con dos usuarios.
   - Dependencias: 2.

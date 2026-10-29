@@ -61,7 +61,7 @@ Build order: `supabase-foundation` → `identity` → `bank-ledger` → `bank-ui
 
 ### Fase 2: Bank y seguridad de datos
 
-- [ ] **Tarea 4: Modelo SQL y migración inicial.** Crear `banks`, `bets` y `bank_adjustments` con tipos, restricciones, índices, relaciones y RLS.
+- [x] **Tarea 4: Modelo SQL y migración inicial.** Crear `banks`, `bets` y `bank_adjustments` con tipos, restricciones, índices, relaciones y RLS.
   - Aceptación: moneda, importes, cuota y estados son válidos; propietario obligatorio; cada tabla tiene RLS y políticas de propietario.
   - Verificar: migración revisada, advisors de Supabase y pruebas de acceso con dos usuarios.
   - Dependencias: Tarea 2.
