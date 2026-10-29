@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { AppSidebar } from "../../components/AppSidebar";
+import { SportiaSidebar } from "../../components/SportiaSidebar";
 import { datasetInfoByCompetition } from "../../data/datasets";
 import bundesliga from "../../data/processed/bundesliga/metadata.json";
 import laliga from "../../data/processed/la-liga/metadata.json";
@@ -47,37 +47,31 @@ function formatUpdatedAt(value: string) {
 
 export default function MethodologyPage() {
   return (
-    <div className="app-shell">
-      <AppSidebar active="Metodología" />
-      <main className="main-area">
-        <header className="topbar methodology-topbar">
-          <div className="mobile-logo">
-            <Link href="/" aria-label="GlorIA Futbolera, inicio">
-              <Image className="logo-image" src="/logo-gloria.png" alt="GlorIA Futbolera" width={136} height={84} priority />
-            </Link>
-          </div>
-          <div className="methodology-topbar-title"><span className="eyebrow">Transparencia</span><strong>Metodología</strong></div>
-          <div className="top-actions"><Link className="methodology-topbar-link" href="/partidos">Ver partidos <span aria-hidden="true">→</span></Link></div>
+    <div className="app-shell methodology-shell">
+      <SportiaSidebar active="Metodología" />
+      <main className="main-area sportia-main methodology-main">
+        <header className="sportia-topbar methodology-topbar">
+          <div><h1>Metodología</h1><p>Fuentes, cobertura, cálculos y límites</p></div>
+          <div className="sportia-top-actions"><Link className="methodology-topbar-link" href="/partidos">Ver partidos <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" /></svg></Link></div>
         </header>
 
         <div className="methodology-content">
           <section className="methodology-intro" aria-labelledby="methodology-title">
-            <div className="methodology-intro-kicker"><span className="eyebrow">Cómo leer el análisis</span><span className="methodology-record-mark" aria-hidden="true">GF / DATOS</span></div>
-            <h1 id="methodology-title">Datos, contexto y estimaciones</h1>
+            <h2 id="methodology-title">Datos, contexto y estimaciones</h2>
             <p>Te contamos qué competiciones tienen análisis histórico, cómo calculamos sus probabilidades y qué cosas no puede saber un modelo basado en resultados pasados.</p>
-            <div className="methodology-intro-note"><span aria-hidden="true">i</span><p>Una probabilidad resume datos disponibles; no garantiza lo que ocurrirá en un partido.</p></div>
+            <div className="methodology-intro-note"><svg aria-hidden="true" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" /><path d="M10 9v5m0-8h.01" /></svg><p>Una probabilidad resume datos disponibles; no garantiza lo que ocurrirá en un partido.</p></div>
           </section>
 
           <nav className="methodology-index" aria-label="Secciones de metodología">
-            <a href="#cobertura"><span>01</span> Cobertura</a>
-            <a href="#proceso"><span>02</span> Cálculo</a>
-            <a href="#alcance"><span>03</span> Fuentes</a>
-            <a href="#limites"><span>04</span> Límites</a>
+            <a href="#cobertura">Cobertura histórica</a>
+            <a href="#proceso">Cómo se calcula</a>
+            <a href="#alcance">Fuentes</a>
+            <a href="#limites">Límites</a>
           </nav>
 
           <section className="methodology-section" id="cobertura" aria-labelledby="coverage-title">
             <div className="methodology-section-heading">
-              <div><div className="eyebrow">Datos disponibles</div><h2 id="coverage-title">Cobertura histórica</h2></div>
+              <div><h2 id="coverage-title">Cobertura histórica</h2></div>
               <p>La temporada actual es parcial. Los conteos indican los registros guardados al actualizar cada dataset.</p>
             </div>
 
@@ -107,21 +101,21 @@ export default function MethodologyPage() {
 
           <section className="methodology-section" id="proceso" aria-labelledby="process-title">
             <div className="methodology-section-heading">
-              <div><div className="eyebrow">De los datos al pronóstico</div><h2 id="process-title">Cómo se construye una estimación</h2></div>
+              <div><h2 id="process-title">Cómo se construye una estimación</h2></div>
               <p>El análisis usa partidos finalizados antes del encuentro para evitar incluir información futura.</p>
             </div>
             <ol className="methodology-steps">
-              <li><span>01</span><div><h3>Separamos local y visitante</h3><p>Calculamos métricas de ataque y defensa según dónde juega cada equipo y las comparamos con el promedio de su liga.</p></div></li>
-              <li><span>02</span><div><h3>Suavizamos muestras pequeñas</h3><p>La referencia de liga aporta el equivalente a ocho observaciones, para que pocos partidos no distorsionen tanto la media.</p></div></li>
-              <li><span>03</span><div><h3>Incorporamos la temporada actual</h3><p>Solo entran resultados previos al partido. Su peso aumenta con la muestra y llega como máximo al 35% después de diez observaciones de referencia.</p></div></li>
-              <li><span>04</span><div><h3>Convertimos las métricas en probabilidades</h3><p>Una distribución de Poisson aproxima los marcadores y las líneas de goles, córneres y tiros. Algunas probabilidades principales reciben calibración walk-forward.</p></div></li>
+              <li><div><h3>Separamos local y visitante</h3><p>Calculamos métricas de ataque y defensa según dónde juega cada equipo y las comparamos con el promedio de su liga.</p></div></li>
+              <li><div><h3>Suavizamos muestras pequeñas</h3><p>La referencia de liga aporta el equivalente a ocho observaciones, para que pocos partidos no distorsionen tanto la media.</p></div></li>
+              <li><div><h3>Incorporamos la temporada actual</h3><p>Solo entran resultados previos al partido. Su peso aumenta con la muestra y llega como máximo al 35% después de diez observaciones de referencia.</p></div></li>
+              <li><div><h3>Convertimos las métricas en probabilidades</h3><p>Una distribución de Poisson aproxima los marcadores y las líneas de goles, córneres y tiros. Algunas probabilidades principales reciben calibración walk-forward.</p></div></li>
             </ol>
-            <div className="methodology-formula"><span className="eyebrow">Ejemplo: ambos anotan</span><code>P(sí) = (1 − e<sup>−λ local</sup>) × (1 − e<sup>−λ visitante</sup>)</code><p>λ representa los goles esperados por el modelo para cada equipo; no es xG observado.</p></div>
+            <div className="methodology-formula"><span className="methodology-formula-label">Ejemplo: ambos anotan</span><code>P(sí) = (1 − e<sup>−λ local</sup>) × (1 − e<sup>−λ visitante</sup>)</code><p>λ representa los goles esperados por el modelo para cada equipo; no es xG observado.</p></div>
           </section>
 
           <section className="methodology-section methodology-scope-section" id="alcance" aria-labelledby="scope-title">
             <div className="methodology-section-heading">
-              <div><div className="eyebrow">Fuentes y alcance</div><h2 id="scope-title">Qué cubre el modelo</h2></div>
+              <div><h2 id="scope-title">Qué cubre el modelo</h2></div>
               <p>Agenda de partidos y análisis histórico son coberturas distintas.</p>
             </div>
             <div className="methodology-scope-grid">
@@ -138,7 +132,7 @@ export default function MethodologyPage() {
           </section>
 
           <section className="methodology-section methodology-limits" id="limites" aria-labelledby="limits-title">
-            <div><div className="eyebrow">Interpretación responsable</div><h2 id="limits-title">Confianza y límites</h2></div>
+            <div><h2 id="limits-title">Confianza y límites</h2></div>
             <ul>
               <li><strong>La confianza describe la muestra.</strong> Resume la cantidad y cobertura de datos; no es otra probabilidad ni una garantía.</li>
               <li><strong>El contexto puede cambiar.</strong> Lesiones, alineaciones, sanciones y otros eventos que no están en los CSV pueden alterar el partido.</li>
@@ -147,7 +141,7 @@ export default function MethodologyPage() {
             </ul>
           </section>
 
-          <footer className="methodology-footer"><span>¿Quieres ver el análisis aplicado?</span><Link href="/partidos">Explorar partidos <span aria-hidden="true">→</span></Link></footer>
+          <footer className="methodology-footer"><span>¿Quieres ver el análisis aplicado?</span><Link href="/partidos">Explorar partidos <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" /></svg></Link></footer>
         </div>
       </main>
     </div>

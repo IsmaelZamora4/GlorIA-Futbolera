@@ -41,8 +41,8 @@ export default async function CompetitionsPage({ searchParams }: { searchParams:
           </section>
 
           <section className="competition-summary" aria-label="Resumen del catálogo">
-            <div className="competition-summary-item"><strong>{competitions.length}</strong><span>competiciones disponibles</span></div>
-            <div className="competition-summary-item"><strong>{new Set(competitions.map((item) => item.source)).size}</strong><span>fuentes de datos</span></div>
+            <div className="competition-summary-item"><strong>{competitions.length}</strong><span>competiciones</span></div>
+            <div className="competition-summary-item"><strong>{new Set(competitions.map((item) => item.source)).size}</strong><span>fuentes</span></div>
             <div className="competition-summary-item competition-summary-note"><span className="competition-status-mark" /><span>Los datos se consultan al abrir partidos o tablas.</span></div>
           </section>
 
@@ -50,7 +50,7 @@ export default async function CompetitionsPage({ searchParams }: { searchParams:
             {competitions.map((item) => {
               const hasStandings = item.coverage.includes("tabla");
               return (
-                <article className={`competition-card ${selected?.id === item.id ? "selected" : ""}`} key={item.id}>
+                <article className={`competition-card ${selected?.id === item.id ? "selected" : ""}`} data-competition={item.id} key={item.id}>
                   <div className="competition-card-top">
                     <div className="competition-logo-wrap"><Image src={item.logo} alt={`Logo de ${item.name}`} width={48} height={48} /></div>
                     <div className="competition-card-copy"><span className="competition-country">{item.country}</span><h3>{item.name}</h3><p>{item.coverage}</p></div>
