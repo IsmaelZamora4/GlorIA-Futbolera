@@ -28,7 +28,12 @@ export default function LoginPage() {
         : await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/auth/callback?next=/auth/update-password` });
     setPending(false);
     if (result.error) { setError(result.error.message); return; }
-    if (mode === "login") { router.push("/"); return; }
+    if (mode === "login") {
+      const requestedNext = new URLSearchParams(window.location.search).get("next");
+      const destination = requestedNext?.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/";
+      router.push(destination);
+      return;
+    }
     setMessage(mode === "register" ? "Revisa tu correo para confirmar la cuenta." : "Si el correo existe, recibirás un enlace para recuperar el acceso.");
   };
 

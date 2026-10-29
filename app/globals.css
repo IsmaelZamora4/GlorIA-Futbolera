@@ -847,6 +847,12 @@ footer span { margin: 0 7px; color: #4d4d4a; }
 .bank-bets strong { overflow: hidden; color: var(--ink); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
 .bank-bets small { color: var(--muted-dark); font-size: 9px; }
 .bank-bets b { color: var(--champagne-soft); font-size: 10px; font-weight: 500; white-space: nowrap; }
+.bank-bet-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.bank-settle-form { display: flex; align-items: center; gap: 6px; }
+.bank-settle-form select { border: 1px solid var(--line); border-radius: 6px; padding: 6px; color: var(--ink); background: #151617; font-size: 9px; }
+.bank-settle-form button { border: 1px solid #766a57; border-radius: 6px; padding: 6px 8px; color: var(--champagne-soft); background: #28241f; font-size: 9px; }
+.bank-settle-form button:hover { border-color: var(--champagne); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 .bank-empty { margin-top: 18px !important; color: var(--muted-dark) !important; }
 .methodology-topbar-title strong { color: var(--ink); font-size: 13px; font-weight: 600; }
 .methodology-topbar-link, .methodology-footer a { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #5b4a2d; border-radius: 7px; padding: 9px 12px; color: var(--champagne-soft); background: #28231d; font-size: 11px; font-weight: 600; text-decoration: none; transition: .2s ease; }
