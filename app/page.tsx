@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { datasetInfoByCompetition } from "../data/datasets";
 import { LandingMatchPreview } from "../components/LandingMatchPreview";
+import { LandingFixturesPreview } from "../components/LandingFixturesPreview";
 
 const features = [
   { icon: "calendar", title: "Partidos", text: "Consulta la agenda por fecha y competición." },
@@ -16,12 +17,11 @@ const competitions = [
   { name: "Serie A", country: "Italia", id: "Serie A de Italia", logo: "/competitions/serie-a.svg" },
   { name: "Bundesliga", country: "Alemania", id: "Bundesliga de Alemania", logo: "/competitions/bundesliga.svg" },
   { name: "Ligue 1", country: "Francia", id: "Ligue 1 de Francia", logo: "/competitions/ligue-1.svg" },
-  { name: "Liga 1", country: "Perú", id: "Liga 1 de Perú", logo: "/competitions/liga-1-peru.svg" },
   { name: "Champions League", country: "Europa", id: "Champions League", logo: "/competitions/champions-league.svg" },
 ];
 
 const productViews = [
-  { title: "Partidos", detail: "Agenda por día y competición.", image: "/partidos-example.jpg", alt: "Agenda de partidos de GlorIA Futbolera" },
+  { title: "Partidos", detail: "Agenda por día y competición.", preview: true },
   { title: "Detalle del encuentro", detail: "Probabilidades, estadio y muestra del modelo.", image: "/match-info-screenshot.jpg", alt: "Detalle de un partido con probabilidades y datos del estadio" },
   { title: "Análisis estadístico", detail: "Métricas y tendencias para cada partido.", image: "/home-screenshot.jpg", alt: "Pantalla de análisis estadístico de GlorIA Futbolera" },
 ];
@@ -73,7 +73,7 @@ export default function LandingPage() {
               <Link className="landing-secondary-cta" href="/metodologia">Conoce la metodología</Link>
             </div>
           </div>
-          <div className="landing-preview-wrap"><LandingMatchPreview /></div>
+          <div className="landing-preview-shell"><div className="landing-preview-wrap"><LandingMatchPreview /></div></div>
         </div>
       </section>
 
@@ -111,7 +111,7 @@ export default function LandingPage() {
         <div className="landing-view-grid">
           {productViews.map((view) => (
             <article className="landing-view-card" key={view.title}>
-              <span className="landing-view-image"><Image src={view.image} alt={view.alt} fill sizes="(max-width: 760px) 92vw, 27vw" /></span>
+              <span className="landing-view-image">{"preview" in view ? <LandingFixturesPreview /> : <Image src={view.image} alt={view.alt} fill sizes="(max-width: 760px) 92vw, 27vw" />}</span>
               <b>{view.title}</b><small>{view.detail}</small>
             </article>
           ))}

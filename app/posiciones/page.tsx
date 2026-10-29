@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { SportiaSidebar } from "../../components/SportiaSidebar";
 import { getFootballDataStandings, type FootballDataStanding } from "../../lib/football-data";
 
 export const dynamic = "force-dynamic";
@@ -25,10 +26,6 @@ function positionClass(position: number) {
   return "neutral";
 }
 
-function PageHeader() {
-  return <header className="standings-topbar"><Link className="standings-brand" href="/"><Image src="/logo-gloria.png" alt="GlorIA Futbolera" width={108} height={66} priority /></Link><Link className="back-link" href="/">← Volver al análisis</Link></header>;
-}
-
 function StandingsTable({ table }: { table: FootballDataStanding[] }) {
   return <div className="standings-card"><div className="table-scroll"><table><thead><tr><th>Pos.</th><th>Equipo</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th><th>Pts.</th></tr></thead><tbody>{table.map((row) => <tr key={row.team.id}><td><span className={`position-badge ${positionClass(row.position)}`}>{row.position}</span></td><td><div className="standing-team"><Image src={row.team.crest || "/team-placeholder.svg"} alt={`Escudo de ${row.team.name}`} width={28} height={28} /><strong>{row.team.name}</strong></div></td><td>{row.playedGames}</td><td>{row.won}</td><td>{row.draw}</td><td>{row.lost}</td><td>{row.goalsFor}</td><td>{row.goalsAgainst}</td><td>{row.goalDifference > 0 ? `+${row.goalDifference}` : row.goalDifference}</td><td><b>{row.points}</b></td></tr>)}</tbody></table></div><div className="standings-legend"><span><i className="champions" />Champions League</span><span><i className="europa" />Europa League</span><span><i className="relegation" />Descenso</span></div></div>;
 }
@@ -44,5 +41,5 @@ export default async function PositionsPage({ searchParams }: { searchParams: Pr
     errorMessage = error instanceof Error ? error.message : "No se pudo cargar la tabla.";
   }
 
-  return <main className="standings-page"><PageHeader /><section className="standings-content">{errorMessage ? <div className="standings-empty"><div className="eyebrow">Posiciones · {competition.label}</div><h1>La tabla no está disponible</h1><p>{errorMessage}</p><Link className="back-link primary" href="/">Volver al inicio</Link></div> : <><div className="standings-heading"><div><div className="eyebrow">Temporada actual · datos reales</div><h1>Posiciones</h1><p>{competition.label} · tabla general</p></div><div className="standings-source"><span />football-data.org<br /><small>Actualización cacheada por 6 horas</small></div></div><nav className="competition-tabs" aria-label="Seleccionar competición">{competitions.map((item) => <Link key={item.id} href={`/posiciones?competicion=${item.id}`} className={item.id === competition.id ? "active" : undefined} aria-current={item.id === competition.id ? "page" : undefined}><Image className="competition-logo" src={item.logo} alt={`Logo de ${item.label}`} width={38} height={38} unoptimized /><span className="competition-copy"><strong>{item.label}</strong><small>Tabla general</small></span><span className="competition-arrow" aria-hidden="true">→</span></Link>)}</nav><StandingsTable table={table} /></>}</section></main>;
+  return <div className="app-shell standings-shell"><SportiaSidebar active="Competiciones" /><div className="main-area standings-main"><header className="sportia-topbar standings-app-topbar"><div><h1>Posiciones</h1><p>{competition.label} · tabla general</p></div><div className="standings-source"><span />football-data.org<br /><small>Actualización cacheada por 6 horas</small></div></header><section className="standings-content">{errorMessage ? <div className="standings-empty"><div className="eyebrow">Posiciones · {competition.label}</div><h2>La tabla no está disponible</h2><p>{errorMessage}</p><Link className="match-detail-header-link primary" href="/">Volver al inicio</Link></div> : <><nav className="competition-tabs" aria-label="Seleccionar competición">{competitions.map((item) => <Link key={item.id} href={`/posiciones?competicion=${item.id}`} className={item.id === competition.id ? "active" : undefined} aria-current={item.id === competition.id ? "page" : undefined}><Image className="competition-logo" src={item.logo} alt={`Logo de ${item.label}`} width={38} height={38} unoptimized /><span className="competition-copy"><strong>{item.label}</strong><small>Tabla general</small></span><span className="competition-arrow" aria-hidden="true">→</span></Link>)}</nav><StandingsTable table={table} /></>}</section></div></div>;
 }

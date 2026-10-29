@@ -82,7 +82,7 @@ function TeamFormStrip({ form }: { form: MatchRecentForms["home"] }) {
   const readableResults = recentResults.map((match) => match.outcome === "W" ? "ganado" : match.outcome === "D" ? "empatado" : "perdido").join(", ");
   return <span className="detail-team-form" aria-label={`Últimos ${recentResults.length} resultados: ${readableResults}`}>
     {recentResults.map((match, index) => index === 0
-      ? <span className="detail-team-form-latest" key={match.id} title={`Último partido: ${match.opponent}, ${formatDate(match.date)}`}><small>Último</small><FormBadge outcome={match.outcome} /></span>
+      ? <span className="detail-team-form-latest" key={match.id} title={`Último partido: ${match.opponent}, ${formatDate(match.date)}`}><FormBadge outcome={match.outcome} /></span>
       : <FormBadge key={match.id} outcome={match.outcome} />)}
   </span>;
 }
