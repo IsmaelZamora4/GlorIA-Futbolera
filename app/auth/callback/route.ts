@@ -4,10 +4,28 @@ import { createClient } from "../../../lib/supabase/server";
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
-  const next = url.searchParams.get("next")?.startsWith("/") ? url.searchParams.get("next")! : "/";
-  if (code) {
-    const supabase = await createClient();
-    await supabase.auth.exchangeCodeForSession(code);
+  const requestedNext = url.searchParams.get("next") ?? "/";
+  let safeDestination = new URL("/", url.origin);
+  try {
+    const destination = new URL(requestedNext, url.origin);
+    if (destination.origin === url.origin) safeDestination = destination;
+  } catch {
+    // Invalid redirect targets fall back to the app home page.
   }
-  return NextResponse.redirect(new URL(next, url.origin));
+
+  if (!code) {
+    return NextResponse.redirect(new URL("/login?auth_error=callback", url.origin));
+  }
+
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) {
+      return NextResponse.redirect(new URL("/login?auth_error=callback", url.origin));
+    }
+  } catch {
+    return NextResponse.redirect(new URL("/login?auth_error=callback", url.origin));
+  }
+
+  return NextResponse.redirect(safeDestination);
 }
