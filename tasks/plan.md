@@ -28,7 +28,7 @@ Build order: `supabase-foundation` → `identity` → `bank-ledger` → `bank-ui
 
 ### Fase 0: Preparación y conexión
 
-- [ ] **Tarea 1: Conectar el proyecto con Supabase.** Configurar variables seguras, dependencias fijadas y clientes browser/server/proxy según la guía actual de Next.js.
+- [x] **Tarea 1: Conectar el proyecto con Supabase.** Configurar variables seguras, dependencias fijadas y clientes browser/server/proxy según la guía actual de Next.js.
   - Aceptación: compila con configuración válida; el cliente servidor puede leer la sesión sin exponer una clave privilegiada.
   - Verificar: `npm run typecheck`, `npm run lint`, `npm run build` y comprobación de sesión en desarrollo.
   - Dependencias: Supabase creado y autorizado.

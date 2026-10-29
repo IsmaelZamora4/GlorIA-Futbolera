@@ -2,7 +2,7 @@
 
 ## Fase 0: Preparación y conexión
 
-- [ ] **1. Conectar el proyecto con Supabase.**
+- [x] **1. Conectar el proyecto con Supabase.**
   - Aceptación: clientes SSR/browser, variables seguras y dependencias fijadas.
   - Verificar: `npm run typecheck`, `npm run lint`, `npm run build` y sesión en desarrollo.
   - Dependencias: Supabase creado y autorizado.
