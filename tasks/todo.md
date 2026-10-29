@@ -14,7 +14,7 @@
 
 ## Fase 1: Identidad
 
-- [ ] **2. Registro y perfil básico.**
+- [x] **2. Registro y perfil básico.**
   - Aceptación: registro, confirmación, login, logout y recuperación.
   - Verificar: cuenta de prueba y sesión tras recargar.
   - Dependencias: 1.

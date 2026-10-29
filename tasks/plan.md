@@ -41,7 +41,7 @@ Build order: `supabase-foundation` → `identity` → `bank-ledger` → `bank-ui
 
 ### Fase 1: Identidad
 
-- [ ] **Tarea 2: Registro y perfil básico.** Crear registro por email, confirmación, login, logout, recuperación y perfil mínimo.
+- [x] **Tarea 2: Registro y perfil básico.** Crear registro por email, confirmación, login, logout, recuperación y perfil mínimo.
   - Aceptación: un usuario puede crear cuenta, iniciar sesión, cerrar sesión y recuperar acceso; los errores se muestran claramente.
   - Verificar: flujo manual con cuenta de prueba y sesión tras recargar.
   - Dependencias: Tarea 1.

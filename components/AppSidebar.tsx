@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getStoredPreferences, preferencesChangedEvent, translations, type AppLanguage } from "../lib/preferences";
+import { AuthNav } from "./AuthNav";
 
 type SidebarIconName = "home" | "matches" | "trophy" | "book" | "database" | "settings";
 
@@ -44,6 +45,6 @@ export function AppSidebar({ active }: { active: string }) {
   return <aside className="sidebar">
     <div className="px-5 pb-8 pt-6"><Link href="/"><Image className="logo-image" src="/logo-gloria.png" alt="GlorIA Futbolera" width={136} height={84} priority /></Link></div>
     <nav className="space-y-1 px-3">{items.map(([label, icon, href]) => <Link className={`nav-item ${active === label ? "active" : ""}`} href={href} key={label}><SidebarIcon name={icon} /><span>{labels[label]}</span></Link>)}</nav>
-    <div className="demo-box"><div className="flex items-center gap-3"><span className="demo-icon"><SidebarIcon name="database" /></span><div><div className="text-xs font-medium text-[#f5f2ec]">{text.sources}</div><div className="mt-1 text-[10px] text-[#8c8b87]">{text.onlineData}</div></div></div><span className="mt-3 block text-[10px] text-[#777773]">{text.cacheSixHours}</span></div>
+    <div className="sidebar-bottom"><AuthNav /><div className="demo-box"><div className="flex items-center gap-3"><span className="demo-icon"><SidebarIcon name="database" /></span><div><div className="text-xs font-medium text-[#f5f2ec]">{text.sources}</div><div className="mt-1 text-[10px] text-[#8c8b87]">{text.onlineData}</div></div></div><span className="mt-3 block text-[10px] text-[#777773]">{text.cacheSixHours}</span></div></div>
   </aside>;
 }
