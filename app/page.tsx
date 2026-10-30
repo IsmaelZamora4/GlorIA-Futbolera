@@ -4,6 +4,9 @@ import { datasetInfoByCompetition } from "../data/datasets";
 import { LandingMatchPreview } from "../components/LandingMatchPreview";
 import { LandingFixturesPreview } from "../components/LandingFixturesPreview";
 import { LandingStandingsPreview } from "../components/LandingStandingsPreview";
+import matchPreview from "../data/landing-match-preview.json";
+import { LandingFooter } from "../components/LandingFooter";
+import { LandingHeader } from "../components/LandingHeader";
 
 const features = [
   { icon: "calendar", title: "Partidos", text: "Consulta la agenda por fecha y competición." },
@@ -24,7 +27,7 @@ const competitions = [
 const productViews = [
   { title: "Partidos", detail: "Agenda por día y competición.", preview: "fixtures" },
   { title: "Tabla de posiciones", detail: "Clasificación simulada · Premier League.", preview: "standings" },
-  { title: "Análisis estadístico", detail: "Métricas y tendencias para cada partido.", image: "/home-screenshot.jpg", alt: "Pantalla de análisis estadístico de GlorIA Futbolera" },
+  { title: "Partido recomendado", detail: "El duelo destacado para conocer antes del próximo partido.", preview: "recommended" },
 ];
 
 const historicalLeagues = Object.values(datasetInfoByCompetition).filter(({ status }) => status === "historical").length;
@@ -45,23 +48,7 @@ function FeatureIcon({ name }: { name: (typeof features)[number]["icon"] }) {
 export default function LandingPage() {
   return (
     <main className="landing-page">
-      <header className="landing-header">
-        <Link className="landing-brand" href="/" aria-label="GlorIA Futbolera, inicio">
-          <Image src="/gloria-futbolera.svg" alt="" width={32} height={32} />
-          <span>GlorIA <b>Futbolera</b></span>
-        </Link>
-        <nav className="landing-nav" aria-label="Navegación principal">
-          <a className="is-current" href="#inicio" aria-current="page">Inicio</a>
-          <Link href="/competiciones">Competiciones</Link>
-          <a href="#funciones">Funciones</a>
-          <Link href="/partidos">Partidos</Link>
-          <Link href="/metodologia">Metodología</Link>
-        </nav>
-        <div className="landing-actions">
-          <Link className="landing-login" href="/login">Iniciar sesión</Link>
-          <Link className="landing-cta landing-cta-small" href="/partidos">Ver partidos <span className="landing-cta-small-arrow" aria-hidden="true">→</span></Link>
-        </div>
-      </header>
+      <LandingHeader />
 
       <section className="landing-hero" id="inicio" aria-labelledby="landing-title">
         <div className="landing-backdrop" aria-hidden="true" />
@@ -111,8 +98,21 @@ export default function LandingPage() {
         </div>
         <div className="landing-view-grid">
           {productViews.map((view) => (
-            <article className="landing-view-card" key={view.title}>
-              <span className="landing-view-image">{"preview" in view ? view.preview === "fixtures" ? <LandingFixturesPreview /> : <LandingStandingsPreview compact /> : <Image src={view.image} alt={view.alt} fill sizes="(max-width: 760px) 92vw, 27vw" />}</span>
+            <article className={`landing-view-card${view.preview === "recommended" ? " is-recommended" : ""}`} key={view.title}>
+              {view.preview === "recommended" ? (
+                <div className="landing-view-image landing-recommended">
+                  <div className="landing-recommended-heading"><b>Destacado del día</b><span className="landing-recommended-league">Serie A</span></div>
+                  <div className="landing-recommended-teams">
+                    <span><Image src="https://crests.football-data.org/109.png" alt="" width={38} height={38} unoptimized /><b>Juventus</b></span>
+                    <strong>VS</strong>
+                    <span><Image src="https://crests.football-data.org/98.png" alt="" width={38} height={38} unoptimized /><b>Milan</b></span>
+                  </div>
+                  <small className="landing-recommended-stadium">⌖ Allianz Stadium</small>
+                  <Link className="landing-recommended-link" href="/login">Ver análisis <span aria-hidden="true">→</span></Link>
+                </div>
+              ) : (
+                <span className="landing-view-image">{view.preview === "fixtures" ? <LandingFixturesPreview /> : <LandingStandingsPreview compact />}</span>
+              )}
               <b>{view.title}</b><small>{view.detail}</small>
             </article>
           ))}
@@ -126,11 +126,7 @@ export default function LandingPage() {
         <Link href="/metodologia">Fuentes y límites <span aria-hidden="true">→</span></Link>
       </section>
 
-      <footer className="landing-footer">
-        <Link className="landing-footer-brand" href="/"><Image src="/gloria-futbolera.svg" alt="" width={25} height={25} />GlorIA Futbolera</Link>
-        <span>Fútbol con contexto.</span>
-        <nav aria-label="Enlaces del pie de página"><Link href="/partidos">Partidos</Link><Link href="/competiciones">Competiciones</Link><Link href="/metodologia">Metodología</Link><Link href="/login">Iniciar sesión</Link></nav>
-      </footer>
+      <LandingFooter />
     </main>
   );
 }
