@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "d2350311-b2be-4c2e-a57d-59f3452b4891",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261030-153631\\candidate.json",
+  "output": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261030-153631\\gloria-futbolera.html",
+  "specification": {
+    "sha256": "cdc736c8fb3eff7c78465c08eaf97a552860f1c148eb4a8616eff8b2bf3e5a15",
+    "bytes": 5597
+  },
+  "artifact": {
+    "sha256": "2862a79838a6ba52ad78c137a63242655296b1528a359e80dafaaafc3e029525",
+    "bytes": 857112
+  }
+}
