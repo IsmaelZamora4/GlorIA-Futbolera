@@ -2807,6 +2807,7 @@ button:active, .nav-item:active, .mobile-app-nav-item:active { transform: scale(
 .landing-brand img { width: 32px; height: 32px; filter: invert(.88); object-fit: contain; }
 .landing-footer-brand img { width: 25px; height: 25px; filter: invert(.88); object-fit: contain; }
 .landing-brand b { font-weight: 500; }
+.landing-mobile-menu { display: none; }
 .landing-nav, .landing-actions { display: flex; align-items: center; }
 .landing-nav { gap: clamp(18px, 2vw, 30px); }
 .landing-nav a, .landing-login { color: #d3ced8; font-size: 13px; text-decoration: none; transition: color 160ms ease-out; }
@@ -3132,17 +3133,31 @@ button:active, .nav-item:active, .mobile-app-nav-item:active { transform: scale(
 }
 @media (max-width: 700px) {
   .landing-page { --landing-page-gutter: 18px; padding-inline: var(--landing-page-gutter); }
-  .landing-header { min-height: 62px; grid-template-columns: 1fr auto; gap: 10px; margin-bottom: 0; padding: 8px 0 0; }
-  .landing-brand { gap: 7px; font-size: 13px; }
-  .landing-brand img { width: 28px; height: 28px; }
-  .landing-actions { gap: 10px; }
-  .landing-login { font-size: 13px; }
-  .landing-cta-small { min-height: 35px; gap: 6px; padding-inline: 8px; font-size: 13px; }
+  .landing-header { min-height: 64px; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; margin-bottom: 0; padding: 8px 0 0; }
+  .landing-brand { min-width: 0; gap: 7px; font-size: 14px; }
+  .landing-brand img { width: 30px; height: 30px; flex: 0 0 auto; }
+  .landing-brand-name { white-space: nowrap; line-height: 1; }
+  .landing-brand-name b { display: block; margin-top: 3px; font-size: 8px; font-weight: 600; letter-spacing: .24em; }
+  .landing-actions { grid-column: 2; grid-row: 1; gap: 8px; }
+  .landing-login { display: inline-flex; min-height: 44px; align-items: center; font-size: 12px; }
+  .landing-cta-small { min-height: 44px; gap: 6px; padding-inline: 11px; font-size: 12px; }
   .landing-cta-small-arrow { display: none; }
-  .landing-nav { grid-column: 1 / -1; grid-row: 2; justify-content: flex-start; gap: 8px; overflow-x: auto; margin-inline: -18px; padding: 2px 18px 13px; white-space: nowrap; scrollbar-width: none; }
-  .landing-nav::-webkit-scrollbar { display: none; }
-  .landing-nav a { font-size: 12px; }
-  .landing-nav .is-current::after { bottom: -7px; }
+  .landing-header > .landing-nav { display: none; }
+  .landing-mobile-menu { position: relative; display: block; grid-column: 3; grid-row: 1; justify-self: end; }
+  .landing-mobile-menu > summary { display: grid; width: 44px; height: 44px; place-items: center; border-radius: 5px; color: #f4f0f8; cursor: pointer; list-style: none; }
+  .landing-mobile-menu > summary::-webkit-details-marker { display: none; }
+  .landing-mobile-menu > summary:hover { background: rgba(255,255,255,.07); }
+  .landing-mobile-menu > summary:focus-visible { outline: 2px solid #d4a5ff; outline-offset: 2px; }
+  .landing-menu-icon { display: grid; width: 23px; gap: 5px; }
+  .landing-menu-icon i { display: block; height: 2px; border-radius: 2px; background: currentColor; transition: transform 160ms ease-out, opacity 160ms ease-out; }
+  .landing-mobile-menu[open] .landing-menu-icon i:first-child { transform: translateY(7px) rotate(45deg); }
+  .landing-mobile-menu[open] .landing-menu-icon i:nth-child(2) { opacity: 0; }
+  .landing-mobile-menu[open] .landing-menu-icon i:last-child { transform: translateY(-7px) rotate(-45deg); }
+  .landing-mobile-menu .landing-nav { position: absolute; z-index: 5; top: calc(100% + 10px); right: 0; display: none; width: min(260px, calc(100vw - 28px)); flex-direction: column; align-items: stretch; gap: 2px; border: 1px solid rgba(255,255,255,.12); border-radius: 8px; padding: 8px; background: #141319; box-shadow: 0 12px 32px rgba(0,0,0,.38); }
+  .landing-mobile-menu[open] .landing-nav { display: flex; }
+  .landing-mobile-menu .landing-nav a { display: flex; min-height: 44px; align-items: center; border-radius: 5px; padding: 0 12px; font-size: 13px; }
+  .landing-mobile-menu .landing-nav a:hover, .landing-mobile-menu .landing-nav a.is-current { background: rgba(189,128,255,.12); color: #fff; }
+  .landing-mobile-menu .landing-nav .is-current::after { display: none; }
   .landing-hero-inner { min-height: 0; grid-template-columns: 1fr; gap: 28px; padding: 48px 0 34px; }
   .landing-backdrop { background-position: center, center, center, 57% 30%; }
   .landing-hero-inner { padding-inline: 18px; }
@@ -3196,7 +3211,16 @@ button:active, .nav-item:active, .mobile-app-nav-item:active { transform: scale(
 }
 @media (max-width: 380px) {
   .landing-page { --landing-page-gutter: 14px; padding-inline: var(--landing-page-gutter); }
-  .landing-nav { gap: 7px; margin-inline: -14px; padding-right: 18px; padding-left: 14px; }
+  .landing-header { grid-template-columns: minmax(0, 1fr) auto auto; gap: 4px; }
+  .landing-brand { gap: 5px; font-size: 12px; }
+  .landing-brand img { width: 27px; height: 27px; }
+  .landing-brand-name b { font-size: 7px; }
+  .landing-actions { gap: 5px; }
+  .landing-login { font-size: 10px; }
+  .landing-cta-small { min-height: 44px; padding-inline: 9px; font-size: 11px; }
+  .landing-mobile-menu .landing-nav { width: min(260px, calc(100vw - 28px)); }
+  .mini-toolbar { gap: 6px; padding-inline: 8px; }
+  .mini-toolbar > span:nth-child(2) { display: none; }
   .landing-hero-inner { padding-inline: 14px; }
   .landing-nav a { font-size: 11px; }
   .landing-copy h1 { font-size: 39px; }
@@ -3275,4 +3299,80 @@ button:active, .nav-item:active, .mobile-app-nav-item:active { transform: scale(
   .match-detail-header { align-items: flex-start; flex-direction: column; padding: 16px; }
   .match-detail-header-actions { width: 100%; }
   .match-detail-header-link { flex: 1; }
+}
+
+@media (min-width: 701px) and (max-width: 900px) {
+  .landing-header {
+    min-height: 100px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: 48px 48px;
+    gap: 0 16px;
+    margin-bottom: -100px;
+  }
+  .landing-brand { grid-column: 1; grid-row: 1; font-size: 14px; }
+  .landing-nav { grid-column: 1 / -1; grid-row: 2; justify-content: center; gap: clamp(12px, 2vw, 22px); padding: 0 0 4px; }
+  .landing-nav a { display: inline-flex; min-height: 44px; align-items: center; font-size: 12px; }
+  .landing-nav .is-current::after { bottom: 1px; }
+  .landing-actions { grid-column: 2; grid-row: 1; gap: 8px; }
+  .landing-login { display: inline-flex; min-height: 44px; align-items: center; font-size: 12px; }
+  .landing-cta-small { min-height: 44px; padding-inline: 12px; font-size: 12px; }
+  .landing-hero-inner { padding-top: 104px; }
+}
+
+@media (min-width: 721px) and (max-width: 1024px) {
+  .landing-features { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .landing-competition-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .landing-view-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .landing-view-card:last-child { grid-column: 1 / -1; }
+  .landing-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  .sportia-home > .sportia-sidebar,
+  .app-shell > .sportia-sidebar {
+    width: 212px;
+    height: 100vh;
+    flex-basis: 212px;
+    overflow-y: auto;
+    padding: 20px 12px;
+    scrollbar-width: thin;
+  }
+  .sportia-brand { margin: 0 8px 24px; font-size: 18px; }
+  .sportia-sport-active,
+  .sportia-other-sports button,
+  .sportia-league-link,
+  .sportia-other-menu a,
+  .sportia-logout { min-height: 44px; }
+  .sportia-round-button { width: 44px; height: 44px; flex: 0 0 44px; }
+  .sportia-profile { min-height: 44px; }
+  .sportia-league-heading button { width: 44px; height: 44px; }
+  .sportia-match-actions button,
+  .sportia-match-actions a { width: 44px; min-height: 44px; flex: 0 0 44px; place-items: center; justify-content: center; }
+
+  .landing-nav a,
+  .landing-login { min-height: 44px; }
+  .landing-nav a { display: inline-flex; align-items: center; }
+  .landing-cta-small { min-height: 44px; }
+  .sportia-match-actions a { display: inline-grid; }
+  .competition-card-actions a,
+  .unavailable-action,
+  .professional-detail-link,
+  .matches-shell .professional-detail-link,
+  .matches-mode button,
+  .matches-competitions button,
+  .agenda-date-nav button,
+  .professional-competition-toggle,
+  .methodology-topbar-link,
+  .methodology-footer a,
+  .methodology-shell .methodology-topbar-link,
+  .methodology-shell .methodology-footer a,
+  .methodology-index a,
+  .methodology-shell .methodology-index a,
+  .match-detail-header-link,
+  .settings-circle-button,
+  .bank-settle-form select,
+  .bank-settle-form button { min-height: 44px; }
+  .settings-circle-button { width: 44px; }
+}
+
+@media (min-width: 721px) and (max-width: 950px) {
+  .matches-shell > .sportia-sidebar { display: flex; }
 }
