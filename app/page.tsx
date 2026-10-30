@@ -3,6 +3,7 @@ import Link from "next/link";
 import { datasetInfoByCompetition } from "../data/datasets";
 import { LandingMatchPreview } from "../components/LandingMatchPreview";
 import { LandingFixturesPreview } from "../components/LandingFixturesPreview";
+import { LandingStandingsPreview } from "../components/LandingStandingsPreview";
 
 const features = [
   { icon: "calendar", title: "Partidos", text: "Consulta la agenda por fecha y competición." },
@@ -21,8 +22,8 @@ const competitions = [
 ];
 
 const productViews = [
-  { title: "Partidos", detail: "Agenda por día y competición.", preview: true },
-  { title: "Detalle del encuentro", detail: "Probabilidades, estadio y muestra del modelo.", image: "/match-info-screenshot.jpg", alt: "Detalle de un partido con probabilidades y datos del estadio" },
+  { title: "Partidos", detail: "Agenda por día y competición.", preview: "fixtures" },
+  { title: "Tabla de posiciones", detail: "Clasificación simulada · Premier League.", preview: "standings" },
   { title: "Análisis estadístico", detail: "Métricas y tendencias para cada partido.", image: "/home-screenshot.jpg", alt: "Pantalla de análisis estadístico de GlorIA Futbolera" },
 ];
 
@@ -111,7 +112,7 @@ export default function LandingPage() {
         <div className="landing-view-grid">
           {productViews.map((view) => (
             <article className="landing-view-card" key={view.title}>
-              <span className="landing-view-image">{"preview" in view ? <LandingFixturesPreview /> : <Image src={view.image} alt={view.alt} fill sizes="(max-width: 760px) 92vw, 27vw" />}</span>
+              <span className="landing-view-image">{"preview" in view ? view.preview === "fixtures" ? <LandingFixturesPreview /> : <LandingStandingsPreview compact /> : <Image src={view.image} alt={view.alt} fill sizes="(max-width: 760px) 92vw, 27vw" />}</span>
               <b>{view.title}</b><small>{view.detail}</small>
             </article>
           ))}

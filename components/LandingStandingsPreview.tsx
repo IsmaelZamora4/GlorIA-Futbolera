@@ -21,33 +21,29 @@ const teams = [
   ["Sheffield United", 28, 3, 5, 20, 24, 74, -50, 14],
 ] as const;
 
-export function LandingStandingsPreview() {
+export function LandingStandingsPreview({ compact = false }: { compact?: boolean }) {
   return (
-    <div className="landing-standings-preview">
+    <div className={`landing-standings-preview${compact ? " is-compact" : ""}`}>
       <header className="landing-standings-heading">
         <span><Image src="/competitions/premier-league.svg" alt="" width={21} height={21} /> Premier League</span>
-        <b>Temporada simulada</b>
+        <b>Datos simulados</b>
       </header>
       <div className="landing-standings-scroll">
         <table>
-          <thead><tr><th>Pos.</th><th>Equipo</th><th>PJ</th><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th><th>Pts.</th></tr></thead>
+          <thead><tr><th>Pos.</th><th>Equipo</th><th>PJ</th>{!compact && <><th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th></>}<th>DG</th><th>Pts.</th></tr></thead>
           <tbody>{teams.map(([team, played, won, draw, lost, goalsFor, goalsAgainst, difference, points], index) => (
             <tr key={team}>
               <td><span className={index < 4 ? "is-champions" : index >= 17 ? "is-relegation" : ""}>{index + 1}</span></td>
               <th scope="row">{team}</th>
               <td>{played}</td>
-              <td>{won}</td>
-              <td>{draw}</td>
-              <td>{lost}</td>
-              <td>{goalsFor}</td>
-              <td>{goalsAgainst}</td>
+              {!compact && <><td>{won}</td><td>{draw}</td><td>{lost}</td><td>{goalsFor}</td><td>{goalsAgainst}</td></>}
               <td>{difference > 0 ? `+${difference}` : difference}</td>
               <td><strong>{points}</strong></td>
             </tr>
           ))}</tbody>
         </table>
       </div>
-      <footer><span>Datos de ejemplo, no corresponden a la clasificación actual.</span><Link href="/posiciones?competicion=premier-league">Ver tabla oficial <span aria-hidden="true">→</span></Link></footer>
+      {!compact && <footer><span>Datos de ejemplo, no corresponden a la clasificación actual.</span><Link href="/posiciones?competicion=premier-league">Ver tabla oficial <span aria-hidden="true">→</span></Link></footer>}
     </div>
   );
 }
