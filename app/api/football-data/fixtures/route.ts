@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { footballDataCompetitions, getFootballDataFixtures, getWeekEndDate } from "../../../../lib/football-data";
 import { getLocalLeagueAnalysis, supportsLocalLeagueAnalysis } from "../../../../lib/league-analysis";
+import { getAuthenticatedUser } from "../../../../lib/supabase/auth";
 
 const validDate = /^\d{4}-\d{2}-\d{2}$/;
 
 export async function GET(request: NextRequest) {
+  if (!await getAuthenticatedUser()) return NextResponse.json({ error: "unauthorized" }, { status: 401, headers: { "Cache-Control": "no-store" } });
   const date = request.nextUrl.searchParams.get("date") ?? new Date().toISOString().slice(0, 10);
   const competition = request.nextUrl.searchParams.get("competition") ?? "";
   const includeAnalysis = request.nextUrl.searchParams.get("includeAnalysis") === "1";
@@ -27,7 +29,7 @@ export async function GET(request: NextRequest) {
       : fixtures;
     return NextResponse.json(
       { dateFrom: date, dateTo, competition, fixtures: enrichedFixtures, source: "football-data.org", cacheTtlSeconds: 21_600 },
-      { headers: { "Cache-Control": "public, s-maxage=21600, stale-while-revalidate=86400" } },
+      { headers: { "Cache-Control": "private, no-store" } },
     );
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "No se pudieron obtener partidos." }, { status: 503 });

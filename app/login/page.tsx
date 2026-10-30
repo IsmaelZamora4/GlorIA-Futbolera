@@ -2,14 +2,30 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 import { createClient } from "../../lib/supabase/browser";
+import { getSafeInternalPath } from "../../lib/auth/redirect";
 
 type Mode = "login" | "register" | "recovery";
 
+function getRequestedDestination() {
+  return getSafeInternalPath(new URLSearchParams(window.location.search).get("next"), window.location.origin);
+}
+
+function getAuthCallbackUrl(next: string) {
+  const callback = new URL("/auth/callback", window.location.origin);
+  callback.searchParams.set("next", next);
+  return callback.toString();
+}
+
 export default function LoginPage() {
-  const [mode, setMode] = useState<Mode>("login");
+  return <Suspense fallback={<main className="auth-page" aria-busy="true" />}><LoginForm /></Suspense>;
+}
+
+function LoginForm() {
+  const searchParams = useSearchParams();
+  const [mode, setMode] = useState<Mode>(searchParams.get("mode") === "register" ? "register" : "login");
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -23,13 +39,13 @@ export default function LoginPage() {
   const supabase = createClient();
 
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("auth_error") === "callback") {
+    if (searchParams.get("auth_error") === "callback") {
       const timer = window.setTimeout(() => {
         setError("No se pudo validar el enlace. Solicita uno nuevo e inténtalo otra vez.");
       }, 0);
       return () => window.clearTimeout(timer);
     }
-  }, []);
+  }, [searchParams]);
 
   const changeMode = (nextMode: Mode) => {
     setMode(nextMode);
@@ -46,7 +62,7 @@ export default function LoginPage() {
     try {
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${window.location.origin}/auth/callback` },
+        options: { redirectTo: getAuthCallbackUrl(getRequestedDestination()) },
       });
       if (oauthError) setError("No se pudo conectar con Google. Inténtalo de nuevo.");
     } catch {
@@ -77,7 +93,7 @@ export default function LoginPage() {
       }
     }
     setPending(true);
-    const redirectTo = `${window.location.origin}/auth/callback`;
+    const redirectTo = getAuthCallbackUrl(getRequestedDestination());
     try {
       const result = mode === "login"
         ? await supabase.auth.signInWithPassword({ email: email.trim(), password })
@@ -90,7 +106,7 @@ export default function LoginPage() {
                 data: { name: name.trim(), full_name: name.trim(), username: username.trim().toLowerCase() },
               },
             })
-          : await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: `${window.location.origin}/auth/callback?next=/auth/update-password` });
+          : await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: getAuthCallbackUrl("/auth/update-password") });
       if (result.error) {
         setError(mode === "login"
           ? "No se pudo iniciar sesión. Revisa tu correo y contraseña."
@@ -100,9 +116,7 @@ export default function LoginPage() {
         return;
       }
       if (mode === "login") {
-        const requestedNext = new URLSearchParams(window.location.search).get("next");
-        const destination = requestedNext?.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/";
-        router.push(destination);
+        router.replace(getRequestedDestination());
         return;
       }
       setMessage(mode === "register" ? "Revisa tu correo para confirmar la cuenta." : "Si el correo existe, recibirás un enlace para recuperar el acceso.");
@@ -116,7 +130,7 @@ export default function LoginPage() {
   const isLogin = mode === "login";
   const title = isLogin ? "Inicia sesión" : mode === "register" ? "Crea tu cuenta" : "Recupera tu acceso";
   const description = isLogin
-    ? "Accede a tu cuenta para continuar con tus análisis, pronósticos y estadísticas personalizadas."
+    ? "Inicia sesión para acceder a partidos, competiciones, metodología y análisis de GlorIA Futbolera."
     : mode === "register"
       ? "Crea tu cuenta para guardar tu progreso y preparar tu espacio personal."
       : "Te enviaremos un enlace para que puedas recuperar el acceso a tu cuenta.";
@@ -134,7 +148,7 @@ export default function LoginPage() {
           <div className="auth-hero-copy">
             <span className="auth-kicker">ANÁLISIS · ESTADÍSTICAS · PREDICCIONES</span>
             <h1 aria-label="El fútbol, con datos reales.">El fútbol,<br />con <em>datos reales.</em></h1>
-            <p>Accede a tu cuenta y continúa analizando las principales ligas del mundo.</p>
+            <p>Inicia sesión para entrar a los partidos, análisis y demás secciones de la plataforma.</p>
           </div>
           <ul className="auth-feature-list" aria-label="Lo que encontrarás en GlorIA Futbolera">
             <li>

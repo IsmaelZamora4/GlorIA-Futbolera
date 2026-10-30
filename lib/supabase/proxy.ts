@@ -1,6 +1,21 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const protectedPageRoots = [
+  "/home",
+  "/partidos",
+  "/competiciones",
+  "/posiciones",
+  "/metodologia",
+  "/partido",
+  "/bank",
+  "/configuracion",
+];
+
+function isProtectedPath(pathname: string) {
+  return pathname.startsWith("/api/") || protectedPageRoots.some((root) => pathname === root || pathname.startsWith(`${root}/`));
+}
+
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
@@ -21,11 +36,18 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user && request.nextUrl.pathname.startsWith("/bank")) {
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if ((error || !user) && isProtectedPath(request.nextUrl.pathname)) {
+    if (request.nextUrl.pathname.startsWith("/api/")) {
+      return NextResponse.json({ error: "unauthorized" }, { status: 401, headers: { "Cache-Control": "no-store" } });
+    }
+
     const loginUrl = request.nextUrl.clone();
+    const requestedUrl = request.nextUrl.clone();
+    requestedUrl.searchParams.delete("_rsc");
     loginUrl.pathname = "/login";
-    loginUrl.searchParams.set("next", request.nextUrl.pathname);
+    loginUrl.search = "";
+    loginUrl.searchParams.set("next", `${requestedUrl.pathname}${requestedUrl.search}`);
     return NextResponse.redirect(loginUrl);
   }
   return response;

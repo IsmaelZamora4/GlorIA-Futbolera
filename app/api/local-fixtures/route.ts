@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { getLocalLeagueAnalysis, supportsLocalLeagueAnalysis } from "../../../lib/league-analysis";
 import { getFootballDataFixtures, footballDataCompetitions } from "../../../lib/football-data";
 import { getLocalDate } from "../../../lib/local-date";
+import { getAuthenticatedUser } from "../../../lib/supabase/auth";
 
 const datasets: Record<string, string> = {
   "Serie A de Italia": "serie-a",
@@ -25,6 +26,7 @@ type LocalFixture = {
 };
 
 export async function GET(request: Request) {
+  if (!await getAuthenticatedUser()) return NextResponse.json({ error: "unauthorized" }, { status: 401, headers: { "Cache-Control": "no-store" } });
   const params = new URL(request.url).searchParams;
   const date = params.get("date");
   const competition = params.get("competition");
