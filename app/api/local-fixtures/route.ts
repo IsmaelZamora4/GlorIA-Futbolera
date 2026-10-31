@@ -1,10 +1,10 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
-import { getLocalLeagueAnalysis, supportsLocalLeagueAnalysis } from "../../../lib/league-analysis";
-import { getFootballDataFixtures, footballDataCompetitions } from "../../../lib/football-data";
-import { getLocalDate } from "../../../lib/local-date";
-import { getAuthenticatedUser } from "../../../lib/supabase/auth";
+import { getLocalLeagueAnalysis, supportsLocalLeagueAnalysis } from "@/features/match-analysis/services/league-analysis";
+import { getFootballDataFixtures, footballDataCompetitions } from "@/features/fixtures/services/football-data";
+import { getLocalDate } from "@/features/fixtures/services/local-date";
+import { getAuthenticatedUser } from "@/lib/supabase/auth";
 
 const datasets: Record<string, string> = {
   "Serie A de Italia": "serie-a",

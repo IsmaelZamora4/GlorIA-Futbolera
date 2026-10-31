@@ -7,6 +7,11 @@ node_modules/
 
 .vscode/
 graphify-out/
+!graphify-out/
+graphify-out/*
+!graphify-out/graph.json
+!graphify-out/graph.html
+!graphify-out/GRAPH_REPORT.md
 
 # Supabase local CLI temp (expone project-ref y pooler URL)
 supabase/.temp/
@@ -17,4 +22,5 @@ supabase/.temp/
 .taste-skill/
 *.png
 !docs/images/*.png
-!public/login-wallpaperr.png
+!public/**/*.png
+

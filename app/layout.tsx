@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed, Plus_Jakarta_Sans } from "next/font/google";
-import "./globals.css";
+import "@/app/globals.css";
 
 const plexSans = IBM_Plex_Sans({
   subsets: ["latin"],
@@ -46,3 +46,4 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     </html>
   );
 }
+

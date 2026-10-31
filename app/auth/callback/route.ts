@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getSafeInternalPath } from "../../../lib/auth/redirect";
-import { createClient } from "../../../lib/supabase/server";
+import { getSafeInternalPath } from "@/features/auth/services/redirect";
+import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);

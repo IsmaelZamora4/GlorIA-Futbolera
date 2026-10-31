@@ -17,13 +17,13 @@ require.extensions[".ts"] = (module, fileName) => {
   module._compile(compiled, fileName);
 };
 
-const { getLocalLeagueAnalysis } = require("../lib/league-analysis.ts");
-const { getLocalMatchDetailContext, getMatchRecentForms, getMatchSeasonStatistics, getLocalStandings, getHeadToHead } = require("../lib/match-detail.ts");
-const { resolveTeamIdentity } = require("../lib/team-identity.ts");
-const { getKnownTeamCrest } = require("../data/team-crests.ts");
-const { getTeamVenue, resolveFixtureVenue } = require("../data/team-venues.ts");
-const { getLocalVenuePhoto } = require("../lib/venue-photos.ts");
-const aliasesByCompetition = require("../data/team-aliases.json");
+const { getLocalLeagueAnalysis } = require("../features/match-analysis/services/league-analysis.ts");
+const { getLocalMatchDetailContext, getMatchRecentForms, getMatchSeasonStatistics, getLocalStandings, getHeadToHead } = require("../features/match-analysis/services/match-detail.ts");
+const { resolveTeamIdentity } = require("../features/competitions/services/team-identity.ts");
+const { getKnownTeamCrest } = require("../data/metadata/team-crests.ts");
+const { getTeamVenue, resolveFixtureVenue } = require("../data/metadata/team-venues.ts");
+const { getLocalVenuePhoto } = require("../features/fixtures/services/venue-photos.ts");
+const aliasesByCompetition = require("../data/metadata/team-aliases.json");
 
 const fixtures = [
   ["Premier League", "Manchester City FC", "Arsenal FC"],

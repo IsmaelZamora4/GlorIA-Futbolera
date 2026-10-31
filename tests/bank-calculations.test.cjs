@@ -9,7 +9,7 @@ require.extensions[".ts"] = (module, fileName) => {
   module._compile(compiled, fileName);
 };
 
-const { calculateBankSummary, calculateBetProfit, validateBankInput, validateBetInput } = require("../lib/bank/calculations.ts");
+const { calculateBankSummary, calculateBetProfit, validateBankInput, validateBetInput } = require("../features/bank/services/calculations.ts");
 
 test("calcula beneficios por estado", () => {
   assert.equal(calculateBetProfit({ stake: 10, decimalOdds: 2.5, status: "won" }), 15);

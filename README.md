@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/logo-gloria.png" width="112" alt="GlorIA Futbolera">
+  <img src="public/brand/logo-gloria.png" width="112" alt="GlorIA Futbolera">
 </p>
 
 <h1 align="center">GlorIA Futbolera</h1>
@@ -22,7 +22,7 @@
 </p>
 
 <p align="center">
-  <img src="home-screenshot.jpg" width="1100" alt="Inicio de GlorIA Futbolera: menú lateral, competiciones y partido recomendado">
+  <img src="docs/images/screenshots/home-screenshot.jpg" width="1100" alt="Inicio de GlorIA Futbolera: menú lateral, competiciones y partido recomendado">
 </p>
 
 <p align="center"><strong>Inicio.</strong> El menú lateral organiza las secciones principales; el partido recomendado resume el encuentro destacado y sus probabilidades.</p>
@@ -47,19 +47,19 @@ El modelo busca ser transparente: muestra de dónde salen los datos, cuánto his
 
 ### Partidos del día
 
-![Agenda de partidos por fecha y competición](matches-screenshot.jpg)
+![Agenda de partidos por fecha y competición](docs/images/screenshots/matches-screenshot.jpg)
 
 La vista **Partidos** reúne los encuentros del día y permite cambiar la fecha o filtrar por competición. Cada bloque agrupa los partidos por liga, con horario, equipos y acceso al análisis disponible.
 
 ### Detalle del encuentro
 
-![Detalle prepartido con probabilidades, estadio y calidad de muestra](match-info-screenshot.jpg)
+![Detalle prepartido con probabilidades, estadio y calidad de muestra](docs/images/screenshots/match-info-screenshot.jpg)
 
 Al abrir un encuentro, la ficha presenta el pronóstico 1X2, el estado de la muestra y el contexto del estadio. La imagen del recinto complementa la lectura; la calidad de muestra indica cuántos datos respaldan el análisis.
 
 ### Métricas y secciones del análisis
 
-![Métricas clave del partido y navegación por resumen, forma, goles, tiros, córneres, estadísticas, posiciones y enfrentamientos](metrica-match-screenshot.jpg)
+![Métricas clave del partido y navegación por resumen, forma, goles, tiros, córneres, estadísticas, posiciones y enfrentamientos](docs/images/screenshots/metrica-match-screenshot.jpg)
 
 La pestaña **Resumen** reúne las probabilidades de más de 1.5 y 2.5 goles, ambos anotan, goles esperados, córneres esperados y tiros a puerta esperados. Las pestañas superiores permiten ampliar la lectura con forma, goles, tiros, córneres, estadísticas, posiciones y enfrentamientos directos (H2H).
 
@@ -69,7 +69,7 @@ El análisis local está disponible para Bundesliga, LaLiga, Ligue 1, Premier Le
 
 Los partidos de hoy y fechas futuras de esas cinco ligas se consultan en football-data.org. Para habilitar esa agenda, configura `FOOTBALL_DATA_KEY`. La clave se usa en el servidor y no se envía al navegador. Sin ella, puedes iniciar la app y consultar análisis con los datasets locales; la agenda actual puede quedar vacía.
 
-Liga 1 de Perú, Champions League y Europa League aparecen en el catálogo, pero todavía no tienen análisis local conectado en la agenda principal. La cobertura real por competencia está definida en [`data/datasets.ts`](data/datasets.ts).
+Liga 1 de Perú, Champions League y Europa League aparecen en el catálogo, pero todavía no tienen análisis local conectado en la agenda principal. La cobertura real por competencia está definida en [`data/metadata/datasets.ts`](data/metadata/datasets.ts).
 
 ```mermaid
 flowchart LR
@@ -127,12 +127,15 @@ Para actualizar los datos de una liga, sigue el procedimiento con respaldo y val
 ## Organización del proyecto
 
 ```text
-app/                 Páginas y rutas de la aplicación
-components/          Interfaz y visualizaciones de análisis
+app/                 Rutas App Router; grupos (public) y (account) conservan las URLs
+components/layout/    Navegación y componentes compartidos de estructura
+features/            Componentes y servicios agrupados por dominio
+data/metadata/       Catálogos y metadatos de equipos y ligas
 data/raw/            CSV fuente por competición
 data/processed/      Datasets y estadísticas normalizados
-docs/                Metodología y documentación
-lib/                 Acceso a datos y lógica del modelo
+public/              Recursos servidos por URL, agrupados por tipo
+docs/                Metodología, especificaciones e imágenes de referencia
+lib/supabase/        Adaptadores de infraestructura Supabase
 scripts/             Normalización, validación y backtesting
 tests/               Pruebas del modelo estadístico
 ```

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { footballDataCompetitions, getFootballDataFixtures, getWeekEndDate } from "../../../../lib/football-data";
-import { getLocalLeagueAnalysis, supportsLocalLeagueAnalysis } from "../../../../lib/league-analysis";
-import { getAuthenticatedUser } from "../../../../lib/supabase/auth";
+import { footballDataCompetitions, getFootballDataFixtures, getWeekEndDate } from "@/features/fixtures/services/football-data";
+import { getLocalLeagueAnalysis, supportsLocalLeagueAnalysis } from "@/features/match-analysis/services/league-analysis";
+import { getAuthenticatedUser } from "@/lib/supabase/auth";
 
 const validDate = /^\d{4}-\d{2}-\d{2}$/;
 

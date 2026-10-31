@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSportsDbEvents, sportsDbLeagues } from "../../../../lib/thesportsdb";
-import { getAuthenticatedUser } from "../../../../lib/supabase/auth";
+import { getSportsDbEvents, sportsDbLeagues } from "@/features/fixtures/services/thesportsdb";
+import { getAuthenticatedUser } from "@/lib/supabase/auth";
 
 const validDate = /^\d{4}-\d{2}-\d{2}$/;
 
