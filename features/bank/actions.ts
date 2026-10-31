@@ -16,7 +16,7 @@ export async function createBank(formData: FormData): Promise<ActionResult> {
   if (errors.length) return { error: errors[0] };
   const { error } = await supabase.from("banks").insert({ user_id: user.id, currency: currency as BankCurrency, initial_capital: initialCapital });
   if (error) return { error: error.code === "23505" ? "Ya tienes un Bank creado." : "No se pudo crear el Bank. Comprueba que la migración esté aplicada." };
-  revalidatePath("/bank");
+  revalidatePath("/home/bank");
   return { success: "Bank creado correctamente." };
 }
 
@@ -34,7 +34,7 @@ export async function createBet(formData: FormData): Promise<ActionResult> {
   if ([values.event, values.market, values.selection].some((value) => !value.trim())) return { error: "Completa evento, mercado y selección." };
   const { error } = await supabase.from("bets").insert(values);
   if (error) return { error: "No se pudo registrar la apuesta. Comprueba que la migración esté aplicada." };
-  revalidatePath("/bank");
+  revalidatePath("/home/bank");
   return { success: "Apuesta registrada." };
 }
 
@@ -52,7 +52,7 @@ export async function createAdjustment(formData: FormData): Promise<ActionResult
   if (bankError || !bank) return { error: "No se encontró tu Bank." };
   const { error } = await supabase.from("bank_adjustments").insert({ bank_id: bank.id, user_id: user.id, amount, kind, note: note || null });
   if (error) return { error: "No se pudo guardar el ajuste." };
-  revalidatePath("/bank");
+  revalidatePath("/home/bank");
   return { success: kind === "deposit" ? "Aporte registrado." : "Retiro registrado." };
 }
 
@@ -67,6 +67,6 @@ export async function settleBet(formData: FormData): Promise<ActionResult> {
   const { data, error } = await supabase.from("bets").update({ status, settled_at: new Date().toISOString() }).eq("id", betId).eq("user_id", user.id).eq("status", "pending").select("id").maybeSingle();
   if (error) return { error: "No se pudo liquidar la apuesta." };
   if (!data) return { error: "La apuesta ya fue liquidada o no existe." };
-  revalidatePath("/bank");
+  revalidatePath("/home/bank");
   return { success: "Apuesta liquidada." };
 }

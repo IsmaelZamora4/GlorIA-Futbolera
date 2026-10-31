@@ -35,6 +35,10 @@ type Fixture = {
   venue: string;
   status: string;
   score?: [number, number];
+  historicalAnalysis?: {
+    over25Probability: number;
+    bttsProbability: number;
+  };
 };
 
 type FixtureCacheEntry = {
@@ -42,7 +46,7 @@ type FixtureCacheEntry = {
   expiresAt: number;
 };
 
-const fixtureCachePrefix = "gloria-fixtures:v4:";
+const fixtureCachePrefix = "gloria-fixtures:v5:";
 // Dos solicitudes en paralelo reducen el tiempo de arranque sin disparar una
 // ráfaga que pueda agotar el límite de la fuente gratuita.
 const maxConcurrentFixtureRequests = 2;
@@ -53,20 +57,6 @@ const localDetailCompetitionSlugs: Record<string, string> = {
   "Ligue 1 de Francia": "ligue-1",
   "Bundesliga de Alemania": "bundesliga",
   "Premier League": "premier-league",
-};
-
-const featuredMatch: Fixture = {
-  id: "featured-villarreal-espanyol",
-  competition: "LaLiga de España",
-  competitionLogo: "/competitions/laliga.svg",
-  date: "2026-10-30",
-  kickoff: "15:00",
-  home: "Villarreal CF",
-  away: "RCD Espanyol de Barcelona",
-  homeLogo: "https://crests.football-data.org/94.png",
-  awayLogo: "https://crests.football-data.org/80.png",
-  venue: "Estadio de la Cerámica",
-  status: "Próximo",
 };
 
 function readFixtureCache(cacheKey: string, now: number): FixtureCacheEntry | null {
@@ -101,6 +91,10 @@ type FootballDataFixture = {
   awayTeam: { name: string; crest?: string | null };
   competition?: { emblem?: string | null };
   score?: { fullTime?: { home?: number | null; away?: number | null } };
+  historicalAnalysis?: {
+    over25Probability: number;
+    bttsProbability: number;
+  };
 };
 
 function toFootballDataFixture(fixture: FootballDataFixture, competition: string): Fixture {
@@ -120,6 +114,7 @@ function toFootballDataFixture(fixture: FootballDataFixture, competition: string
     venue: resolveFixtureVenue(competition, fixture.homeTeam.name, fixture.venue),
     status: fixture.status === "FINISHED" ? "Finalizado" : "Próximo",
     score: fixture.status === "FINISHED" && home != null && away != null ? [home, away] : undefined,
+    historicalAnalysis: fixture.historicalAnalysis,
   };
 }
 
@@ -155,7 +150,7 @@ function getFixtureDetailHref(fixture: Fixture) {
   });
   if (fixture.homeLogo && fixture.homeLogo !== "/teams/team-placeholder.svg") query.set("escudoLocal", fixture.homeLogo);
   if (fixture.awayLogo && fixture.awayLogo !== "/teams/team-placeholder.svg") query.set("escudoVisitante", fixture.awayLogo);
-  return `/partido/${slug}?${query.toString()}`;
+  return `/home/partido/${slug}?${query.toString()}`;
 }
 
 type MatchesIconName = "calendar" | "football" | "trophy" | "teams" | "form" | "competitions" | "star" | "pin" | "chevron";
@@ -304,7 +299,16 @@ function PartidosContent() {
   });
 
   const activeCompetitions = [...new Set(fixtures.map((fixture) => fixture.competition))];
-  const recommendedDetailHref = getFixtureDetailHref(featuredMatch);
+  const recommendedMatch = fixtures
+    .filter((fixture) => fixture.date === today && fixture.status === "Próximo" && fixture.historicalAnalysis)
+    .map((fixture) => ({
+      fixture,
+      score: Math.max(...[fixture.historicalAnalysis!.bttsProbability, fixture.historicalAnalysis!.over25Probability]
+        .filter((probability) => Number.isFinite(probability) && probability >= 0 && probability <= 100)),
+    }))
+    .filter(({ score }) => Number.isFinite(score) && score >= 0 && score <= 100)
+    .sort((a, b) => b.score - a.score || a.fixture.kickoff.localeCompare(b.fixture.kickoff))[0]?.fixture ?? null;
+  const recommendedDetailHref = recommendedMatch ? getFixtureDetailHref(recommendedMatch) : null;
   const fixtureState = state === "loading" ? "loading" : state === "error" ? "error" : grouped.length ? null : "empty";
   return (
     <div className="app-shell matches-shell">
@@ -328,7 +332,7 @@ function PartidosContent() {
           <aside className="matches-aside">
             <section className="matches-summary-card"><div className="matches-aside-title"><span className="matches-aside-icon"><MatchesIcon name="football" /></span><div><h2>Resumen del día</h2><p>{formatDate(date)}</p></div></div><div className="matches-summary-stats"><div><strong>{filtered.length}</strong><span>Partidos</span></div><div><strong>{activeCompetitions.length}</strong><span>Ligas</span></div><div><strong className="summary-green">●</strong><span>Fuente real</span><small>Agenda actualizada</small></div></div></section>
             <section className="matches-active-card"><div className="matches-aside-title"><span className="matches-aside-icon"><MatchesIcon name="competitions" /></span><div><h2>Competiciones del día</h2></div><small>{activeCompetitions.length} {activeCompetitions.length === 1 ? "liga" : "ligas"}</small></div><div className="active-competition-list">{activeCompetitions.length ? activeCompetitions.map((item) => <div key={item}><Image src={getCompetitionLogo(item)} alt="" width={24} height={24} unoptimized /><strong>{competitionLabels[item]}</strong><span>Con partidos</span></div>) : <p className="matches-aside-empty">Todavía no hay partidos para esta fecha.</p>}</div></section>
-            <section className="matches-recommended-card"><div className="recommended-card-header"><span className="matches-aside-icon"><MatchesIcon name="star" /></span><div><h2>Partido recomendado</h2><p>Destacado del día</p></div><span className="recommended-league">LaLiga</span></div><div className="recommended-match"><div><Image src={featuredMatch.homeLogo} alt="" width={42} height={42} unoptimized /><strong>{featuredMatch.home}</strong></div><span>VS</span><div><Image src={featuredMatch.awayLogo} alt="" width={42} height={42} unoptimized /><strong>{featuredMatch.away}</strong></div></div><p className="recommended-venue"><MatchesIcon name="pin" size={13} /> {featuredMatch.venue}</p><Link className="recommended-action" href={recommendedDetailHref ?? "/partidos"}>Ver análisis <span aria-hidden="true">→</span></Link></section>
+            <section className="matches-recommended-card"><div className="recommended-card-header"><span className="matches-aside-icon"><MatchesIcon name="star" /></span><div><h2>Partido recomendado</h2><p>Mejor análisis disponible del día</p></div>{recommendedMatch && <span className="recommended-league">{competitionLabels[recommendedMatch.competition] ?? recommendedMatch.competition}</span>}</div>{recommendedMatch ? <><div className="recommended-match"><div><Image src={recommendedMatch.homeLogo} alt="" width={42} height={42} unoptimized /><strong>{recommendedMatch.home}</strong></div><span>VS</span><div><Image src={recommendedMatch.awayLogo} alt="" width={42} height={42} unoptimized /><strong>{recommendedMatch.away}</strong></div></div><p className="recommended-venue"><MatchesIcon name="pin" size={13} /> {recommendedMatch.venue || "Estadio por confirmar"}</p><Link className="recommended-action" href={recommendedDetailHref ?? "/home/partidos"}>Ver análisis <span aria-hidden="true">→</span></Link></> : <p className="matches-aside-empty">No hay partidos de hoy con análisis disponible.</p>}</section>
           </aside>
         </div>
       </main>

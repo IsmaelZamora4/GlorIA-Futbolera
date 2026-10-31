@@ -32,12 +32,12 @@ function Icon({ name, size = 16 }: { name: IconName; size?: number }) {
 
 export function SportiaSidebar({ active, selectedCompetition, onCompetitionSelect }: { active?: string; selectedCompetition?: string | null; onCompetitionSelect?: (competition: string) => void }) {
   const menu = [
-    ["Partidos", "calendar", "/partidos"],
-    ["Competiciones", "chart", "/competiciones"],
-    ["Metodología", "users", "/metodologia"],
-    ["Mi Bank", "heart", "/bank"],
-    ["Datos", "tv", "/#datos"],
-    ["Configuración", "settings", "/configuracion"],
+    ["Partidos", "calendar", "/home/partidos"],
+    ["Competiciones", "chart", "/home/competiciones"],
+    ["Metodología", "users", "/home/metodología"],
+    ["Mi Bank", "heart", "/home/bank"],
+    ["Datos", "tv", "/home/datos"],
+    ["Configuración", "settings", "/home/configuración"],
   ] as const;
   return (
     <aside className="sportia-sidebar" aria-label="Navegación principal">
@@ -47,7 +47,7 @@ export function SportiaSidebar({ active, selectedCompetition, onCompetitionSelec
           <span className="sportia-sidebar-label">Sports</span>
           <div className="sportia-sport-active"><span><Icon name="ball" size={16} />Football</span><Icon name="chevron" size={15} /></div>
           <nav className="sportia-leagues" aria-label="Filtrar partidos por competición">
-            {leagues.map(([name, competition, logo]) => <Link href={`/partidos?competicion=${encodeURIComponent(competition)}`} className={`sportia-league-link ${selectedCompetition === competition ? "is-active" : ""}`} key={competition} onClick={() => onCompetitionSelect?.(competition)}><Image className="sportia-league-logo" src={logo} alt="" width={20} height={20} unoptimized /><span>{name}</span></Link>)}
+            {leagues.map(([name, competition, logo]) => <Link href={`/home/partidos?competicion=${encodeURIComponent(competition)}`} className={`sportia-league-link ${selectedCompetition === competition ? "is-active" : ""}`} key={competition} onClick={() => onCompetitionSelect?.(competition)}><Image className="sportia-league-logo" src={logo} alt="" width={20} height={20} unoptimized /><span>{name}</span></Link>)}
           </nav>
         </section>
         <section className="sportia-sidebar-section sportia-other-menu">

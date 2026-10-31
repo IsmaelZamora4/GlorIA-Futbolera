@@ -10,7 +10,7 @@ import { BankDashboard } from "@/features/bank/components/BankDashboard";
 export default async function BankPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login?next=/bank");
+  if (!user) redirect("/login?next=/home/bank");
   const profile = getHomeUserProfile(user);
 
   const bankQuery = await supabase.from("banks").select("currency, initial_capital").eq("user_id", user.id).maybeSingle();

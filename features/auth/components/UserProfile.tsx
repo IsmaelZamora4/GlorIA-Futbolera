@@ -86,7 +86,7 @@ export function UserProfile({ profile }: { profile: HomeUserProfile }) {
           <small>{profile.email ?? "Cuenta de GlorIA"}</small>
         </div>
         <div className="sportia-profile-dropdown-divider" />
-        <Link className="sportia-profile-dropdown-item" href="/configuracion" onClick={() => { if (menuRef.current) menuRef.current.open = false; }}>
+        <Link className="sportia-profile-dropdown-item" href="/home/configuración" onClick={() => { if (menuRef.current) menuRef.current.open = false; }}>
           Configuración
         </Link>
         <button className="sportia-profile-dropdown-item" type="button" onClick={signOut} disabled={signOutPending}>

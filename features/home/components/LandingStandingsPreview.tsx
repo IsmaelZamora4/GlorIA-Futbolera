@@ -43,7 +43,7 @@ export function LandingStandingsPreview({ compact = false }: { compact?: boolean
           ))}</tbody>
         </table>
       </div>
-      {!compact && <footer><span>Datos de ejemplo, no corresponden a la clasificación actual.</span><Link href="/posiciones?competicion=premier-league">Ver tabla oficial <span aria-hidden="true">→</span></Link></footer>}
+      {!compact && <footer><span>Datos de ejemplo, no corresponden a la clasificación actual.</span><Link href="/home/posiciones?competicion=premier-league">Ver tabla oficial <span aria-hidden="true">→</span></Link></footer>}
     </div>
   );
 }

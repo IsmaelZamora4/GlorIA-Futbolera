@@ -18,7 +18,7 @@ const competitions = [
 export default async function CompetitionsPage({ searchParams }: { searchParams: Promise<{ competicion?: string }> }) {
   const params = await searchParams;
   const selected = competitions.find((item) => item.id === params.competicion);
-  if (selected?.coverage.includes("tabla")) redirect(`/posiciones?competicion=${selected.id}`);
+  if (selected?.coverage.includes("tabla")) redirect(`/home/posiciones?competicion=${selected.id}`);
 
   return (
     <div className="app-shell competitions-shell">
@@ -56,8 +56,8 @@ export default async function CompetitionsPage({ searchParams }: { searchParams:
                   </div>
                   <div className="competition-card-meta"><span><i aria-hidden="true" />{item.source}</span><span>Datos en caché · 6 h</span></div>
                   <div className="competition-card-actions">
-                    <Link href={`/partidos?competicion=${encodeURIComponent(item.name)}`}>Ver partidos <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" /></svg></Link>
-                    {hasStandings ? <Link href={`/competiciones?competicion=${item.id}`}>Ver tabla <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="M5 11 11 5M5 5h6v6" /></svg></Link> : <span className="unavailable-action" aria-disabled="true">Tabla no disponible</span>}
+                    <Link href={`/home/partidos?competicion=${encodeURIComponent(item.name)}`}>Ver partidos <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" /></svg></Link>
+                    {hasStandings ? <Link href={`/home/competiciones?competicion=${item.id}`}>Ver tabla <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="M5 11 11 5M5 5h6v6" /></svg></Link> : <span className="unavailable-action" aria-disabled="true">Tabla no disponible</span>}
                   </div>
                 </article>
               );

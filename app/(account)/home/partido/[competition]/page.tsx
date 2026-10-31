@@ -85,7 +85,7 @@ export default async function MatchDetailPage({
           </div>
           <div className="sportia-top-actions match-detail-header-actions">
             <Link href="/" className="match-detail-header-link">Volver al análisis</Link>
-            <Link href="/partidos" className="match-detail-header-link primary">Todos los partidos</Link>
+            <Link href="/home/partidos" className="match-detail-header-link primary">Todos los partidos</Link>
           </div>
         </header>
         <MatchDetailClient context={{ fixture: context.fixture, coverage: context.coverage }} analysis={analysis} forms={forms} statistics={statistics} standings={standings} h2h={h2h} kickoff={query.hora || "Por confirmar"} venue={venue} venueCity={localVenue?.stadium === venue ? localVenue.city : undefined} venuePhoto={stadiumPhoto} homeCrest={safeCrest(query.escudoLocal)} awayCrest={safeCrest(query.escudoVisitante)} transparency={transparency} />

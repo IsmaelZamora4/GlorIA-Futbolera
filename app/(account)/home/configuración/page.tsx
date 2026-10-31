@@ -159,7 +159,7 @@ export default function SettingsPage() {
           <section className="settings-card about-card">
             <div className="settings-card-title"><span className="settings-card-icon"><SettingsIcon kind="info" /></span><div><h2>{translations[preferences.language].settings.about}</h2></div></div>
             <p><strong>GlorIA Futbolera · Beta v0.1.0</strong></p><p>{translations[preferences.language].settings.aboutText}</p>
-            <div className="settings-about-links"><Link href="/metodologia">Ver metodología ↗</Link><Link href="/metodologia">Ver datasets ↪</Link><Link href="https://github.com/IsmaelZamora4/GlorIA-Futbolera">Ver en GitHub ↗</Link></div>
+            <div className="settings-about-links"><Link href="/home/metodología">Ver metodología ↗</Link><Link href="/home/metodología">Ver datasets ↪</Link><Link href="https://github.com/IsmaelZamora4/GlorIA-Futbolera">Ver en GitHub ↗</Link></div>
           </section>
         </div>
       </section>

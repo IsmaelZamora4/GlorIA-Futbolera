@@ -9,7 +9,7 @@ export function LandingHeader({ currentPage = "home" }: { currentPage?: "home" |
     { label: "Inicio", href: "/#inicio", current: homeIsCurrent },
     { label: "Cómo funciona", href: "/como-funciona", current: howItWorksIsCurrent },
     { label: "Competiciones", href: "/competitions", current: competitionsIsCurrent },
-    { label: "Metodología", href: "/metodologia" },
+    { label: "Metodología", href: "/home/metodología" },
     { label: "Contacto", href: "/contacto" },
   ];
 

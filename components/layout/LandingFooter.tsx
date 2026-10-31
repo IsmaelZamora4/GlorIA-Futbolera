@@ -9,9 +9,9 @@ const groups = [
     id: "explorar",
     title: "Explorar",
     items: [
-      { label: "Partidos", href: "/partidos", icon: "calendar" },
+      { label: "Partidos", href: "/home/partidos", icon: "calendar" },
       { label: "Competiciones", href: "/competitions", icon: "trophy" },
-      { label: "Posiciones", href: "/posiciones", icon: "table" },
+      { label: "Posiciones", href: "/home/posiciones", icon: "table" },
     ],
   },
   {
@@ -19,9 +19,9 @@ const groups = [
     title: "Plataforma",
     items: [
       { label: "Análisis", href: "/home", icon: "chart" },
-      { label: "Metodología", href: "/metodologia#proceso", icon: "book" },
-      { label: "Fuentes y límites", href: "/metodologia#limites", icon: "database" },
-      { label: "Mi Bank", href: "/bank", icon: "wallet" },
+      { label: "Metodología", href: "/home/metodología#proceso", icon: "book" },
+      { label: "Fuentes y límites", href: "/home/metodología#limites", icon: "database" },
+      { label: "Mi Bank", href: "/home/bank", icon: "wallet" },
       { label: "Iniciar sesión", href: "/login", icon: "user" },
     ],
   },

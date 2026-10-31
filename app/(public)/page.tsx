@@ -57,8 +57,8 @@ export default function LandingPage() {
             <h1 id="landing-title">El fútbol, con contexto.</h1>
             <p>Partidos, competiciones y análisis estadístico para entender qué hay detrás de cada encuentro.</p>
             <div className="landing-hero-actions">
-              <Link className="landing-cta" href="/partidos">Explorar partidos <span aria-hidden="true">→</span></Link>
-              <Link className="landing-secondary-cta" href="/metodologia">Conoce la metodología</Link>
+              <Link className="landing-cta" href="/home/partidos">Explorar partidos <span aria-hidden="true">→</span></Link>
+              <Link className="landing-secondary-cta" href="/home/metodología">Conoce la metodología</Link>
             </div>
           </div>
           <div className="landing-preview-shell"><div className="landing-preview-wrap"><LandingMatchPreview /></div></div>
@@ -81,7 +81,7 @@ export default function LandingPage() {
         </div>
         <div className="landing-competition-grid">
           {competitions.map((competition) => (
-            <Link className="landing-competition" href={`/partidos?competicion=${encodeURIComponent(competition.id)}`} key={competition.name}>
+            <Link className="landing-competition" href={`/home/partidos?competicion=${encodeURIComponent(competition.id)}`} key={competition.name}>
               <span className="landing-competition-logo"><Image src={competition.logo} alt="" width={38} height={38} /></span>
               <span className="landing-competition-copy"><b>{competition.name}</b><small>{competition.country}</small></span>
               <span className="landing-competition-action" aria-hidden="true">Ver <span>→</span></span>
@@ -94,7 +94,7 @@ export default function LandingPage() {
         <div className="landing-experience-copy">
           <h2 id="landing-experience-title">Una mirada más completa del juego.</h2>
           <p>Desde la agenda diaria hasta el análisis de cada encuentro. Explora las pantallas de GlorIA Futbolera.</p>
-          <Link className="landing-text-link" href="/partidos">Ir a la agenda <span aria-hidden="true">→</span></Link>
+          <Link className="landing-text-link" href="/home/partidos">Ir a la agenda <span aria-hidden="true">→</span></Link>
         </div>
         <div className="landing-view-grid">
           {productViews.map((view) => (
@@ -123,7 +123,7 @@ export default function LandingPage() {
         <div><b>{historicalLeagues}</b><span>Ligas con dataset histórico</span></div>
         <div><b>{datasetSeasons}</b><span>Temporadas documentadas</span></div>
         <div><b>{historicalMarkets}</b><span>Métricas del modelo</span></div>
-        <Link href="/metodologia">Fuentes y límites <span aria-hidden="true">→</span></Link>
+        <Link href="/home/metodología">Fuentes y límites <span aria-hidden="true">→</span></Link>
       </section>
 
       <LandingFooter />

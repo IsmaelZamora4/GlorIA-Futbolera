@@ -134,7 +134,7 @@ function getDetailHref(match: Match) {
   const query = new URLSearchParams({ fecha: match.date, local: match.home, visitante: match.away, hora: match.kickoff, estadio: match.venue ?? "Por confirmar" });
   if (match.homeLogo) query.set("escudoLocal", match.homeLogo);
   if (match.awayLogo) query.set("escudoVisitante", match.awayLogo);
-  return `/partido/${slug}?${query.toString()}`;
+  return `/home/partido/${slug}?${query.toString()}`;
 }
 
 function getRecommendedPick(match: Match): ParleyPick | null {
@@ -160,7 +160,7 @@ function MatchRow({ match, onSelect, selected }: { match: Match; onSelect: () =>
       <strong className="sportia-score" aria-label={`Hora de inicio ${match.kickoff}`}>VS</strong>
       <div className="sportia-match-side away">
         <button className="sportia-team-name sportia-match-select" type="button" onClick={onSelect}>{match.away}<TeamBadge code={teamCode(match.away)} crest={match.awayLogo} /></button>
-        <span className="sportia-match-actions">{detailHref ? <Link href={detailHref} aria-label={`Ver análisis de ${match.home} y ${match.away}`}><Icon name="chart" size={14} /></Link> : <Link href={`/partidos?competicion=${encodeURIComponent(match.competition)}`} aria-label={`Ver agenda de ${match.competition}`}><Icon name="calendar" size={14} /></Link>}</span>
+        <span className="sportia-match-actions">{detailHref ? <Link href={detailHref} aria-label={`Ver análisis de ${match.home} y ${match.away}`}><Icon name="chart" size={14} /></Link> : <Link href={`/home/partidos?competicion=${encodeURIComponent(match.competition)}`} aria-label={`Ver agenda de ${match.competition}`}><Icon name="calendar" size={14} /></Link>}</span>
       </div>
     </div>
   );
@@ -293,13 +293,13 @@ export default function Home() {
                 <h2 id="sportia-hero-title">{selectedMatch ? `${selectedMatch.home} vs ${selectedMatch.away}` : "Football, today"}</h2>
                 <p><Icon name="calendar" size={14} />{todayLabel} · {selectedMatch?.kickoff ?? "Today's fixtures"}</p>
                 <p><Icon name="pin" size={14} />{selectedMatch?.venue ?? (selectedMatch ? "Venue not available" : "Explore today's matches")}</p>
-                <Link className="sportia-hero-button" href={detailHref ?? (selectedMatch ? `/partidos?competicion=${encodeURIComponent(selectedMatch.competition)}` : "/partidos")}>{detailHref ? "View match analysis" : "View matches"} <span aria-hidden="true">→</span></Link>
+                <Link className="sportia-hero-button" href={detailHref ?? (selectedMatch ? `/home/partidos?competicion=${encodeURIComponent(selectedMatch.competition)}` : "/home/partidos")}>{detailHref ? "View match analysis" : "View matches"} <span aria-hidden="true">→</span></Link>
               </div>
               {selectedMatch && <div className="sportia-hero-teams" aria-hidden="true"><div className="sportia-hero-team"><HeroTeamBadge key={`home:${selectedMatch.home}:${selectedMatch.homeLogo}`} code={teamCode(selectedMatch.home)} crest={selectedMatch.homeLogo} /><strong>{selectedMatch.home}</strong></div><span className="sportia-hero-vs">VS</span><div className="sportia-hero-team"><HeroTeamBadge key={`away:${selectedMatch.away}:${selectedMatch.awayLogo}`} code={teamCode(selectedMatch.away)} crest={selectedMatch.awayLogo} /><strong>{selectedMatch.away}</strong></div></div>}
             </section>
 
             <section className="sportia-card sportia-today-card" aria-labelledby="today-match-title">
-              <div className="sportia-today-heading"><h2 id="today-match-title">Today Match</h2><Link href="/partidos">Full schedule <span aria-hidden="true">→</span></Link></div>
+              <div className="sportia-today-heading"><h2 id="today-match-title">Today Match</h2><Link href="/home/partidos">Full schedule <span aria-hidden="true">→</span></Link></div>
               <nav className="sportia-mobile-league-filter" aria-label="Filtrar por competición">
                 {homeCompetitions.map((league) => <button type="button" key={league.competition} className={selectedCompetition === league.competition ? "is-active" : ""} aria-pressed={selectedCompetition === league.competition} onClick={() => toggleCompetition(league.competition)}><Image src={league.logo} alt="" width={20} height={20} unoptimized /><span>{league.name}</span></button>)}
               </nav>
@@ -307,7 +307,7 @@ export default function Home() {
               {loadState === "error" && <div className="sportia-fixture-state" role="alert"><p>Today’s fixtures couldn’t be loaded.</p><button type="button" onClick={() => { setLoadState("loading"); setRefreshKey((current) => current + 1); }}>Try again</button></div>}
               {loadErrors.length > 0 && loadState === "ready" && <p className="sportia-fixture-note" role="status">Some competitions could not be updated. Other available fixtures are shown.</p>}
               {unavailableCompetitions.length > 0 && !selectedCompetition && <p className="sportia-fixture-note">Current fixtures aren’t configured for {unavailableCompetitions.join(", ")} yet.</p>}
-              {loadState === "ready" && visibleGroups.length === 0 && <div className="sportia-fixture-state" role="status"><p>{selectedCompetition ? `No ${homeCompetitions.find((league) => league.competition === selectedCompetition)?.name} matches available today.` : "No matches available today."}</p>{selectedCompetition && unavailableCompetitions.includes(homeCompetitions.find((league) => league.competition === selectedCompetition)?.name ?? "") && <small>A current fixture source for this competition is not configured yet.</small>}<Link href="/partidos">Open the full schedule <span aria-hidden="true">→</span></Link></div>}
+              {loadState === "ready" && visibleGroups.length === 0 && <div className="sportia-fixture-state" role="status"><p>{selectedCompetition ? `No ${homeCompetitions.find((league) => league.competition === selectedCompetition)?.name} matches available today.` : "No matches available today."}</p>{selectedCompetition && unavailableCompetitions.includes(homeCompetitions.find((league) => league.competition === selectedCompetition)?.name ?? "") && <small>A current fixture source for this competition is not configured yet.</small>}<Link href="/home/partidos">Open the full schedule <span aria-hidden="true">→</span></Link></div>}
               {visibleGroups.map((league) => {
                 const collapsed = collapsedLeagues.includes(league.name);
                 return <div className="sportia-league-group" key={league.name}>
@@ -328,7 +328,7 @@ export default function Home() {
               {loadState === "ready" && recommendedParley.length === 0 && <p className="sportia-parley-state" role="status">No hay estimaciones disponibles para los partidos de hoy en las competiciones con análisis del modelo.</p>}
               {recommendedParley.length > 0 && <ol className="sportia-parley-list">{recommendedParley.map((pick) => {
                 const league = homeCompetitions.find((item) => item.competition === pick.match.competition);
-                const href = getDetailHref(pick.match) ?? `/partidos?competicion=${encodeURIComponent(pick.match.competition)}`;
+                const href = getDetailHref(pick.match) ?? `/home/partidos?competicion=${encodeURIComponent(pick.match.competition)}`;
                 return <li key={`${pick.match.id}:${pick.market}`}><Link className="sportia-parley-pick" href={href} aria-label={`${pick.match.home} contra ${pick.match.away}: ${pick.label}, probabilidad estimada ${pick.probability} por ciento`}>
                   <span className="sportia-parley-match"><span><TeamBadge code={teamCode(pick.match.home)} crest={pick.match.homeLogo} /><small>{pick.match.home}</small></span><b>VS</b><span><TeamBadge code={teamCode(pick.match.away)} crest={pick.match.awayLogo} /><small>{pick.match.away}</small></span></span>
                   <span className="sportia-parley-market"><strong>{pick.label}</strong><small>{league?.name ?? pick.match.competition}</small></span>
@@ -338,7 +338,7 @@ export default function Home() {
               {loadErrors.length > 0 && <p className="sportia-parley-state">Algunas competiciones no entregaron datos; solo se muestran estimaciones disponibles.</p>}
               {loadState === "error" && <button className="sportia-parley-retry" type="button" onClick={() => { setLoadState("loading"); setRefreshKey((current) => current + 1); }}>Intentar de nuevo</button>}
               <p className="sportia-parley-disclaimer">Estimaciones individuales del modelo; no son una probabilidad combinada ni consejo de apuesta.</p>
-              <Link className="sportia-primary-button" href="/partidos">Ver agenda completa <span aria-hidden="true">→</span></Link>
+              <Link className="sportia-primary-button" href="/home/partidos">Ver agenda completa <span aria-hidden="true">→</span></Link>
             </section>
             <section className="sportia-card sportia-articles-card" aria-labelledby="articles-title">
               <h2 id="articles-title">Latest Article</h2>

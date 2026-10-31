@@ -74,7 +74,7 @@ export function CompetitionsBrowser() {
         {filteredCompetitions.length > 0 ? (
           <div className={styles.competitionGrid}>
             {filteredCompetitions.map((competition) => (
-              <Link className={styles.competitionCard} href={`/partidos?competicion=${encodeURIComponent(competition.query)}`} key={competition.id}>
+              <Link className={styles.competitionCard} href={`/home/partidos?competicion=${encodeURIComponent(competition.query)}`} key={competition.id}>
                 <span className={styles.competitionLogo}><Image src={competition.logo} alt="" width={52} height={52} /></span>
                 <span className={styles.competitionInfo}>
                   <strong>{competition.label}</strong>
@@ -93,7 +93,7 @@ export function CompetitionsBrowser() {
       <section className={styles.fixtures} aria-labelledby="upcoming-matches-title">
         <div className={styles.sectionHeading}>
           <div><h2 id="upcoming-matches-title">Próximos encuentros</h2><p>Clásicos de las principales ligas; consulta la agenda para confirmar fechas y horarios.</p></div>
-          <Link href="/partidos">Ver toda la agenda <span aria-hidden="true">→</span></Link>
+          <Link href="/home/partidos">Ver toda la agenda <span aria-hidden="true">→</span></Link>
         </div>
         <div className={styles.fixtureGrid}>
           {classicMatches.map((match) => (
@@ -108,7 +108,7 @@ export function CompetitionsBrowser() {
                 <span className={styles.versus}>vs</span>
                 <span className={`${styles.team} ${styles.awayTeam}`}><Image src={`https://crests.football-data.org/${match.awayCrest}.png`} alt="" width={26} height={26} unoptimized /><b>{match.away}</b></span>
               </div>
-              <Link href={`/partidos?competicion=${encodeURIComponent(match.query)}`}>Ver partidos <span aria-hidden="true">→</span></Link>
+              <Link href={`/home/partidos?competicion=${encodeURIComponent(match.query)}`}>Ver partidos <span aria-hidden="true">→</span></Link>
             </article>
           ))}
         </div>
@@ -116,7 +116,7 @@ export function CompetitionsBrowser() {
 
       <div className={styles.informationGrid}>
         <section className={styles.panel} aria-labelledby="coverage-title">
-          <div className={styles.panelHeading}><div><h2 id="coverage-title">Cobertura de datos por competición</h2><p>Consulta qué información está disponible en cada liga.</p></div><Link href="/metodologia" aria-label="Ver más sobre cobertura">›</Link></div>
+          <div className={styles.panelHeading}><div><h2 id="coverage-title">Cobertura de datos por competición</h2><p>Consulta qué información está disponible en cada liga.</p></div><Link href="/home/metodología" aria-label="Ver más sobre cobertura">›</Link></div>
           <div className={styles.coverageTable} role="table" aria-label="Cobertura de datos por competición">
             <div className={`${styles.coverageRow} ${styles.coverageHeader}`} role="row">
               <span role="columnheader">Competición</span><span role="columnheader">Partidos</span><span role="columnheader">Tabla</span><span role="columnheader">Estadísticas</span><span role="columnheader">Histórico</span>
@@ -140,7 +140,7 @@ export function CompetitionsBrowser() {
             <article><span className={styles.sourceIcon} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="5" rx="8" ry="3" /><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3" /></svg></span><span><b>Fuente de datos</b><small>football-data.org para agenda y tablas; datasets locales para cinco ligas.</small></span></article>
             <article><span className={styles.sourceIcon} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg></span><span><b>Actualización</b><small>Las consultas actuales se reutilizan desde caché durante seis horas.</small></span></article>
             <article><span className={styles.sourceIcon} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18m0-18a14 14 0 0 0 0 18" /></svg></span><span><b>Cobertura</b><small>La disponibilidad de datos cambia según la competición y la temporada.</small></span></article>
-            <article><span className={styles.sourceIcon} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10Z" /><path d="M13 3v7h7m-11 4h6m-6 4h6" /></svg></span><span><b>Más información</b><small>Consulta todos los detalles en la sección de <Link href="/metodologia">Metodología</Link>.</small></span></article>
+            <article><span className={styles.sourceIcon} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10Z" /><path d="M13 3v7h7m-11 4h6m-6 4h6" /></svg></span><span><b>Más información</b><small>Consulta todos los detalles en la sección de <Link href="/home/metodología">Metodología</Link>.</small></span></article>
           </div>
         </section>
       </div>

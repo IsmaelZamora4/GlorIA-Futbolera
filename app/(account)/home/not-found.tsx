@@ -12,7 +12,7 @@ export default function HomeNotFound() {
         <NotFoundContent
           homeHref="/home"
           homeLabel="Volver a mi home"
-          matchesHref="/partidos"
+          matchesHref="/home/partidos"
           matchesLabel="Ver partidos"
           variant="account"
         />

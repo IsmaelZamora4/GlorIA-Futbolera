@@ -58,7 +58,7 @@ export default function MethodologyPage() {
             <h2 id="methodology-title">Datos, contexto y estimaciones</h2>
             <p>Te contamos qué competiciones tienen análisis histórico, cómo calculamos sus probabilidades y qué cosas no puede saber un modelo basado en resultados pasados.</p>
             <div className="methodology-intro-note"><svg aria-hidden="true" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" /><path d="M10 9v5m0-8h.01" /></svg><p>Una probabilidad resume datos disponibles; no garantiza lo que ocurrirá en un partido.</p></div>
-            <Link className="methodology-topbar-link" href="/partidos">Ver partidos <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" /></svg></Link>
+            <Link className="methodology-topbar-link" href="/home/partidos">Ver partidos <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" /></svg></Link>
           </section>
 
           <nav className="methodology-index" aria-label="Secciones de metodología">
@@ -140,7 +140,7 @@ export default function MethodologyPage() {
             </ul>
           </section>
 
-          <footer className="methodology-footer"><span>¿Quieres ver el análisis aplicado?</span><Link href="/partidos">Explorar partidos <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" /></svg></Link></footer>
+          <footer className="methodology-footer"><span>¿Quieres ver el análisis aplicado?</span><Link href="/home/partidos">Explorar partidos <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" /></svg></Link></footer>
         </div>
       </main>
     </div>

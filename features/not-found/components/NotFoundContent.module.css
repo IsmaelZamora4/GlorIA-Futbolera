@@ -27,6 +27,13 @@
   background-color: var(--landing-canvas);
 }
 
+@media (min-width: 721px) {
+  :global(.landing-not-found-page) > .public {
+    z-index: 1;
+    background: transparent;
+  }
+}
+
 .public::before {
   position: absolute;
   z-index: 0;

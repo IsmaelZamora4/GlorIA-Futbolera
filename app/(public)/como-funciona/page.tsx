@@ -55,25 +55,25 @@ const information = [
   {
     title: "Partidos y competiciones",
     description: "Accede a la agenda de las ligas y torneos disponibles.",
-    href: "/partidos",
+    href: "/home/partidos",
     icon: "calendar",
   },
   {
     title: "Análisis estadístico",
     description: "Explora estimaciones de resultado, goles, córneres y tiros cuando haya datos suficientes.",
-    href: "/partidos",
+    href: "/home/partidos",
     icon: "chart",
   },
   {
     title: "Forma y métricas de equipos",
     description: "Compara el rendimiento reciente y las métricas disponibles de cada equipo.",
-    href: "/partidos",
+    href: "/home/partidos",
     icon: "shield",
   },
   {
     title: "Fuentes y límites",
     description: "Conoce la cobertura de datos y cómo interpretar las estimaciones.",
-    href: "/metodologia",
+    href: "/home/metodología",
     icon: "database",
   },
 ] as const;
