@@ -1,0 +1,679 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Arquitectura de GlorIA Futbolera",
+    "locale": "es",
+    "output": ".archify/architecture-gloria-futbolera-20261031-121458/architecture-gloria.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/IsmaelZamora4/GlorIA-Futbolera.git",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "ca4f95b06fc3e7dafab5fb917e626dd4c927eabf"
+    }
+  },
+  "components": [
+    {
+      "id": "browser",
+      "type": "external",
+      "label": "Persona usuaria",
+      "sublabel": "Navegador",
+      "pos": [
+        40,
+        250
+      ],
+      "size": [
+        140,
+        68
+      ],
+      "sources": [
+        {
+          "path": "app/(public)/login/page.tsx",
+          "line": 138,
+          "end_line": 147
+        }
+      ]
+    },
+    {
+      "id": "next-app",
+      "type": "frontend",
+      "label": "Aplicación Next.js",
+      "sublabel": "Rutas públicas · páginas privadas /home/*",
+      "pos": [
+        250,
+        250
+      ],
+      "size": [
+        166,
+        78
+      ],
+      "sources": [
+        {
+          "path": "app/(account)/home/layout.tsx",
+          "line": 6,
+          "end_line": 10
+        },
+        {
+          "path": "components/layout/SportiaSidebar.tsx",
+          "line": 33,
+          "end_line": 45
+        },
+        {
+          "path": "next.config.ts",
+          "line": 5,
+          "end_line": 15
+        }
+      ]
+    },
+    {
+      "id": "session-proxy",
+      "type": "security",
+      "label": "Proxy de sesión",
+      "sublabel": "Protege páginas y APIs",
+      "pos": [
+        490,
+        50
+      ],
+      "size": [
+        162,
+        76
+      ],
+      "sources": [
+        {
+          "path": "proxy.ts",
+          "line": 4,
+          "end_line": 11
+        },
+        {
+          "path": "lib/supabase/proxy.ts",
+          "line": 4,
+          "end_line": 17
+        },
+        {
+          "path": "lib/supabase/proxy.ts",
+          "line": 39,
+          "end_line": 52
+        }
+      ]
+    },
+    {
+      "id": "supabase-auth",
+      "type": "cloud",
+      "label": "Supabase Auth",
+      "sublabel": "Sesión · OAuth · correo",
+      "pos": [
+        730,
+        50
+      ],
+      "size": [
+        156,
+        76
+      ],
+      "sources": [
+        {
+          "path": "lib/supabase/proxy.ts",
+          "line": 19,
+          "end_line": 39
+        },
+        {
+          "path": "app/auth/callback/route.ts",
+          "line": 15,
+          "end_line": 25
+        },
+        {
+          "path": "app/(public)/login/page.tsx",
+          "line": 58,
+          "end_line": 73
+        }
+      ]
+    },
+    {
+      "id": "fixtures-api",
+      "type": "backend",
+      "label": "API de partidos",
+      "sublabel": "/api/local-fixtures",
+      "pos": [
+        490,
+        300
+      ],
+      "size": [
+        162,
+        76
+      ],
+      "sources": [
+        {
+          "path": "app/api/local-fixtures/route.ts",
+          "line": 28,
+          "end_line": 44
+        }
+      ]
+    },
+    {
+      "id": "football-data",
+      "type": "cloud",
+      "label": "football-data.org",
+      "sublabel": "Partidos actuales",
+      "pos": [
+        730,
+        260
+      ],
+      "size": [
+        156,
+        76
+      ],
+      "sources": [
+        {
+          "path": "app/api/local-fixtures/route.ts",
+          "line": 45,
+          "end_line": 74
+        },
+        {
+          "path": "features/fixtures/services/football-data.ts",
+          "line": 30,
+          "end_line": 60
+        }
+      ]
+    },
+    {
+      "id": "analysis",
+      "type": "backend",
+      "label": "Análisis de ligas",
+      "sublabel": "Métricas y estimaciones",
+      "pos": [
+        970,
+        365
+      ],
+      "size": [
+        166,
+        76
+      ],
+      "sources": [
+        {
+          "path": "features/match-analysis/services/league-analysis.ts",
+          "line": 279,
+          "end_line": 298
+        },
+        {
+          "path": "app/api/local-fixtures/route.ts",
+          "line": 60,
+          "end_line": 74
+        }
+      ]
+    },
+    {
+      "id": "processed-data",
+      "type": "database",
+      "label": "Datasets procesados",
+      "sublabel": "JSON histórico y temporada actual",
+      "pos": [
+        730,
+        455
+      ],
+      "size": [
+        190,
+        78
+      ],
+      "sources": [
+        {
+          "path": "scripts/normalize-league-data.mjs",
+          "line": 153,
+          "end_line": 171
+        },
+        {
+          "path": "features/match-analysis/services/league-analysis.ts",
+          "line": 120,
+          "end_line": 132
+        }
+      ]
+    },
+    {
+      "id": "csv-source",
+      "type": "database",
+      "label": "Datos de temporadas",
+      "sublabel": "CSV por competición",
+      "pos": [
+        250,
+        510
+      ],
+      "size": [
+        166,
+        76
+      ],
+      "sources": [
+        {
+          "path": "scripts/normalize-league-data.mjs",
+          "line": 4,
+          "end_line": 15
+        },
+        {
+          "path": "scripts/normalize-league-data.mjs",
+          "line": 113,
+          "end_line": 143
+        }
+      ]
+    },
+    {
+      "id": "normalizer",
+      "type": "backend",
+      "label": "Normalizador",
+      "sublabel": "scripts/normalize-league-data.mjs",
+      "pos": [
+        490,
+        510
+      ],
+      "size": [
+        190,
+        76
+      ],
+      "sources": [
+        {
+          "path": "scripts/normalize-league-data.mjs",
+          "line": 113,
+          "end_line": 150
+        },
+        {
+          "path": "scripts/normalize-league-data.mjs",
+          "line": 153,
+          "end_line": 171
+        }
+      ]
+    },
+    {
+      "id": "public-catalogue",
+      "type": "frontend",
+      "label": "Catálogo público",
+      "sublabel": "Competiciones · partidos destacados",
+      "pos": [
+        250,
+        50
+      ],
+      "size": [
+        190,
+        76
+      ],
+      "sources": [
+        {
+          "path": "app/(public)/competitions/page.tsx",
+          "line": 12,
+          "end_line": 28
+        },
+        {
+          "path": "features/competitions/components/CompetitionsBrowser.tsx",
+          "line": 28,
+          "end_line": 39
+        },
+        {
+          "path": "features/competitions/components/CompetitionsBrowser.tsx",
+          "line": 74,
+          "end_line": 90
+        }
+      ]
+    },
+    {
+      "id": "account-profile",
+      "type": "frontend",
+      "label": "Perfil de cuenta",
+      "sublabel": "Identidad · sesión compartida en /home",
+      "pos": [
+        40,
+        60
+      ],
+      "size": [
+        180,
+        76
+      ],
+      "sources": [
+        {
+          "path": "app/(account)/home/layout.tsx",
+          "line": 6,
+          "end_line": 10
+        },
+        {
+          "path": "components/layout/SportiaPageHeader.tsx",
+          "line": 5,
+          "end_line": 10
+        },
+        {
+          "path": "features/auth/components/UserProfile.tsx",
+          "line": 30,
+          "end_line": 47
+        }
+      ]
+    },
+    {
+      "id": "bank",
+      "type": "backend",
+      "label": "Mi Bank",
+      "sublabel": "Bank privado · validación · métricas",
+      "pos": [
+        250,
+        420
+      ],
+      "size": [
+        180,
+        78
+      ],
+      "sources": [
+        {
+          "path": "app/(account)/home/bank/page.tsx",
+          "line": 70,
+          "end_line": 98
+        },
+        {
+          "path": "features/bank/actions.ts",
+          "line": 20,
+          "end_line": 31
+        },
+        {
+          "path": "features/bank/services/calculations.ts",
+          "line": 30,
+          "end_line": 60
+        }
+      ]
+    },
+    {
+      "id": "bank-store",
+      "type": "database",
+      "label": "Supabase · Bank",
+      "sublabel": "Supabase · banks · bets · ajustes",
+      "pos": [
+        505,
+        420
+      ],
+      "size": [
+        200,
+        78
+      ],
+      "sources": [
+        {
+          "path": "supabase/migrations/20261029000100_create_bank_schema.sql",
+          "line": 4,
+          "end_line": 21
+        },
+        {
+          "path": "supabase/migrations/20261031153043_bank_limit_table_access.sql",
+          "line": 3,
+          "end_line": 17
+        },
+        {
+          "path": "supabase/migrations/20261031153622_bank_summary_rpc.sql",
+          "line": 19,
+          "end_line": 28
+        }
+      ]
+    },
+    {
+      "id": "not-found-routes",
+      "type": "frontend",
+      "label": "Rutas 404",
+      "sublabel": "Pública · /home/*",
+      "pos": [
+        40,
+        350
+      ],
+      "size": [
+        190,
+        70
+      ],
+      "sources": [
+        {
+          "path": "app/not-found.tsx",
+          "line": 11,
+          "end_line": 23
+        },
+        {
+          "path": "app/(account)/home/not-found.tsx",
+          "line": 6,
+          "end_line": 20
+        },
+        {
+          "path": "app/(account)/home/[...slug]/page.tsx",
+          "line": 3,
+          "end_line": 5
+        }
+      ]
+    },
+    {
+      "id": "not-found-content",
+      "type": "frontend",
+      "label": "Presentación 404",
+      "sublabel": "Mensaje · enlaces · wallpaper",
+      "pos": [
+        40,
+        480
+      ],
+      "size": [
+        190,
+        70
+      ],
+      "sources": [
+        {
+          "path": "features/not-found/components/NotFoundContent.tsx",
+          "line": 11,
+          "end_line": 29
+        },
+        {
+          "path": "features/not-found/components/NotFoundContent.module.css",
+          "line": 13,
+          "end_line": 19
+        },
+        {
+          "path": "features/not-found/components/NotFoundContent.module.css",
+          "line": 30,
+          "end_line": 41
+        }
+      ]
+    },
+    {
+      "id": "not-found-wallpaper",
+      "type": "cloud",
+      "label": "Wallpaper 404",
+      "sublabel": "public/wallpapers/404-wallpaper.png",
+      "pos": [
+        40,
+        610
+      ],
+      "size": [
+        190,
+        70
+      ],
+      "sources": [
+        {
+          "path": "features/not-found/components/NotFoundContent.module.css",
+          "line": 13,
+          "end_line": 17
+        }
+      ]
+    },
+    {
+      "id": "methodology-route",
+      "type": "frontend",
+      "label": "Metodología",
+      "sublabel": "Ruta interna ASCII · URL pública con tilde",
+      "pos": [
+        970,
+        620
+      ],
+      "size": [
+        205,
+        76
+      ],
+      "sources": [
+        {
+          "path": "next.config.ts",
+          "line": 20,
+          "end_line": 27
+        },
+        {
+          "path": "app/(account)/home/metodologia/page.tsx",
+          "line": 13,
+          "end_line": 16
+        }
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "user-app",
+      "from": "browser",
+      "to": "next-app",
+      "label": "navega"
+    },
+    {
+      "id": "app-proxy",
+      "from": "next-app",
+      "to": "session-proxy",
+      "label": "solicita ruta privada /home"
+    },
+    {
+      "id": "proxy-auth",
+      "from": "session-proxy",
+      "to": "supabase-auth",
+      "label": "valida o renueva sesión"
+    },
+    {
+      "id": "app-fixtures",
+      "from": "next-app",
+      "to": "fixtures-api",
+      "label": "consulta partidos"
+    },
+    {
+      "id": "fixtures-current",
+      "from": "fixtures-api",
+      "to": "football-data",
+      "label": "fecha actual o futura"
+    },
+    {
+      "id": "fixtures-history",
+      "from": "fixtures-api",
+      "to": "processed-data",
+      "label": "fecha histórica"
+    },
+    {
+      "id": "fixtures-analysis",
+      "from": "fixtures-api",
+      "to": "analysis",
+      "label": "calcula análisis disponible"
+    },
+    {
+      "id": "analysis-data",
+      "from": "analysis",
+      "to": "processed-data",
+      "label": "lee historial y temporada"
+    },
+    {
+      "id": "data-source",
+      "from": "csv-source",
+      "to": "normalizer",
+      "label": "temporadas CSV"
+    },
+    {
+      "id": "normalized-data",
+      "from": "normalizer",
+      "to": "processed-data",
+      "label": "escribe archivos JSON"
+    },
+    {
+      "id": "app-catalogue",
+      "from": "next-app",
+      "to": "public-catalogue",
+      "label": "publica catálogo y agenda destacada"
+    },
+    {
+      "id": "app-profile",
+      "from": "next-app",
+      "to": "account-profile",
+      "label": "muestra perfil de sesión"
+    },
+    {
+      "id": "app-bank",
+      "from": "next-app",
+      "to": "bank",
+      "label": "sirve /home/bank"
+    },
+    {
+      "id": "bank-store",
+      "from": "bank",
+      "to": "bank-store",
+      "label": "por usuario"
+    },
+    {
+      "id": "app-not-found",
+      "from": "next-app",
+      "to": "not-found-routes"
+    },
+    {
+      "id": "not-found-ui",
+      "from": "not-found-routes",
+      "to": "not-found-content"
+    },
+    {
+      "id": "not-found-wallpaper-use",
+      "from": "not-found-content",
+      "to": "not-found-wallpaper"
+    },
+    {
+      "id": "app-methodology",
+      "from": "next-app",
+      "to": "methodology-route",
+      "label": "reescribe la ruta UTF-8 a /home/metodologia"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Acceso",
+      "items": [
+        "Las rutas privadas bajo /home requieren sesión; las rutas antiguas redirigen a sus URLs canónicas.",
+        "Las APIs protegidas responden 401 sin usuario autenticado.",
+        "El callback intercambia el código de autenticación y vuelve a una ruta interna segura."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Partidos",
+      "items": [
+        "Para fechas actuales, la API consulta football-data.org.",
+        "Para fechas históricas, lee el dataset local de temporada.",
+        "Las páginas de inicio y partidos consumen /api/local-fixtures."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Datos y análisis",
+      "items": [
+        "El script normaliza seis CSV por competición en datasets JSON.",
+        "El análisis combina temporadas históricas con partidos actuales anteriores al encuentro.",
+        "API-Football y TheSportsDB tienen endpoints separados; no son el recorrido principal mostrado."
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Catálogo público",
+      "items": [
+        "/competitions permite buscar, filtrar y ordenar seis competiciones sin iniciar sesión.",
+        "El catálogo enlaza a la agenda de partidos; las páginas privadas siguen protegidas por sesión."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Cuenta y Bank",
+      "items": [
+        "Las páginas privadas viven bajo /home; Metodología se resuelve en el directorio ASCII /home/metodologia y next.config.ts reescribe la URL codificada con tilde.",
+        "Mi Bank valida las operaciones y asocia cada escritura al usuario autenticado; las tablas restringen privilegios además de RLS.",
+        "get_bank_summary() agrega las métricas completas en Postgres con SECURITY INVOKER y auth.uid(); requiere ejecutar las migraciones nuevas en Supabase."
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Estructura del código",
+      "items": [
+        "app/(public) agrupa las rutas públicas; app/(account)/home contiene las secciones autenticadas y sus URLs comienzan por /home/.",
+        "features/ organiza componentes y lógica por dominio; components/layout contiene navegación compartida y lib/supabase los adaptadores de infraestructura.",
+        "data/ separa metadata, raw y processed; public/ agrupa marca, wallpapers, editorial, competiciones, equipos, iconos y estadios.",
+        "Navegación privada: /home/partidos, /home/competiciones, /home/posiciones, /home/partido/[competition], /home/bank, /home/datos, /home/configuración y /home/metodología."
+      ]
+    }
+  ]
+}

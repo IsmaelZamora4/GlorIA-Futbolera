@@ -1,17 +1,17 @@
 # Graph Report - GlorIA_Futbolera  (2026-10-31)
 
 ## Corpus Check
-- 174 files · ~899,339 words
+- 170 files · ~948,815 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 40 file(s) not represented in the graph (top: .csv 30, .css 7, .example 1)
+- Unclassified: 41 file(s) not represented in the graph (top: .csv 30, .css 7, (none) 2)
 
 ## Summary
-- 957 nodes · 1626 edges · 78 communities (70 shown, 8 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 15 edges (avg confidence: 0.89)
+- 1015 nodes · 1716 edges · 75 communities (66 shown, 9 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 18 edges (avg confidence: 0.9)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `89e641a5`
+- Built from commit: `ca4f95b0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -20,10 +20,10 @@
 - normalize-premier-league.mjs
 - MatchDetailClient.tsx
 - partidos/page.tsx
-- react
+- metodologia/page.tsx
 - como-funciona/page.tsx
 - package.json
-- bank/page.tsx
+- BankDashboard.tsx
 - (public)/page.tsx
 - backtest-league-model.mjs
 - compilerOptions
@@ -36,18 +36,18 @@
 - refresh-current-season.mjs
 - postcss.config.mjs
 - README.md
-- local-fixtures/route.ts
-- metodologia/page.tsx
+- competitions/page.tsx
+- datasets.ts
 - api-football-audit.mjs
 - Auditoría de API-Football
 - GlorIA Futbolera — MVP y control de objetivos
-- Q: ¿Cómo conecta Next.js el catálogo, los partidos, Bank y autenticación?
+- GlorIA Futbolera — guía de estilo
 - Especificación: Bank personal
 - Tareas
 - 15. Plan de implementación por fases
 - 3.1 Mercados estadísticos incluidos
 - 8. Datos, fuentes y estrategia de API
-- 20261029000100_create_bank_schema.sql
+- public.bets
 - LandingMatchPreview.tsx
 - 7. Requisitos de diseño y experiencia
 - 11. Requisitos no funcionales
@@ -64,7 +64,7 @@
 - contacto/page.tsx
 - Tareas: Auth y Bank personal
 - Bank personal de GlorIA
-- login/page.tsx
+- react
 - ref_node_fs
 - Tareas: conexión de datos del nuevo home
 - validate-team-identities.mjs
@@ -73,36 +73,32 @@
 - normalize-league-data.mjs
 - league-analysis.ts
 - Estilo de fondo del hero
-- configuracion/page.tsx
+- configuración/page.tsx
 - [competition]/page.tsx
-- scripts
+- Contexto de GlorIA Futbolera
 - SportiaSidebar
 - next
 - getLocalStandings
-- dependencies
+- venue-photos.ts
 - Implementation Plan: Public competitions catalogue
 - not-found-page.test.cjs
 - app/layout.tsx
-- calibration.ts
-- supabase/proxy.ts
+- home/not-found.tsx
 - competitions-todo.md
 - Plan: páginas 404 pública y autenticada
-- eslint
 - Tareas: páginas 404
-- terminos/page.tsx
 - Página de metodología
 - posiciones/page.tsx
-- sportsdb/fixtures/route.ts
 
 ## God Nodes (most connected - your core abstractions)
-1. `next` - 48 edges
+1. `next` - 49 edges
 2. `normalizeLeague()` - 34 edges
 3. `getLocalLeagueAnalysis()` - 24 edges
 4. `react` - 23 edges
-5. `SportiaSidebar()` - 21 edges
+5. `SportiaSidebar()` - 22 edges
 6. `MatchDetailClient()` - 21 edges
-7. `GlorIA Futbolera — MVP y control de objetivos` - 20 edges
-8. `SportiaPageHeader()` - 19 edges
+7. `SportiaPageHeader()` - 20 edges
+8. `GlorIA Futbolera — MVP y control de objetivos` - 20 edges
 9. `compilerOptions` - 17 edges
 10. `MatchDetailPage()` - 15 edges
 
@@ -111,20 +107,20 @@
   docs/ideas/metodologia.md → features/match-analysis/services/league-analysis.ts
 - `Tareas y aceptación` --references--> `HomeLayout()`  [INFERRED]
   tasks/404-page-plan.md → app/(account)/home/layout.tsx
+- `Shell y jerarquía` --references--> `AppSidebar()`  [INFERRED]
+  STYLE.md → components/layout/AppSidebar.tsx
 - `Decisiones` --references--> `LandingFooter()`  [INFERRED]
   tasks/404-page-plan.md → components/layout/LandingFooter.tsx
 - `Decisiones` --references--> `LandingHeader()`  [INFERRED]
   tasks/404-page-plan.md → components/layout/LandingHeader.tsx
-- `Tareas y aceptación` --references--> `SportiaSidebar()`  [INFERRED]
-  tasks/404-page-plan.md → components/layout/SportiaSidebar.tsx
 
 ## Import Cycles
 - None detected.
 
-## Communities (78 total, 8 thin omitted)
+## Communities (75 total, 9 thin omitted)
 
 ### Community 0 - "analysis-model.test.cjs"
-Cohesion: 0.12
+Cohesion: 0.13
 Nodes (19): competitionAliases, getTeamVenue(), LocalCompetition, resolveFixtureVenue(), TeamVenue, teamVenues, getKnownTeamByKey(), normalizeTeamKey() (+11 more)
 
 ### Community 1 - "normalize-premier-league.mjs"
@@ -137,23 +133,23 @@ Nodes (48): crestByTeam, getKnownTeamCrest(), formatTimelineDate(), FormTimeline
 
 ### Community 3 - "partidos/page.tsx"
 Cohesion: 0.08
-Nodes (33): competitionLabels, dateLabel(), featuredMatch, Fixture, FixtureCacheEntry, FixtureRow(), FootballDataFixture, formatDate() (+25 more)
+Nodes (34): competitionLabels, dateLabel(), Fixture, FixtureCacheEntry, FixtureRow(), FootballDataFixture, formatDate(), getCompetitionLogo() (+26 more)
 
-### Community 4 - "react"
-Cohesion: 0.26
-Nodes (7): UpdatePasswordPage(), supabase, UserProfile(), signOut(), getHomeUserInitials(), createClient(), react
+### Community 4 - "metodologia/page.tsx"
+Cohesion: 0.18
+Nodes (6): coverage, fixtureOnly, formatUpdatedAt(), metadata, MethodologyPage(), metricLabels
 
 ### Community 5 - "como-funciona/page.tsx"
-Cohesion: 0.22
+Cohesion: 0.20
 Nodes (11): HowItWorksPage(), Icon(), IconName, information, match, MatchHistory(), metadata, OutcomeEstimate() (+3 more)
 
 ### Community 6 - "package.json"
-Cohesion: 0.15
-Nodes (18): devDependencies, supabase@^2.122.0, tailwindcss@4.1.14, @tailwindcss/postcss@4.1.14, @types/node@24.7.2, @types/react@19.2.2, @types/react-dom@19.2.2, typescript@5.9.3 (+10 more)
+Cohesion: 0.05
+Nodes (45): dependencies, next@^16.4.2, react@19.1.0, react-dom@19.1.0, @supabase/ssr@^0.12.7, @supabase/supabase-js@^2.118.0, devDependencies, eslint@^9.39.5 (+37 more)
 
-### Community 7 - "bank/page.tsx"
-Cohesion: 0.08
-Nodes (43): BankPage(), HomeLayout(), GET(), HomeUserContext, HomeUserProvider(), useHomeUserProfile(), RequireAuth(), firstString() (+35 more)
+### Community 7 - "BankDashboard.tsx"
+Cohesion: 0.05
+Nodes (60): BankPage(), BankPageShell(), BankSearchParams, BankSummaryRow, getLoadError(), numeric(), parsePage(), toBankSummary() (+52 more)
 
 ### Community 8 - "(public)/page.tsx"
 Cohesion: 0.24
@@ -177,11 +173,11 @@ Nodes (13): Checkpoint visual y funcional, Decisiones de implementación, Estado
 
 ### Community 13 - "LandingFooter"
 Cohesion: 0.20
-Nodes (12): metadata, NotFound(), metadata, PublicCompetitionsPage(), FooterIcon(), groups, LandingFooter(), LandingHeader() (+4 more)
+Nodes (12): metadata, NotFound(), metadata, sections, TermsPage(), FooterIcon(), groups, LandingFooter() (+4 more)
 
 ### Community 14 - "home/page.tsx"
-Cohesion: 0.18
-Nodes (18): articles, competitionDetails, CompetitionGroup, FixtureResponse, formatKickoff(), getDetailHref(), getRecommendedPick(), getVectorCrestUrl() (+10 more)
+Cohesion: 0.17
+Nodes (19): articles, competitionDetails, CompetitionGroup, FixtureResponse, formatKickoff(), getDetailHref(), getRecommendedPick(), getVectorCrestUrl() (+11 more)
 
 ### Community 16 - "premier-league-analysis.ts"
 Cohesion: 0.27
@@ -195,13 +191,13 @@ Nodes (7): dryRun, league, leagues, parseCsvLine(), requiredColumns, sourceArgum
 Cohesion: 0.12
 Nodes (15): Datos históricos locales, Mercados del MVP, Rutina semanal, Validación del modelo, Cobertura y fuentes, Comandos, Cómo se calcula, Detalle del encuentro (+7 more)
 
-### Community 21 - "local-fixtures/route.ts"
-Cohesion: 0.24
-Nodes (12): GET(), datasets, GET(), LocalFixture, fixtureInFlight, fixtureMemoryCache, footballDataCompetitions, FootballDataStanding (+4 more)
+### Community 21 - "competitions/page.tsx"
+Cohesion: 0.33
+Nodes (6): metadata, PublicCompetitionsPage(), Availability(), classicMatches, competitions, CompetitionsBrowser()
 
-### Community 22 - "metodologia/page.tsx"
-Cohesion: 0.12
-Nodes (12): coverage, fixtureOnly, formatUpdatedAt(), metadata, MethodologyPage(), metricLabels, datasetInfoByCompetition, DatasetMarket (+4 more)
+### Community 22 - "datasets.ts"
+Cohesion: 0.29
+Nodes (6): datasetInfoByCompetition, DatasetMarket, datasetSeasons, DatasetStatus, historicalMarkets, insufficientDatasetInfo
 
 ### Community 23 - "api-football-audit.mjs"
 Cohesion: 0.23
@@ -212,12 +208,12 @@ Cohesion: 0.22
 Nodes (8): Auditoría de API-Football, Estadísticas de partido, Hallazgo adicional del plan gratuito, Interpretación, Ligas y temporadas, Muestras de partidos finalizados, Recomendaciones, Resultado observado
 
 ### Community 25 - "GlorIA Futbolera — MVP y control de objetivos"
-Cohesion: 0.18
-Nodes (10): DatasetInfo, 12. Fuera del alcance del MVP, 13. Definición de “terminado”, 14. Matriz de seguimiento de objetivos, 16. Riesgos y limitaciones conocidas, 17. Criterios para considerar el MVP listo, 19. Registro de cambios, 4. Competiciones incluidas (+2 more)
+Cohesion: 0.22
+Nodes (8): 12. Fuera del alcance del MVP, 13. Definición de “terminado”, 16. Riesgos y limitaciones conocidas, 17. Criterios para considerar el MVP listo, 19. Registro de cambios, 4. Competiciones incluidas, Estados permitidos para el seguimiento, GlorIA Futbolera — MVP y control de objetivos
 
-### Community 26 - "Q: ¿Cómo conecta Next.js el catálogo, los partidos, Bank y autenticación?"
-Cohesion: 0.50
-Nodes (3): Answer, Q: ¿Cómo conecta Next.js el catálogo, los partidos, Bank y autenticación?, Source Nodes
+### Community 26 - "GlorIA Futbolera — guía de estilo"
+Cohesion: 0.22
+Nodes (8): Composición y componentes, Fuentes del sistema, GlorIA Futbolera — guía de estilo, Identidad común, Paleta, Referencias y alcance, Reglas para nuevos apartados, Sitio público `/`
 
 ### Community 27 - "Especificación: Bank personal"
 Cohesion: 0.15
@@ -239,12 +235,12 @@ Nodes (7): 3.1 Mercados estadísticos incluidos, 3. Alcance funcional, M1. Resul
 Cohesion: 0.29
 Nodes (7): 8. Datos, fuentes y estrategia de API, Caché y almacenamiento local, Datos de demostración, Fuente prevista, Política de presupuesto de requests, Reglas obligatorias para las llamadas, Variables de entorno
 
-### Community 32 - "20261029000100_create_bank_schema.sql"
-Cohesion: 0.35
-Nodes (7): bank_adjustments_bank_id_occurred_at_idx, bank_adjustments_user_id_occurred_at_idx, bets_bank_id_placed_at_idx, bets_user_id_status_idx, public.bank_adjustments, public.banks, public.bets
+### Community 32 - "public.bets"
+Cohesion: 0.29
+Nodes (8): bank_adjustments_bank_id_occurred_at_idx, bank_adjustments_user_id_occurred_at_idx, bets_bank_id_placed_at_idx, bets_user_id_status_idx, public.bank_adjustments, public.banks, public.bets, public.get_bank_summary()
 
 ### Community 33 - "LandingMatchPreview.tsx"
-Cohesion: 0.23
+Cohesion: 0.25
 Nodes (9): Crest(), Form(), LandingMatchPreview(), MetricCard(), Results(), Tab, tabs, Team (+1 more)
 
 ### Community 34 - "7. Requisitos de diseño y experiencia"
@@ -299,9 +295,9 @@ Nodes (9): Checkpoint: Dominio, Checkpoint: Fundación, Checkpoint: Identidad, C
 Cohesion: 0.22
 Nodes (8): Alcance inicial, Bank personal de GlorIA, Criterio de éxito, Dirección recomendada, No incluir todavía, Preguntas abiertas, Problema, Supuestos por validar
 
-### Community 49 - "login/page.tsx"
-Cohesion: 0.23
-Nodes (13): GET(), AtIcon(), EyeIcon(), getAuthCallbackUrl(), getRequestedDestination(), GoogleIcon(), LockIcon(), LoginForm() (+5 more)
+### Community 49 - "react"
+Cohesion: 0.10
+Nodes (30): HomeLayout(), GET(), UpdatePasswordPage(), AtIcon(), EyeIcon(), getAuthCallbackUrl(), getRequestedDestination(), GoogleIcon() (+22 more)
 
 ### Community 50 - "ref_node_fs"
 Cohesion: 0.22
@@ -328,36 +324,36 @@ Cohesion: 0.27
 Nodes (9): leagues, normalizeRow(), parseCsvLine(), processedRoot, rawRoot, requiredColumns, seasonFromFile(), toIsoDate() (+1 more)
 
 ### Community 56 - "league-analysis.ts"
-Cohesion: 0.13
-Nodes (26): AnalysisConfig, average(), blendHistoricalAndCurrent(), configurations, dataCache, DerivedMarkets, expectedAwaySideMetric(), expectedHomeSideMetric() (+18 more)
+Cohesion: 0.06
+Nodes (55): GET(), GET(), datasets, GET(), LocalFixture, GET(), competitions, fixtureInFlight (+47 more)
 
-### Community 58 - "configuracion/page.tsx"
+### Community 58 - "configuración/page.tsx"
 Cohesion: 0.19
 Nodes (14): availableCompetitions, fixtureCachePrefixes, savePreferences(), SettingsIcon(), SettingsPage(), AppLanguage, applyPreferences(), AppTheme (+6 more)
 
 ### Community 59 - "[competition]/page.tsx"
-Cohesion: 0.22
-Nodes (14): MatchDetailPage(), safeCrest(), SearchParams, getLocalVenuePhoto(), getVenuePhoto(), isTrustedImageUrl(), isTrustedSourceUrl(), localVenuePhotos (+6 more)
+Cohesion: 0.31
+Nodes (10): MatchDetailPage(), safeCrest(), SearchParams, getLocalVenuePhoto(), getDataset(), getHeadToHead(), getLocalMatchDetailContext(), getMatchDetailCompetitionBySlug() (+2 more)
 
-### Community 60 - "scripts"
-Cohesion: 0.14
-Nodes (14): scripts, backtest, build, cache:logos, dev, lint, normalize:data, normalize:premier (+6 more)
+### Community 60 - "Contexto de GlorIA Futbolera"
+Cohesion: 0.25
+Nodes (7): Archivos locales que requieren revisión antes de incluirlos, Contexto de GlorIA Futbolera, Continuación, Estado y verificaciones de la tarea reciente, Navegación autenticada, Proyecto y reglas, Páginas 404
 
 ### Community 61 - "SportiaSidebar"
-Cohesion: 0.19
-Nodes (13): competitions, CompetitionsPage(), DataPage(), datasets, HomeNotFound(), AppSidebar(), SportiaPageHeader(), Icon() (+5 more)
+Cohesion: 0.18
+Nodes (14): competitions, CompetitionsPage(), DataPage(), datasets, SportiaPageHeader(), Icon(), IconName, leagues (+6 more)
 
 ### Community 62 - "next"
-Cohesion: 0.24
-Nodes (5): metadata, PrivacyPage(), LegalPageLayout(), nextConfig, next
+Cohesion: 0.16
+Nodes (10): metadata, PrivacyPage(), LegalPageLayout(), isProtectedPath(), protectedPageRoots, updateSession(), nextConfig, config (+2 more)
 
 ### Community 63 - "getLocalStandings"
-Cohesion: 0.24
-Nodes (11): createStanding(), getDataset(), getLocalMatchDetailContext(), getLocalStandings(), getStandingsZone(), getTeamRecentForm(), getTeamSeasonStatistics(), getTeamSideValue() (+3 more)
+Cohesion: 0.31
+Nodes (9): createStanding(), getLocalStandings(), getStandingsZone(), getTeamRecentForm(), getTeamSeasonStatistics(), getTeamSideValue(), getVenueSeasonRecord(), latestFinishedDate() (+1 more)
 
-### Community 64 - "dependencies"
-Cohesion: 0.22
-Nodes (9): dependencies, next@^16.4.2, react@19.1.0, react-dom@19.1.0, @supabase/ssr@^0.12.7, @supabase/supabase-js@^2.118.0, react-dom, @supabase/ssr (+1 more)
+### Community 64 - "venue-photos.ts"
+Cohesion: 0.38
+Nodes (6): getVenuePhoto(), isTrustedImageUrl(), isTrustedSourceUrl(), localVenuePhotos, VenuePhoto, WikipediaSummary
 
 ### Community 65 - "Implementation Plan: Public competitions catalogue"
 Cohesion: 0.20
@@ -371,57 +367,41 @@ Nodes (7): assert, path, React, { readFileSync }, { renderToStaticMarkup }, test
 Cohesion: 0.29
 Nodes (4): jakartaSans, metadata, plexSans, plexSansCondensed
 
-### Community 68 - "calibration.ts"
-Cohesion: 0.31
-Nodes (9): applyMap(), calibrateProbability(), calibrateResultProbabilities(), CalibrationBin, CalibrationDocument, CalibrationMap, clamp(), getCalibrationDocument() (+1 more)
-
-### Community 69 - "supabase/proxy.ts"
-Cohesion: 0.43
-Nodes (5): isProtectedPath(), protectedPageRoots, updateSession(), config, proxy()
+### Community 68 - "home/not-found.tsx"
+Cohesion: 0.53
+Nodes (3): HomeNotFound(), NotFoundContent(), NotFoundContentProps
 
 ### Community 71 - "Plan: páginas 404 pública y autenticada"
 Cohesion: 0.29
 Nodes (6): Criterios de aceptación, Decisiones, Objetivo, Plan: páginas 404 pública y autenticada, Riesgos, Tareas y aceptación
-
-### Community 72 - "eslint"
-Cohesion: 0.40
-Nodes (4): eslint@^9.39.5, eslint-config-next@^16.4.2, eslint, eslint-config-next
-
-### Community 74 - "terminos/page.tsx"
-Cohesion: 0.33
-Nodes (6): metadata, sections, TermsPage(), ContactIconName, TermsExplorer(), TermsSection
 
 ### Community 75 - "Página de metodología"
 Cohesion: 0.22
 Nodes (8): Alcance inicial, Criterio de éxito, Dirección recomendada, No incluir todavía, Problema, Próximos pasos antes de implementar, Página de metodología, Supuestos por validar
 
 ### Community 76 - "posiciones/page.tsx"
-Cohesion: 0.39
-Nodes (7): competitions, dynamic, getCompetition(), positionClass(), PositionsPage(), StandingsTable(), getFootballDataStandings()
-
-### Community 77 - "sportsdb/fixtures/route.ts"
-Cohesion: 0.53
-Nodes (4): GET(), getSportsDbEvents(), leagueAliases, sportsDbLeagues
+Cohesion: 0.33
+Nodes (8): competitions, dynamic, getCompetition(), positionClass(), PositionsPage(), StandingsTable(), FootballDataStanding, getFootballDataStandings()
 
 ## Knowledge Gaps
 - **1 isolated node(s):** `Estilo de fondo del hero`
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 478 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **8 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 514 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `next` connect `next` to `MatchDetailClient.tsx`, `partidos/page.tsx`, `react`, `como-funciona/page.tsx`, `package.json`, `bank/page.tsx`, `(public)/page.tsx`, `LandingFooter`, `home/page.tsx`, `local-fixtures/route.ts`, `metodologia/page.tsx`, `LandingMatchPreview.tsx`, `contacto/page.tsx`, `login/page.tsx`, `configuracion/page.tsx`, `[competition]/page.tsx`, `SportiaSidebar`, `dependencies`, `app/layout.tsx`, `supabase/proxy.ts`, `terminos/page.tsx`, `posiciones/page.tsx`, `sportsdb/fixtures/route.ts`?**
-  _High betweenness centrality (0.240) - this node is a cross-community bridge._
+- **Why does `next` connect `next` to `MatchDetailClient.tsx`, `partidos/page.tsx`, `metodologia/page.tsx`, `como-funciona/page.tsx`, `package.json`, `BankDashboard.tsx`, `(public)/page.tsx`, `LandingFooter`, `home/page.tsx`, `competitions/page.tsx`, `LandingMatchPreview.tsx`, `contacto/page.tsx`, `react`, `league-analysis.ts`, `configuración/page.tsx`, `[competition]/page.tsx`, `SportiaSidebar`, `app/layout.tsx`, `posiciones/page.tsx`?**
+  _High betweenness centrality (0.273) - this node is a cross-community bridge._
+- **Are the 2 inferred relationships involving `SportiaSidebar()` (e.g. with `Shell y jerarquía` and `Tareas y aceptación`) actually correct?**
+  _`SportiaSidebar()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Estilo de fondo del hero` to the rest of the system?**
   _1 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `analysis-model.test.cjs` be split into smaller, more focused modules?**
-  _Cohesion score 0.12318840579710146 - nodes in this community are weakly interconnected._
-- **Why does `DatasetInfo` connect `GlorIA Futbolera — MVP y control de objetivos` to `league-analysis.ts`, `partidos/page.tsx`, `metodologia/page.tsx`?**
-  _High betweenness centrality (0.110) - this node is a cross-community bridge._
+  _Cohesion score 0.13043478260869565 - nodes in this community are weakly interconnected._
+- **Why does `DatasetInfo` connect `partidos/page.tsx` to `league-analysis.ts`, `datasets.ts`?**
+  _High betweenness centrality (0.100) - this node is a cross-community bridge._
 - **Should `normalize-premier-league.mjs` be split into smaller, more focused modules?**
   _Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected._
-- **Why does `GlorIA Futbolera — MVP y control de objetivos` connect `GlorIA Futbolera — MVP y control de objetivos` to `7. Requisitos de diseño y experiencia`, `11. Requisitos no funcionales`, `9. Motor de análisis estadístico`, `10. Arquitectura sugerida`, `18. Instrucciones para Codex`, `5. Usuarios y escenarios principales`, `6. Páginas y componentes del MVP`, `1. Resumen del producto`, `2. Objetivos del MVP`, `15. Plan de implementación por fases`, `3.1 Mercados estadísticos incluidos`, `8. Datos, fuentes y estrategia de API`?**
-  _High betweenness centrality (0.110) - this node is a cross-community bridge._
-- **Should `MatchDetailClient.tsx` be split into smaller, more focused modules?**
-  _Cohesion score 0.07407407407407407 - nodes in this community are weakly interconnected._
+- **Why does `GlorIA Futbolera — MVP y control de objetivos` connect `GlorIA Futbolera — MVP y control de objetivos` to `7. Requisitos de diseño y experiencia`, `partidos/page.tsx`, `11. Requisitos no funcionales`, `9. Motor de análisis estadístico`, `10. Arquitectura sugerida`, `18. Instrucciones para Codex`, `5. Usuarios y escenarios principales`, `6. Páginas y componentes del MVP`, `1. Resumen del producto`, `2. Objetivos del MVP`, `15. Plan de implementación por fases`, `3.1 Mercados estadísticos incluidos`, `8. Datos, fuentes y estrategia de API`?**
+  _High betweenness centrality (0.094) - this node is a cross-community bridge._

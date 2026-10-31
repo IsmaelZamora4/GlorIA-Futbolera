@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261031-121458\\candidate.json",
+    "sha256": "17a24c6a69e77d2d1f5ba1b624ad746cd87d535e219ae43e5be70bb2a18c16a4",
+    "bytes": 15822
+  },
+  "artifact": {
+    "path": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261031-121458\\architecture-gloria.html",
+    "sha256": "93bf3bef7d64b21b059bca0a48bc745c7cd0b7822b85488f3493b17714c82da9",
+    "bytes": 883362
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261031-121458\\architecture-gloria.finalize.json",
+    "summaryReceipt": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261031-121458\\architecture-gloria.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261031-121458\\architecture-gloria.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.2.0",
+    "availableVersion": "3.2.0",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-30T20:41:53.711Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 7425,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  },
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "resolvedCrossovers": 2,
+      "routesOverSuggestedBends": 1
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [
+        {
+          "left": {
+            "id": "fixtures-analysis",
+            "from": "fixtures-api",
+            "to": "analysis",
+            "label": "calcula análisis disponible",
+            "collectionIndex": 6,
+            "artifactIndex": 7
+          },
+          "right": {
+            "id": "app-methodology",
+            "from": "next-app",
+            "to": "methodology-route",
+            "label": "reescribe la ruta UTF-8 a /home/metodologia",
+            "collectionIndex": 17,
+            "artifactIndex": 18
+          },
+          "point": [
+            946,
+            396
+          ]
+        },
+        {
+          "left": {
+            "id": "analysis-data",
+            "from": "analysis",
+            "to": "processed-data",
+            "label": "lee historial y temporada",
+            "collectionIndex": 7,
+            "artifactIndex": 8
+          },
+          "right": {
+            "id": "app-methodology",
+            "from": "next-app",
+            "to": "methodology-route",
+            "label": "reescribe la ruta UTF-8 a /home/metodologia",
+            "collectionIndex": 17,
+            "artifactIndex": 18
+          },
+          "point": [
+            946,
+            471
+          ]
+        }
+      ],
+      "detours": [
+        {
+          "relationship": {
+            "id": "app-methodology",
+            "from": "next-app",
+            "to": "methodology-route",
+            "label": "reescribe la ruta UTF-8 a /home/metodologia",
+            "collectionIndex": 17,
+            "artifactIndex": 18
+          },
+          "bends": 3,
+          "stretch": 1.047
+        }
+      ],
+      "truncated": false
+    },
+    "hints": [
+      "fixtures-api → analysis crosses next-app → methodology-route: move the node of whichever is a branch, return, or second entrance to the other side of the main path, so that relationship runs through an empty corridor.",
+      "analysis → processed-data crosses next-app → methodology-route: move the node of whichever is a branch, return, or second entrance to the other side of the main path, so that relationship runs through an empty corridor.",
+      "next-app → methodology-route needs 3 bends: move node next-app or methodology-route so they share a row or column with matching centers, or sit diagonally with a clear corner."
+    ],
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}
