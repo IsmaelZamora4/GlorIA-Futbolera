@@ -37,8 +37,8 @@ Las rutas privadas están bajo `/home`; el grupo `(account)` no aparece en URL.
 
 ## Grafo y diagrama
 
-- Grafo Graphify actualizado desde checkout limpio del commit `ca4f95b06fc3e7dafab5fb917e626dd4c927eabf`: `graphify-out/graph.json`, `graphify-out/graph.html` y `graphify-out/GRAPH_REPORT.md`.
-- Último grafo: 1,015 nodos, 1,716 relaciones y 75 comunidades. El corpus reporta 170 archivos y 41 archivos sin clasificar (principalmente CSV y CSS).
+- Grafo Graphify actualizado desde checkout limpio del commit `d4394af`: `graphify-out/graph.json`, `graphify-out/graph.html` y `graphify-out/GRAPH_REPORT.md`.
+- Último grafo: 1,017 nodos, 1,719 relaciones y 76 comunidades. El corpus reporta 170 archivos y 41 archivos sin clasificar (principalmente CSV y CSS).
 - Diagrama Archify actualizado en `.archify/architecture-gloria-futbolera-20261031-121458/architecture-gloria.html`; su `candidate.json` fija como evidencia el mismo commit `ca4f95b...`.
 - Archify `finalize` pasó validación, entrega, integridad y browser-check. Se generó revisión visual automatizada; la composición se inspeccionó en captura oscura de escritorio. El recorrido de reescritura de metodología cruza dos líneas secundarias del mapa, sin impedir su lectura.
 
