@@ -2888,6 +2888,13 @@ button:active, .nav-item:active, .mobile-app-nav-item:active { transform: scale(
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
+.landing-not-found-page > .landing-header {
+  background: linear-gradient(180deg, rgba(8,7,12,.96) 0%, rgba(8,7,12,.8) 56%, rgba(8,7,12,0) 100%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+.landing-not-found-page > .landing-header > .landing-nav > a:first-child { position: relative; color: #fff; }
+.landing-not-found-page > .landing-header > .landing-nav > a:first-child::after { position: absolute; right: 0; bottom: -27px; left: 0; height: 2px; background: #bd80ff; content: ""; }
 .landing-brand { display: inline-flex; width: max-content; align-items: center; gap: 9px; color: #fff; font-size: 16px; text-decoration: none; }
 .landing-brand img { width: 32px; height: 32px; filter: invert(.88); object-fit: contain; }
 .landing-footer-brand img { width: 25px; height: 25px; filter: invert(.88); object-fit: contain; }

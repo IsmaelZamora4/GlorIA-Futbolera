@@ -1,8 +1,16 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- Node's native test runner loads this CJS bridge without extra dependencies. */
 const assert = require("node:assert/strict");
 const { existsSync, readFileSync } = require("node:fs");
+const Module = require("node:module");
+const path = require("node:path");
 const test = require("node:test");
 const typescript = require("typescript");
+
+const resolveFilename = Module._resolveFilename;
+Module._resolveFilename = function resolveProjectAlias(request, parent, isMain, options) {
+  const resolvedRequest = request.startsWith("@/") ? path.join(__dirname, "..", request.slice(2)) : request;
+  return resolveFilename.call(this, resolvedRequest, parent, isMain, options);
+};
 
 require.extensions[".ts"] = (module, fileName) => {
   const source = readFileSync(fileName, "utf8");
