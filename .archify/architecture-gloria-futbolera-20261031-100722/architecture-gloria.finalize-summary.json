@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261031-100722\\candidate.json",
+    "sha256": "92facad8051ff67d250fbb9955de3e8c9366ec5ff6e462931b88c668e7a34290",
+    "bytes": 14869
+  },
+  "artifact": {
+    "path": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261031-100722\\architecture-gloria.html",
+    "sha256": "3b61d450fd572d38530a2de3df6d82f60bd47d42444f0281eb2d85a0e889e0d0",
+    "bytes": 879702
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261031-100722\\architecture-gloria.finalize.json",
+    "summaryReceipt": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261031-100722\\architecture-gloria.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261031-100722\\architecture-gloria.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.2.0",
+    "availableVersion": "3.2.0",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-30T20:41:53.711Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 8489,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  }
+}

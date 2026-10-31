@@ -42,9 +42,11 @@ El layout `app/(account)/home/layout.tsx` requiere una sesión y comparte el per
 - Se creó `/home/datos` con información de cobertura de datos.
 - Se conservaron las redirecciones para las rutas antiguas.
 - `npx next typegen` y `npm run typecheck` pasaron después de retirar tipos obsoletos de `.next/types/app/(account)/`; la limpieza afectó solo artefactos generados.
-- `graphify update . --force` terminó con código 0 e informó que no había cambios de topología. El grafo actual ya contiene las páginas bajo `app/(account)/home/`.
-- No se ejecutó la suite de pruebas unitarias en esta tarea.
-- El diagrama Archify previo tenía referencias a ubicaciones antiguas y debe quedar ligado a la revisión publicada que contiene los cambios de rutas.
+- `graphify update . --force` terminó con código 0 y regeneró `graphify-out/graph.json`, `graphify-out/graph.html` y `graphify-out/GRAPH_REPORT.md`. El grafo representa las páginas bajo `app/(account)/home/`.
+- Diagrama de arquitectura actualizado en `.archify/architecture-gloria-futbolera-20261031-100722/architecture-gloria.html`; sus citas de código apuntan a la revisión `ff7cd0560c517dc58ff50d1c9d807ce29e0a2f5e`, que contiene las páginas y redirecciones nuevas.
+- Archify `finalize architecture` pasó validación, entrega, comprobación del HTML y browser-check; no se hizo revisión visual manual.
+- `npm run typecheck` pasó. No se ejecutó la suite de pruebas unitarias en esta tarea.
+- Los cambios de código y documentación de esta tarea se publican juntos en `origin/main`; al continuar, verificar `git status` por si hay cambios posteriores.
 
 ## Archivos locales que requieren revisión antes de incluirlos
 
@@ -52,6 +54,7 @@ En el árbol de trabajo había artefactos no seguidos de revisiones previas bajo
 
 ## Continuación
 
-1. Verificar el estado de Git y conservar los cambios de páginas 404 y navegación que ya están en curso.
-2. Actualizar y validar el diagrama Archify con evidencia y rutas de archivos actuales.
-3. Revisar `context.md`, el grafo, el diagrama y el diff antes de completar el envío a GitHub.
+1. Leer este archivo y el `AGENTS.md` raíz antes de trabajar.
+2. Ejecutar `git status --short` para distinguir cambios nuevos del trabajo ya publicado.
+3. Para modificar rutas privadas, mantener el prefijo `/home` y actualizar enlaces en la misma tarea.
+4. Si cambia la arquitectura, volver a generar Graphify y revisar las citas del diagrama Archify antes de actualizar su revisión fuente.
