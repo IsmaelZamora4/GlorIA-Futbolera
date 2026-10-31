@@ -2,16 +2,26 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { validateBankInput, validateBetInput, type BankCurrency, type BetStatus } from "@/features/bank/services/calculations";
+import { validateAdjustmentInput, validateBankInput, validateBetDetails, validateBetInput, type BankCurrency, type BetStatus } from "@/features/bank/services/calculations";
 
 type ActionResult = { error?: string; success?: string };
+
+function getText(formData: FormData, field: string): string {
+  const value = formData.get(field);
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function getNumber(formData: FormData, field: string): number {
+  const value = formData.get(field);
+  return typeof value === "string" && value.trim() ? Number(value) : Number.NaN;
+}
 
 export async function createBank(formData: FormData): Promise<ActionResult> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Tu sesión ha caducado. Vuelve a iniciar sesión." };
-  const currency = String(formData.get("currency") ?? "");
-  const initialCapital = Number(formData.get("initialCapital"));
+  const currency = getText(formData, "currency");
+  const initialCapital = getNumber(formData, "initialCapital");
   const errors = validateBankInput({ initialCapital, currency });
   if (errors.length) return { error: errors[0] };
   const { error } = await supabase.from("banks").insert({ user_id: user.id, currency: currency as BankCurrency, initial_capital: initialCapital });
@@ -24,14 +34,22 @@ export async function createBet(formData: FormData): Promise<ActionResult> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Tu sesión ha caducado. Vuelve a iniciar sesión." };
-  const bankResult = await supabase.from("banks").select("id").eq("user_id", user.id).single();
-  if (bankResult.error || !bankResult.data) return { error: "Crea tu Bank antes de registrar una apuesta." };
-  const stake = Number(formData.get("stake"));
-  const decimalOdds = Number(formData.get("decimalOdds"));
-  const errors = validateBetInput({ stake, decimalOdds });
-  if (errors.length) return { error: errors[0] };
-  const values = { bank_id: bankResult.data.id, user_id: user.id, sport: String(formData.get("sport") ?? "Fútbol"), event: String(formData.get("event") ?? ""), market: String(formData.get("market") ?? ""), selection: String(formData.get("selection") ?? ""), stake, decimal_odds: decimalOdds };
-  if ([values.event, values.market, values.selection].some((value) => !value.trim())) return { error: "Completa evento, mercado y selección." };
+  const { data: bank, error: bankError } = await supabase.from("banks").select("id").eq("user_id", user.id).maybeSingle();
+  if (bankError || !bank) return { error: "No se encontró tu Bank. Configúralo antes de registrar una apuesta." };
+  const values = {
+    bank_id: bank.id,
+    user_id: user.id,
+    sport: "Fútbol",
+    event: getText(formData, "event"),
+    market: getText(formData, "market"),
+    selection: getText(formData, "selection"),
+    stake: getNumber(formData, "stake"),
+    decimal_odds: getNumber(formData, "decimalOdds"),
+  };
+  const detailErrors = validateBetDetails(values);
+  if (detailErrors.length) return { error: detailErrors[0] };
+  const numericErrors = validateBetInput({ stake: values.stake, decimalOdds: values.decimal_odds });
+  if (numericErrors.length) return { error: numericErrors[0] };
   const { error } = await supabase.from("bets").insert(values);
   if (error) return { error: "No se pudo registrar la apuesta. Comprueba que la migración esté aplicada." };
   revalidatePath("/home/bank");
@@ -42,13 +60,12 @@ export async function createAdjustment(formData: FormData): Promise<ActionResult
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Tu sesión ha caducado. Vuelve a iniciar sesión." };
-  const amount = Number(formData.get("amount"));
-  const kind = String(formData.get("kind") ?? "");
-  const note = String(formData.get("note") ?? "").trim();
-  if (!Number.isFinite(amount) || amount <= 0) return { error: "El importe del ajuste debe ser mayor que cero." };
-  if (kind !== "deposit" && kind !== "withdrawal") return { error: "Selecciona aporte o retiro." };
-  if (note.length > 240) return { error: "La nota no puede superar 240 caracteres." };
-  const { data: bank, error: bankError } = await supabase.from("banks").select("id").eq("user_id", user.id).single();
+  const amount = getNumber(formData, "amount");
+  const kind = getText(formData, "kind");
+  const note = getText(formData, "note");
+  const errors = validateAdjustmentInput({ amount, kind, note });
+  if (errors.length) return { error: errors[0] };
+  const { data: bank, error: bankError } = await supabase.from("banks").select("id").eq("user_id", user.id).maybeSingle();
   if (bankError || !bank) return { error: "No se encontró tu Bank." };
   const { error } = await supabase.from("bank_adjustments").insert({ bank_id: bank.id, user_id: user.id, amount, kind, note: note || null });
   if (error) return { error: "No se pudo guardar el ajuste." };
@@ -60,10 +77,11 @@ export async function settleBet(formData: FormData): Promise<ActionResult> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Tu sesión ha caducado. Vuelve a iniciar sesión." };
-  const betId = String(formData.get("betId") ?? "");
-  const status = String(formData.get("status") ?? "") as BetStatus;
-  if (!/^[0-9a-f-]{36}$/i.test(betId)) return { error: "Apuesta no válida." };
-  if (status !== "won" && status !== "lost" && status !== "void") return { error: "Resultado de liquidación no válido." };
+  const betId = getText(formData, "betId");
+  const statusValue = getText(formData, "status");
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(betId)) return { error: "Apuesta no válida." };
+  if (statusValue !== "won" && statusValue !== "lost" && statusValue !== "void") return { error: "Resultado de liquidación no válido." };
+  const status = statusValue as BetStatus;
   const { data, error } = await supabase.from("bets").update({ status, settled_at: new Date().toISOString() }).eq("id", betId).eq("user_id", user.id).eq("status", "pending").select("id").maybeSingle();
   if (error) return { error: "No se pudo liquidar la apuesta." };
   if (!data) return { error: "La apuesta ya fue liquidada o no existe." };
