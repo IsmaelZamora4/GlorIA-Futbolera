@@ -77,7 +77,7 @@ export default function LandingPage() {
       <section className="landing-competitions" aria-labelledby="landing-competitions-title">
         <div className="landing-section-heading">
           <div><h2 id="landing-competitions-title">Competiciones destacadas</h2><p>Accede a la agenda de las ligas disponibles.</p></div>
-          <Link href="/competiciones">Ver todas <span aria-hidden="true">→</span></Link>
+          <Link href="/competitions">Ver todas <span aria-hidden="true">→</span></Link>
         </div>
         <div className="landing-competition-grid">
           {competitions.map((competition) => (

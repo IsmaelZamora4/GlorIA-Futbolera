@@ -1,13 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export function LandingHeader({ currentPage = "home" }: { currentPage?: "home" | "how-it-works" | "other" }) {
+export function LandingHeader({ currentPage = "home" }: { currentPage?: "home" | "how-it-works" | "competitions" | "other" }) {
   const homeIsCurrent = currentPage === "home";
   const howItWorksIsCurrent = currentPage === "how-it-works";
+  const competitionsIsCurrent = currentPage === "competitions";
   const navigationItems = [
     { label: "Inicio", href: "/#inicio", current: homeIsCurrent },
     { label: "Cómo funciona", href: "/como-funciona", current: howItWorksIsCurrent },
-    { label: "Competiciones", href: "/competiciones" },
+    { label: "Competiciones", href: "/competitions", current: competitionsIsCurrent },
     { label: "Metodología", href: "/metodologia" },
     { label: "Contacto", href: "/contacto" },
   ];

@@ -10,7 +10,7 @@ const groups = [
     title: "Explorar",
     items: [
       { label: "Partidos", href: "/partidos", icon: "calendar" },
-      { label: "Competiciones", href: "/competiciones", icon: "trophy" },
+      { label: "Competiciones", href: "/competitions", icon: "trophy" },
       { label: "Posiciones", href: "/posiciones", icon: "table" },
     ],
   },
