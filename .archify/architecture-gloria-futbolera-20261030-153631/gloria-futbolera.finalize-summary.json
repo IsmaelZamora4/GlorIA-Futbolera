@@ -1,30 +1,49 @@
 {
   "schemaVersion": 1,
-  "ok": true,
+  "ok": false,
   "command": "finalize",
-  "status": "pass",
+  "status": "fail",
   "type": "architecture",
   "quality": "showcase",
   "specification": {
     "path": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261030-153631\\candidate.json",
-    "sha256": "cdc736c8fb3eff7c78465c08eaf97a552860f1c148eb4a8616eff8b2bf3e5a15",
-    "bytes": 5597
+    "sha256": "e46d832bb60bd7dfa9fcd66c878d5b108318fa09dd950c1d01c05815cd487387",
+    "bytes": 8024
   },
   "artifact": {
     "path": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261030-153631\\gloria-futbolera.html",
-    "sha256": "2862a79838a6ba52ad78c137a63242655296b1528a359e80dafaaafc3e029525",
+    "sha256": "cbc69009774ee3add5943842fde7aac5cf07d8995cab0be80fc8f9c3dee7d989",
     "bytes": 857112
   },
   "gates": {
     "validate": "pass",
     "deliver": "pass",
     "check": "pass",
-    "browser-check": "pass"
+    "browser-check": "fail"
   },
-  "diagnostics": [],
+  "failedStage": "browser-check",
+  "diagnostics": [
+    {
+      "code": "viewer/evidence-path-conflict",
+      "severity": "error",
+      "message": "browser-check will not replace the existing unowned evidence path \"C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261030-153631\\gloria-futbolera.browser-check.json\".",
+      "subject": {
+        "artifact": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261030-153631\\gloria-futbolera.html",
+        "evidencePath": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261030-153631\\gloria-futbolera.browser-check.json"
+      },
+      "evidence": {
+        "reason": {
+          "code": "ownership-artifact-mismatch"
+        }
+      },
+      "supportedFixes": [
+        "move the conflicting file aside, or choose a separate --out-dir, then rerun browser-check"
+      ]
+    }
+  ],
   "diagnosticSummary": {
-    "total": 0,
-    "shown": 0,
+    "total": 1,
+    "shown": 1,
     "truncated": false
   },
   "evidence": {
@@ -38,14 +57,14 @@
     "availableVersion": "3.2.0",
     "releaseNotes": null,
     "checkedAt": "2026-10-30T20:41:53.711Z",
-    "source": "network",
+    "source": "cache",
     "noticeRequired": false,
     "noticeText": null
   },
   "visualReview": "not-requested",
-  "durationMs": 6895,
+  "durationMs": 12550,
   "browserCheck": {
     "requested": true,
-    "ran": true
+    "ran": false
   }
 }
