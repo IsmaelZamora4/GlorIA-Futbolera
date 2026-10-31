@@ -17,8 +17,11 @@ export type BankFootballCompetition = {
   teams: Array<{ name: string; crest: string }>;
 };
 
-export async function getBankFootballOptions(): Promise<BankFootballCompetition[]> {
-  return Promise.all(competitions.map(async (competition) => {
+let footballOptionsPromise: Promise<BankFootballCompetition[]> | null = null;
+
+export function getBankFootballOptions(): Promise<BankFootballCompetition[]> {
+  if (footballOptionsPromise) return footballOptionsPromise;
+  footballOptionsPromise = Promise.all(competitions.map(async (competition) => {
     const content = await readFile(path.join(process.cwd(), "data", "processed", competition.dataset, "current-season-matches.json"), "utf8");
     const matches = JSON.parse(content) as Array<{ homeTeam: string; awayTeam: string }>;
     const teams = [...new Set(matches.flatMap((match) => [match.homeTeam, match.awayTeam]))]
@@ -29,9 +32,10 @@ export async function getBankFootballOptions(): Promise<BankFootballCompetition[
       });
     return { id: competition.id, name: competition.name, logo: competition.logo, teams };
   }));
+  return footballOptionsPromise;
 }
 
-export async function resolveBankFootballEvent(competitionId: string, homeTeam: string, awayTeam: string) {
+export async function resolveBankFootballLeg(competitionId: string, homeTeam: string, awayTeam: string) {
   const options = await getBankFootballOptions();
   const competition = options.find((item) => item.id === competitionId);
   if (!competition) return { error: "Selecciona una competición disponible." };
@@ -39,5 +43,11 @@ export async function resolveBankFootballEvent(competitionId: string, homeTeam: 
   if (homeTeam === awayTeam) return { error: "El equipo local y el visitante deben ser distintos." };
   const validTeams = new Set(competition.teams.map((team) => team.name));
   if (!validTeams.has(homeTeam) || !validTeams.has(awayTeam)) return { error: "Los equipos seleccionados no pertenecen a esa competición." };
-  return { event: `${competition.name} · ${homeTeam} vs ${awayTeam}` };
+  return { competition: competition.name, homeTeam, awayTeam };
+}
+
+export async function resolveBankFootballEvent(competitionId: string, homeTeam: string, awayTeam: string) {
+  const leg = await resolveBankFootballLeg(competitionId, homeTeam, awayTeam);
+  if (leg.error) return leg;
+  return { event: `${leg.competition} · ${leg.homeTeam} vs ${leg.awayTeam}` };
 }

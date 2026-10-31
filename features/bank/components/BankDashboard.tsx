@@ -1,11 +1,31 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import type { BankFootballCompetition } from "@/features/bank/services/football-options";
-import { createAdjustment, createBank, createBet, settleBet } from "@/features/bank/actions";
+import { createAdjustment, createBank, createBet, settleBet, settleTicketPick } from "@/features/bank/actions";
+import { BankTicketForm } from "@/features/bank/components/BankTicketForm";
 import type { BankSummary } from "@/features/bank/services/calculations";
+
+export type BankBetPick = {
+  id: string;
+  market: string;
+  selection: string;
+  decimal_odds: number | null;
+  result: string;
+  position: number;
+};
+
+export type BankBetLeg = {
+  id: string;
+  competition: string | null;
+  home_team: string | null;
+  away_team: string | null;
+  legacy_event: string | null;
+  is_legacy: boolean;
+  position: number;
+  picks: BankBetPick[];
+};
 
 export type BankBet = {
   id: string;
@@ -14,8 +34,10 @@ export type BankBet = {
   selection: string;
   stake: number;
   decimal_odds: number;
+  odds_mode: "combined" | "per_pick";
   status: string;
   placed_at: string;
+  legs: BankBetLeg[];
 };
 
 export type BankAdjustment = {
@@ -69,20 +91,15 @@ export function BankDashboard({
 }) {
   const [feedback, setFeedback] = useState<Record<string, ActionResult>>({});
   const [pendingActions, setPendingActions] = useState<Set<string>>(() => new Set());
-  const [competitionId, setCompetitionId] = useState("");
-  const [homeTeam, setHomeTeam] = useState("");
-  const [awayTeam, setAwayTeam] = useState("");
-  const selectedCompetition = footballOptions.find((item) => item.id === competitionId);
-  const availableTeams = selectedCompetition?.teams ?? [];
 
-  const submit = async (key: string, action: BankAction, formData: FormData) => {
+  const submit = async (key: string, action: BankAction, formData: FormData): Promise<ActionResult> => {
     setFeedback((current) => ({ ...current, [key]: {} }));
     setPendingActions((current) => new Set(current).add(key));
+    let result: ActionResult;
     try {
-      const result = await action(formData);
-      setFeedback((current) => ({ ...current, [key]: result }));
+      result = await action(formData);
     } catch {
-      setFeedback((current) => ({ ...current, [key]: { error: "No se pudo completar la operación. Comprueba tu conexión e inténtalo de nuevo." } }));
+      result = { error: "No se pudo completar la operación. Comprueba tu conexión e inténtalo de nuevo." };
     } finally {
       setPendingActions((current) => {
         const next = new Set(current);
@@ -90,6 +107,8 @@ export function BankDashboard({
         return next;
       });
     }
+    setFeedback((current) => ({ ...current, [key]: result }));
+    return result;
   };
 
   if (loadError) {
@@ -148,31 +167,15 @@ export function BankDashboard({
       <div className="bank-layout">
         <div className="bank-entry-column">
           <section className="bank-panel">
-            <div className="eyebrow">Nueva apuesta</div>
-            <h2>Registrar apuesta</h2>
-            <p>Los datos se guardan en tu Bank privado. Las cuotas admiten hasta tres decimales.</p>
-            <form action={async (formData) => { await submit("bet", createBet, formData); }} className="bank-form">
-              <input type="hidden" name="competition" value={competitionId} />
-              <input type="hidden" name="homeTeam" value={homeTeam} />
-              <input type="hidden" name="awayTeam" value={awayTeam} />
-              <FootballPicker label="Liga o competición" placeholder="Elige una competición" value={selectedCompetition ? { id: selectedCompetition.id, name: selectedCompetition.name, crest: selectedCompetition.logo } : null} options={footballOptions.map((item) => ({ id: item.id, name: item.name, crest: item.logo }))} onChange={(value) => { setCompetitionId(value?.id ?? ""); setHomeTeam(""); setAwayTeam(""); }} />
-              <div className="bank-form-grid">
-                <FootballPicker label="Local" placeholder={selectedCompetition ? "Elige el equipo local" : "Primero elige una liga"} value={availableTeams.find((team) => team.name === homeTeam) ? { id: homeTeam, ...availableTeams.find((team) => team.name === homeTeam)! } : null} options={availableTeams.filter((team) => team.name !== awayTeam).map((team) => ({ id: team.name, name: team.name, crest: team.crest }))} disabled={!selectedCompetition} onChange={(value) => setHomeTeam(value?.id ?? "")} />
-                <FootballPicker label="Visitante" placeholder={selectedCompetition ? "Elige el equipo visitante" : "Primero elige una liga"} value={availableTeams.find((team) => team.name === awayTeam) ? { id: awayTeam, ...availableTeams.find((team) => team.name === awayTeam)! } : null} options={availableTeams.filter((team) => team.name !== homeTeam).map((team) => ({ id: team.name, name: team.name, crest: team.crest }))} disabled={!selectedCompetition} onChange={(value) => setAwayTeam(value?.id ?? "")} />
-              </div>
-              <label htmlFor="market">Mercado<input id="market" name="market" maxLength={120} required placeholder="Más de 2.5 goles" /></label>
-              <label htmlFor="selection">Selección<input id="selection" name="selection" maxLength={160} required placeholder="Sí / Más de 2.5" /></label>
-              <div className="bank-form-grid">
-                <label htmlFor="stake">Importe
-                  <input id="stake" name="stake" type="number" min="0.01" max="9999999999.99" step="0.01" inputMode="decimal" required />
-                </label>
-                <label htmlFor="decimalOdds">Cuota decimal
-                  <input id="decimalOdds" name="decimalOdds" type="number" min="1.001" max="99999.999" step="0.001" inputMode="decimal" required />
-                </label>
-              </div>
-              <button className="auth-submit" type="submit" disabled={pendingActions.has("bet") || !competitionId || !homeTeam || !awayTeam || homeTeam === awayTeam}>{pendingActions.has("bet") ? "Guardando…" : "Guardar apuesta"}</button>
-            </form>
-            <Feedback state={feedback.bet} />
+            <div className="eyebrow">Nuevo ticket</div>
+            <h2>Registrar apuesta o combinada</h2>
+            <p>Añade varios pronósticos y partidos; el importe se aplica una sola vez al ticket.</p>
+            <BankTicketForm
+              competitions={footballOptions}
+              pending={pendingActions.has("bet")}
+              feedback={feedback.bet}
+              onSave={(formData) => submit("bet", createBet, formData)}
+            />
           </section>
 
           <section className="bank-panel">
@@ -208,25 +211,37 @@ export function BankDashboard({
               <ul className="bank-bets">
                 {bets.map((bet) => {
                   const key = `settle-${bet.id}`;
+                  const legacyPick = bet.legs.flatMap((leg) => leg.picks.map((pick) => ({ leg, pick }))).find(({ leg }) => leg.is_legacy);
                   return (
                     <li key={bet.id}>
                       <div className="bank-bet-copy">
-                        <strong>{bet.event}</strong>
-                        <small>{bet.market} · {bet.selection}</small>
-                        <small>{formatDate(bet.placed_at)} · Cuota {Number(bet.decimal_odds).toFixed(3)}</small>
+                        <strong>{legacyPick?.leg.legacy_event ?? bet.event}</strong>
+                        {legacyPick ? <small>{legacyPick.pick.market} · {legacyPick.pick.selection}</small> : bet.legs.map((leg) => <div className="bank-ticket-history-leg" key={leg.id}>
+                          <strong>{leg.competition} · {leg.home_team} vs {leg.away_team}</strong>
+                          {leg.picks.map((pick) => <div className="bank-ticket-history-pick" key={pick.id}>
+                            <span>{pick.market}: {pick.selection}{pick.decimal_odds != null ? ` · ${Number(pick.decimal_odds).toFixed(3)}` : ""}</span>
+                            <span className={`bank-status bank-status-${pick.result === "pending" && bet.status !== "pending" ? "void" : pick.result}`}>{pick.result === "pending" && bet.status !== "pending" ? "No necesario" : statusLabel(pick.result)}</span>
+                            {bet.status === "pending" && pick.result === "pending" && <form action={async (formData) => { await submit(`pick-${pick.id}`, settleTicketPick, formData); }} className="bank-settle-form">
+                              <input type="hidden" name="pickId" value={pick.id} />
+                              <label className="sr-only" htmlFor={`pick-result-${pick.id}`}>Resultado de {pick.market}: {pick.selection}</label>
+                              <select id={`pick-result-${pick.id}`} name="result" defaultValue="won"><option value="won">Ganado</option><option value="lost">Perdido</option><option value="void">Anulado</option></select>
+                              <button type="submit" disabled={pendingActions.has(`pick-${pick.id}`)}>{pendingActions.has(`pick-${pick.id}`) ? "Guardando…" : "Liquidar"}</button>
+                            </form>}
+                            <Feedback state={feedback[`pick-${pick.id}`]} />
+                          </div>)}
+                        </div>)}
+                        <small>{formatDate(bet.placed_at)} · Cuota combinada {Number(bet.decimal_odds).toFixed(3)}{bet.odds_mode === "per_pick" ? " · calculada por pronóstico" : ""}</small>
                         {bet.status === "pending" && <small>Retorno potencial si gana: {money(Number(bet.stake) * Number(bet.decimal_odds), currency)}</small>}
                       </div>
                       <div className="bank-bet-actions">
                         <b>{money(Number(bet.stake), currency)}</b>
                         <span className={`bank-status bank-status-${bet.status}`}>{statusLabel(bet.status)}</span>
-                        {bet.status === "pending" && (
-                          <form action={async (formData) => { await submit(key, settleBet, formData); }} className="bank-settle-form">
-                            <input type="hidden" name="betId" value={bet.id} />
-                            <label className="sr-only" htmlFor={`settle-${bet.id}`}>Resultado de {bet.event}</label>
-                            <select id={`settle-${bet.id}`} name="status" defaultValue="won"><option value="won">Ganada</option><option value="lost">Perdida</option><option value="void">Anulada</option></select>
-                            <button type="submit" disabled={pendingActions.has(key)}>{pendingActions.has(key) ? "Guardando…" : "Liquidar"}</button>
-                          </form>
-                        )}
+                        {legacyPick && bet.status === "pending" && <form action={async (formData) => { await submit(key, settleBet, formData); }} className="bank-settle-form">
+                          <input type="hidden" name="betId" value={bet.id} />
+                          <label className="sr-only" htmlFor={`settle-${bet.id}`}>Resultado de {bet.event}</label>
+                          <select id={`settle-${bet.id}`} name="status" defaultValue="won"><option value="won">Ganada</option><option value="lost">Perdida</option><option value="void">Anulada</option></select>
+                          <button type="submit" disabled={pendingActions.has(key)}>{pendingActions.has(key) ? "Guardando…" : "Liquidar"}</button>
+                        </form>}
                         <Feedback state={feedback[key]} />
                       </div>
                     </li>
@@ -296,49 +311,6 @@ function Pagination({ label, page, pages, total, pageKey, betsPage, adjustmentsP
         {next ? <Link href={next} aria-label={`${label}: página siguiente`}>Siguiente</Link> : <span aria-disabled="true">Siguiente</span>}
       </div>
     </nav>
-  );
-}
-
-type FootballOption = { id: string; name: string; crest: string };
-
-function FootballPicker({
-  label,
-  placeholder,
-  value,
-  options,
-  onChange,
-  disabled = false,
-}: {
-  label: string;
-  placeholder: string;
-  value: FootballOption | null;
-  options: FootballOption[];
-  onChange: (option: FootballOption | null) => void;
-  disabled?: boolean;
-}) {
-  const detailsRef = useRef<HTMLDetailsElement>(null);
-  const close = () => {
-    if (detailsRef.current) detailsRef.current.open = false;
-  };
-
-  return (
-    <div className="bank-football-picker">
-      <span className="bank-football-picker-label">{label}</span>
-      <details ref={detailsRef} className="bank-football-picker-menu">
-        <summary aria-disabled={disabled} onClick={(event) => { if (disabled) event.preventDefault(); }}>
-          {value ? <><Image src={value.crest} alt="" width={22} height={22} unoptimized /><span>{value.name}</span></> : <span className="bank-football-picker-placeholder">{placeholder}</span>}
-          <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="m4 6 4 4 4-4" /></svg>
-        </summary>
-        <div className="bank-football-picker-options" role="listbox" aria-label={label}>
-          {options.length ? options.map((option) => (
-            <button type="button" role="option" aria-selected={value?.id === option.id} key={option.id} onClick={() => { onChange(option); close(); }}>
-              <Image src={option.crest} alt="" width={24} height={24} unoptimized />
-              <span>{option.name}</span>
-            </button>
-          )) : <p>No hay equipos disponibles.</p>}
-        </div>
-      </details>
-    </div>
   );
 }
 

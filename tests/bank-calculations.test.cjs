@@ -9,7 +9,7 @@ require.extensions[".ts"] = (module, fileName) => {
   module._compile(compiled, fileName);
 };
 
-const { calculateBankSummary, calculateBetProfit, validateAdjustmentInput, validateBankInput, validateBetDetails, validateBetInput } = require("../features/bank/services/calculations.ts");
+const { calculateBankSummary, calculateBetProfit, deriveBankTicketStatus, getEffectiveBankTicketOdds, parseBankTicketDraft, validateAdjustmentInput, validateBankInput, validateBetDetails, validateBetInput } = require("../features/bank/services/calculations.ts");
 
 test("calcula beneficios por estado", () => {
   assert.equal(calculateBetProfit({ stake: 10, decimalOdds: 2.5, status: "won" }), 15);
@@ -53,6 +53,45 @@ test("rechaza montos que la escala numeric de Supabase redondearía", () => {
 test("valida campos textuales de apuesta contra límites de la base", () => {
   assert.equal(validateBetDetails({ sport: "Fútbol", event: " Partido ", market: "Goles", selection: "Más de 2.5" }).length, 0);
   assert.equal(validateBetDetails({ sport: " ", event: " ", market: "x".repeat(121), selection: "Sí" }).length, 3);
+});
+
+test("deriva la liquidación del ticket y recalcula cuotas individuales tras anulaciones", () => {
+  assert.equal(deriveBankTicketStatus("per_pick", ["won", "void", "won"]), "won");
+  assert.equal(getEffectiveBankTicketOdds([1.5, 9, 2], ["won", "void", "won"], "per_pick"), 3);
+  assert.equal(deriveBankTicketStatus("per_pick", ["won", "pending"]), "pending");
+  assert.equal(deriveBankTicketStatus("per_pick", ["won", "lost", "pending"]), "lost");
+  assert.equal(deriveBankTicketStatus("per_pick", ["void", "void"]), "void");
+  assert.equal(deriveBankTicketStatus("combined", ["won", "void"]), "void");
+  assert.equal(getEffectiveBankTicketOdds([2, 3], ["won", "void"], "combined"), null);
+});
+
+test("valida ticket multi-partido y calcula cuota por pronóstico a tres decimales", () => {
+  const parsed = parseBankTicketDraft({
+    oddsMode: "per_pick",
+    stake: 10,
+    totalOdds: null,
+    legs: [
+      { competition: "Premier League", homeTeam: "Man City", awayTeam: "Liverpool", picks: [{ market: "Goles", selection: "Más de 1.5", decimalOdds: "1.4" }, { market: "Corners", selection: "Más de 7.5", decimalOdds: "1.7" }] },
+      { competition: "LaLiga", homeTeam: "Real Madrid", awayTeam: "Barcelona", picks: [{ market: "Ambos anotan", selection: "Sí", decimalOdds: "1.8" }] },
+    ],
+  });
+  assert.equal(parsed.errors.length, 0);
+  assert.equal(parsed.draft.legs.length, 2);
+  assert.equal(Math.round(parsed.draft.legs.flatMap((leg) => leg.picks).reduce((total, pick) => total * pick.decimalOdds, 1) * 1000) / 1000, 4.284);
+});
+
+test("valida modo cuota total e impide mezclar cuotas por pick", () => {
+  const valid = parseBankTicketDraft({ oddsMode: "combined", stake: 10, totalOdds: 8.5, legs: [{ competition: "Premier League", homeTeam: "Man City", awayTeam: "Liverpool", picks: [{ market: "Goles", selection: "Más de 1.5", decimalOdds: null }] }] });
+  assert.equal(valid.errors.length, 0);
+  const invalid = parseBankTicketDraft({ oddsMode: "combined", stake: 10, totalOdds: 8.5, legs: [{ competition: "Premier League", homeTeam: "Man City", awayTeam: "Liverpool", picks: [{ market: "Goles", selection: "Más de 1.5", decimalOdds: 1.4 }] }] });
+  assert.match(invalid.errors[0], /deja vacías/i);
+});
+
+test("rechaza ticket sin picks, equipos iguales y límites excedidos", () => {
+  const empty = parseBankTicketDraft({ oddsMode: "combined", stake: 10, totalOdds: 2, legs: [] });
+  assert.match(empty.errors[0], /entre 1 y 20 partidos/i);
+  const overLimit = parseBankTicketDraft({ oddsMode: "per_pick", stake: 10, legs: Array.from({ length: 21 }, () => ({})) });
+  assert.match(overLimit.errors[0], /entre 1 y 20/i);
 });
 
 test("valida montos y notas de aportes y retiros en servidor", () => {

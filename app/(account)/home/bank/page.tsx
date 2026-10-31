@@ -67,7 +67,7 @@ function toBankSummary(row: BankSummaryRow): BankSummary | null {
 }
 
 function getLoadError(error: { code?: string } | null | undefined): string {
-  if (error?.code === "42P01" || error?.code === "42883") {
+  if (error?.code === "42P01" || error?.code === "42883" || error?.code === "42703") {
     return "Falta actualizar el esquema de Mi Bank en Supabase. Aplica las migraciones pendientes y vuelve a intentarlo.";
   }
   return "No pudimos cargar el Bank completo. Tus cifras no se muestran para evitar presentar un saldo parcial.";
@@ -127,7 +127,7 @@ export default async function BankPage({ searchParams }: { searchParams: BankSea
   const [betsResult, adjustmentsResult] = await Promise.all([
     supabase
       .from("bets")
-      .select("id, event, market, selection, stake, decimal_odds, status, placed_at", { count: "exact" })
+      .select("id, event, market, selection, stake, decimal_odds, odds_mode, status, placed_at", { count: "exact" })
       .eq("user_id", user.id)
       .order("placed_at", { ascending: false })
       .order("id", { ascending: false })
@@ -146,6 +146,33 @@ export default async function BankPage({ searchParams }: { searchParams: BankSea
     return <BankPageShell><BankDashboard bank={bank} bets={[]} adjustments={[]} summary={null} loadError={getLoadError(historyError)} /></BankPageShell>;
   }
 
+  const ticketIds = (betsResult.data ?? []).map((bet) => bet.id);
+  const legsResult = ticketIds.length
+    ? await supabase.from("bank_bet_legs").select("id, bet_id, position, competition, home_team, away_team, legacy_event, is_legacy").eq("user_id", user.id).in("bet_id", ticketIds).order("position")
+    : { data: [], error: null };
+  const legIds = (legsResult.data ?? []).map((leg) => leg.id);
+  const picksChunks = await Promise.all(Array.from({ length: Math.ceil(legIds.length / 40) }, (_, index) =>
+    supabase.from("bank_bet_picks")
+      .select("id, bet_id, leg_id, position, market, selection, decimal_odds, result")
+      .eq("user_id", user.id)
+      .in("leg_id", legIds.slice(index * 40, (index + 1) * 40))
+      .order("position"),
+  ));
+  const allPicks = picksChunks.flatMap((result) => result.data ?? []);
+  const picksError = picksChunks.find((result) => result.error)?.error;
+  const nestedHistoryError = legsResult.error ?? picksError;
+  if (nestedHistoryError) {
+    return <BankPageShell><BankDashboard bank={bank} bets={[]} adjustments={[]} summary={null} loadError={getLoadError(nestedHistoryError)} /></BankPageShell>;
+  }
+
+  const picksByLeg = new Map<string, typeof allPicks>();
+  for (const pick of allPicks) picksByLeg.set(pick.leg_id, [...(picksByLeg.get(pick.leg_id) ?? []), pick]);
+  const legsByBet = new Map<string, NonNullable<typeof legsResult.data>>();
+  for (const leg of legsResult.data ?? []) legsByBet.set(leg.bet_id, [...(legsByBet.get(leg.bet_id) ?? []), leg]);
+  const ticketBets = (betsResult.data ?? []).map((bet) => ({
+    ...bet,
+    legs: (legsByBet.get(bet.id) ?? []).map((leg) => ({ ...leg, picks: picksByLeg.get(leg.id) ?? [] })),
+  })) as BankBet[];
   const footballOptions = await getBankFootballOptions();
 
   return (
@@ -153,7 +180,7 @@ export default async function BankPage({ searchParams }: { searchParams: BankSea
       <BankDashboard
         bank={bank}
         footballOptions={footballOptions}
-        bets={(betsResult.data ?? []) as BankBet[]}
+        bets={ticketBets}
         adjustments={(adjustmentsResult.data ?? []) as BankAdjustment[]}
         summary={summary}
         betsPage={betsPage}
