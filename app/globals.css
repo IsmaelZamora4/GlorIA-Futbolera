@@ -772,10 +772,27 @@ footer span { margin: 0 7px; color: #4d4d4a; }
 .sportia-round-button.notification span { position: absolute; top: -5px; right: -5px; display: grid; width: 16px; height: 16px; place-items: center; border-radius: 50%; color: #fff; background: #ef4444; font-size: 10px; font-weight: 700; }
 .sportia-profile { display: flex; align-items: center; gap: 10px; border: 0; padding: 0 0 0 4px; color: #fff; background: transparent; text-align: left; }
 .sportia-avatar { display: grid; width: 36px; height: 36px; place-items: center; border: 2px solid rgba(108, 37, 217, .55); border-radius: 50%; color: #e3c9ff; background: #3b2b57; font-size: 11px; font-weight: 700; }
+.sportia-avatar img { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 .sportia-profile strong, .sportia-profile small { display: block; }
 .sportia-profile strong { font-size: 12px; }
 .sportia-profile small { margin-top: 2px; color: #8d90a5; font-size: 11px; }
 .sportia-profile > svg { color: #8d90a5; }
+.sportia-profile-menu { position: relative; display: inline-block; margin-left: 4px; }
+.sportia-profile-menu > summary { cursor: pointer; list-style: none; }
+.sportia-profile-menu > summary::-webkit-details-marker { display: none; }
+.sportia-profile-menu > summary:focus-visible { border-radius: 999px; outline: 2px solid #c9a8ff; outline-offset: 4px; }
+.sportia-profile-menu[open] .sportia-profile-chevron { transform: rotate(180deg); }
+.sportia-profile-chevron { transition: transform 140ms ease-out; }
+.sportia-profile-dropdown { position: absolute; z-index: 40; top: calc(100% + 12px); right: 0; width: min(280px, calc(100vw - 32px)); border: 1px solid #292b38; border-radius: 12px; padding: 8px; background: #151720; box-shadow: 0 16px 40px rgba(0, 0, 0, .38); }
+.sportia-profile-dropdown-identity { display: grid; gap: 4px; padding: 10px 11px 12px; }
+.sportia-profile-dropdown-identity strong { overflow-wrap: anywhere; color: #f3f4f8; font-size: 13px; }
+.sportia-profile-dropdown-identity small { overflow-wrap: anywhere; color: #9094a5; font-size: 11px; }
+.sportia-profile-dropdown-divider { height: 1px; margin: 3px 4px 7px; background: #292b38; }
+.sportia-profile-dropdown-item { display: flex; width: 100%; min-height: 38px; align-items: center; border: 0; border-radius: 8px; padding: 0 11px; color: #e9eaf0; background: transparent; font: inherit; font-size: 12px; text-align: left; text-decoration: none; cursor: pointer; }
+.sportia-profile-dropdown-item:hover:not(:disabled) { color: #fff; background: #232532; }
+.sportia-profile-dropdown-item:focus-visible { outline: 2px solid #c9a8ff; outline-offset: 2px; }
+.sportia-profile-dropdown-item:disabled { cursor: wait; opacity: .65; }
+.sportia-profile-dropdown-error { margin: 7px 10px 5px; color: #ff9a9f; font-size: 11px; }
 .sportia-dashboard { display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: 32px; padding: 32px; }
 .sportia-primary-column, .sportia-secondary-column { display: flex; min-width: 0; flex-direction: column; gap: 24px; }
 .sportia-card { border: 1px solid #1e202b; border-radius: 16px; background: var(--sportia-card); }
@@ -3375,4 +3392,38 @@ button:active, .nav-item:active, .mobile-app-nav-item:active { transform: scale(
 
 @media (min-width: 721px) and (max-width: 950px) {
   .matches-shell > .sportia-sidebar { display: flex; }
+}
+
+.sportia-topbar-copy { min-width: 0; flex: 1 1 auto; }
+.sportia-topbar-copy p { max-width: 66ch; line-height: 1.5; }
+.sportia-topbar .sportia-top-actions .sportia-round-button { width: 44px; height: 44px; flex: 0 0 44px; }
+
+@media (min-width: 721px) and (max-width: 1000px) {
+  .sportia-topbar { align-items: flex-start; flex-wrap: wrap; gap: 12px; padding: 18px 24px; }
+  .sportia-topbar-copy { flex-basis: 100%; }
+  .sportia-top-actions { width: 100%; justify-content: flex-end; }
+}
+
+@media (max-width: 720px) {
+  .sportia-topbar { align-items: flex-start; flex-wrap: wrap; gap: 12px; padding: 16px 20px; }
+  .sportia-topbar-copy { flex-basis: 100%; }
+  .sportia-topbar h1 { font-size: 22px; }
+  .sportia-top-actions { width: 100%; justify-content: flex-end; gap: 8px; }
+  .sportia-profile-menu { margin-left: 0; }
+}
+
+@media (max-width: 440px) {
+  .sportia-topbar { padding: 14px; }
+  .sportia-topbar h1 { font-size: 20px; }
+  .sportia-topbar .sportia-top-actions .sportia-round-button { display: grid; }
+}
+
+.settings-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.settings-toolbar .settings-search { width: min(475px, 100%); min-height: 44px; }
+.settings-toolbar .settings-beta { margin-left: auto; }
+
+@media (max-width: 620px) {
+  .settings-toolbar { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .settings-toolbar .settings-search { width: 100%; max-width: none; }
+  .settings-toolbar .settings-beta { align-self: flex-start; margin-left: 0; }
 }

@@ -4,7 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getLocalDate } from "../../lib/local-date";
+import { useHomeUserProfile } from "../../components/HomeUserProvider";
 import { SportiaSidebar } from "../../components/SportiaSidebar";
+import { SportiaPageHeader } from "../../components/SportiaPageHeader";
 
 type IconName =
   | "ball"
@@ -144,6 +146,7 @@ function TeamBadge({ code, crest }: { code: string; crest: string | null }) {
 }
 
 export default function Home() {
+  const profile = useHomeUserProfile();
   const [collapsedLeagues, setCollapsedLeagues] = useState<string[]>([]);
   const [selectedCompetition, setSelectedCompetition] = useState<string | null>(null);
   const [matchesByCompetition, setMatchesByCompetition] = useState<CompetitionGroup[]>([]);
@@ -152,12 +155,10 @@ export default function Home() {
   const [loadErrors, setLoadErrors] = useState<string[]>([]);
   const [unavailableCompetitions, setUnavailableCompetitions] = useState<string[]>([]);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [notifications, setNotifications] = useState(4);
 
   useEffect(() => {
     const controller = new AbortController();
     const today = getLocalDate();
-    setLoadState("loading");
     void Promise.all(homeCompetitions.map(async (competition) => {
       try {
         const response = await fetch(`/api/local-fixtures?date=${today}&competition=${encodeURIComponent(competition.competition)}`, { signal: controller.signal });
@@ -204,14 +205,7 @@ export default function Home() {
       <SportiaSidebar active="Inicio" selectedCompetition={selectedCompetition} onCompetitionSelect={toggleCompetition} />
 
       <main className="sportia-main">
-        <header className="sportia-topbar">
-          <div><h1>Welcome to GlorIA</h1><p>{todayLabel}</p></div>
-          <div className="sportia-top-actions">
-            <button className="sportia-round-button notification" type="button" aria-label={`${notifications} notificaciones`} onClick={() => setNotifications(0)}><Icon name="bell" size={16} />{notifications > 0 && <span>{notifications}</span>}</button>
-            <Link className="sportia-round-button" href="/configuracion" aria-label="Configuración"><Icon name="settings" size={16} /></Link>
-            <button className="sportia-profile" type="button"><span className="sportia-avatar">TS</span><span><strong>Terry Stacia</strong><small>MU Bwoey</small></span><Icon name="chevron" size={14} /></button>
-          </div>
-        </header>
+        <SportiaPageHeader title={`Welcome, ${profile.firstName}`} description={todayLabel} />
 
         <div className="sportia-dashboard">
           <section className="sportia-primary-column">
@@ -230,8 +224,8 @@ export default function Home() {
               <nav className="sportia-mobile-league-filter" aria-label="Filtrar por competición">
                 {homeCompetitions.map((league) => <button type="button" key={league.competition} className={selectedCompetition === league.competition ? "is-active" : ""} aria-pressed={selectedCompetition === league.competition} onClick={() => toggleCompetition(league.competition)}><Image src={league.logo} alt="" width={20} height={20} unoptimized /><span>{league.name}</span></button>)}
               </nav>
-              {loadState === "loading" && matchesByCompetition.length === 0 && <p className="sportia-fixture-state" role="status">Loading today's fixtures…</p>}
-              {loadState === "error" && <div className="sportia-fixture-state" role="alert"><p>Today’s fixtures couldn’t be loaded.</p><button type="button" onClick={() => setRefreshKey((current) => current + 1)}>Try again</button></div>}
+              {loadState === "loading" && matchesByCompetition.length === 0 && <p className="sportia-fixture-state" role="status">Loading today&apos;s fixtures…</p>}
+              {loadState === "error" && <div className="sportia-fixture-state" role="alert"><p>Today’s fixtures couldn’t be loaded.</p><button type="button" onClick={() => { setLoadState("loading"); setRefreshKey((current) => current + 1); }}>Try again</button></div>}
               {loadErrors.length > 0 && loadState === "ready" && <p className="sportia-fixture-note" role="status">Some competitions could not be updated. Other available fixtures are shown.</p>}
               {unavailableCompetitions.length > 0 && !selectedCompetition && <p className="sportia-fixture-note">Current fixtures aren’t configured for {unavailableCompetitions.join(", ")} yet.</p>}
               {loadState === "ready" && visibleGroups.length === 0 && <div className="sportia-fixture-state" role="status"><p>{selectedCompetition ? `No ${homeCompetitions.find((league) => league.competition === selectedCompetition)?.name} matches available today.` : "No matches available today."}</p>{selectedCompetition && unavailableCompetitions.includes(homeCompetitions.find((league) => league.competition === selectedCompetition)?.name ?? "") && <small>A current fixture source for this competition is not configured yet.</small>}<Link href="/partidos">Open the full schedule <span aria-hidden="true">→</span></Link></div>}

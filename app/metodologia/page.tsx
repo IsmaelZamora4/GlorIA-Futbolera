@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { SportiaSidebar } from "../../components/SportiaSidebar";
+import { SportiaPageHeader } from "../../components/SportiaPageHeader";
 import { datasetInfoByCompetition } from "../../data/datasets";
 import bundesliga from "../../data/processed/bundesliga/metadata.json";
 import laliga from "../../data/processed/la-liga/metadata.json";
@@ -50,16 +51,14 @@ export default function MethodologyPage() {
     <div className="app-shell methodology-shell">
       <SportiaSidebar active="Metodología" />
       <main className="main-area sportia-main methodology-main">
-        <header className="sportia-topbar methodology-topbar">
-          <div><h1>Metodología</h1><p>Fuentes, cobertura, cálculos y límites</p></div>
-          <div className="sportia-top-actions"><Link className="methodology-topbar-link" href="/partidos">Ver partidos <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" /></svg></Link></div>
-        </header>
+        <SportiaPageHeader title="Metodología" description="Fuentes, cobertura, cálculos y límites." />
 
         <div className="methodology-content">
           <section className="methodology-intro" aria-labelledby="methodology-title">
             <h2 id="methodology-title">Datos, contexto y estimaciones</h2>
             <p>Te contamos qué competiciones tienen análisis histórico, cómo calculamos sus probabilidades y qué cosas no puede saber un modelo basado en resultados pasados.</p>
             <div className="methodology-intro-note"><svg aria-hidden="true" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" /><path d="M10 9v5m0-8h.01" /></svg><p>Una probabilidad resume datos disponibles; no garantiza lo que ocurrirá en un partido.</p></div>
+            <Link className="methodology-topbar-link" href="/partidos">Ver partidos <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4 4 4-4 4" /></svg></Link>
           </section>
 
           <nav className="methodology-index" aria-label="Secciones de metodología">

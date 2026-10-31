@@ -1,6 +1,11 @@
 import type { ReactNode } from "react";
-import { RequireAuth } from "../../components/RequireAuth";
+import { HomeUserProvider } from "../../components/HomeUserProvider";
+import { getHomeUserProfile } from "../../lib/auth/home-user-profile";
+import { requireAuthenticatedUser } from "../../lib/supabase/auth";
 
-export default function HomeLayout({ children }: { children: ReactNode }) {
-  return <RequireAuth nextPath="/home">{children}</RequireAuth>;
+export default async function HomeLayout({ children }: { children: ReactNode }) {
+  const user = await requireAuthenticatedUser("/home");
+  const profile = getHomeUserProfile(user);
+
+  return <HomeUserProvider profile={profile}>{children}</HomeUserProvider>;
 }

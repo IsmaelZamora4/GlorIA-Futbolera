@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { SportiaSidebar } from "../../components/SportiaSidebar";
+import { SportiaPageHeader } from "../../components/SportiaPageHeader";
 
 const competitions = [
   { id: "premier-league", name: "Premier League", country: "Inglaterra", logo: "/competitions/premier-league.svg", source: "football-data.org", coverage: "Partidos y tabla" },
@@ -23,16 +24,13 @@ export default async function CompetitionsPage({ searchParams }: { searchParams:
     <div className="app-shell competitions-shell">
       <SportiaSidebar active="Competiciones" />
       <main className="main-area competitions-main">
-        <header className="sportia-topbar competitions-topbar">
-          <div><h1>GlorIA Futbolera</h1><p>Centro de competiciones</p></div>
-          <div className="sportia-top-actions"><Link className="competitions-home-link" href="/home">Volver al inicio <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="M4 12 12 4M5 4h7v7" /></svg></Link></div>
-        </header>
+        <SportiaPageHeader title="Competiciones" description="Explora las ligas y torneos disponibles." />
 
         <div className="competitions-page">
           <section className="competitions-intro" aria-labelledby="competitions-title">
             <div className="competitions-intro-copy">
-              <h2 id="competitions-title">Competiciones</h2>
-              <p>Consulta los partidos disponibles y la tabla de cada competición desde un solo lugar.</p>
+              <h2 id="competitions-title">Catálogo de competiciones</h2>
+              <p>Consulta partidos, tablas y fuentes desde la ficha de cada liga o torneo.</p>
             </div>
             <aside className="competitions-cache-note" aria-label="Información sobre actualización de datos">
               <div className="competitions-cache-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg></div>

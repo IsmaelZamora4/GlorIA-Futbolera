@@ -10,36 +10,365 @@
       "url": "https://github.com/IsmaelZamora4/GlorIA-Futbolera.git",
       "provider": "github",
       "link_mode": "web",
-      "revision": "5d09d94994a5039f677452fb9d575728f6737a2a"
+      "revision": "614e094f8ad79e0c28195ca6e205c76edb00f380"
     }
   },
   "components": [
-    { "id": "browser", "type": "external", "label": "Persona usuaria", "sublabel": "Navegador", "pos": [40, 250], "size": [140, 68], "sources": [{ "path": "app/login/page.tsx", "line": 138, "end_line": 147 }] },
-    { "id": "next-app", "type": "frontend", "label": "Aplicación Next.js", "sublabel": "Login · Home · Partidos · Detalle", "pos": [250, 250], "size": [166, 78], "sources": [{ "path": "app/login/page.tsx", "line": 138, "end_line": 147 }, { "path": "app/home/page.tsx", "line": 157, "end_line": 177 }, { "path": "app/partidos/page.tsx", "line": 226, "end_line": 234 }] },
-    { "id": "session-proxy", "type": "security", "label": "Proxy de sesión", "sublabel": "Protege páginas y APIs", "pos": [490, 115], "size": [162, 76], "sources": [{ "path": "proxy.ts", "line": 4, "end_line": 11 }, { "path": "lib/supabase/proxy.ts", "line": 4, "end_line": 17 }, { "path": "lib/supabase/proxy.ts", "line": 39, "end_line": 52 }] },
-    { "id": "supabase-auth", "type": "cloud", "label": "Supabase Auth", "sublabel": "Sesión · OAuth · correo", "pos": [730, 115], "size": [156, 76], "sources": [{ "path": "lib/supabase/proxy.ts", "line": 19, "end_line": 39 }, { "path": "app/auth/callback/route.ts", "line": 15, "end_line": 25 }, { "path": "app/login/page.tsx", "line": 58, "end_line": 73 }] },
-    { "id": "fixtures-api", "type": "backend", "label": "API de partidos", "sublabel": "/api/local-fixtures", "pos": [490, 300], "size": [162, 76], "sources": [{ "path": "app/api/local-fixtures/route.ts", "line": 28, "end_line": 44 }] },
-    { "id": "football-data", "type": "cloud", "label": "football-data.org", "sublabel": "Partidos actuales", "pos": [730, 260], "size": [156, 76], "sources": [{ "path": "app/api/local-fixtures/route.ts", "line": 45, "end_line": 74 }, { "path": "lib/football-data.ts", "line": 30, "end_line": 60 }] },
-    { "id": "analysis", "type": "backend", "label": "Análisis de ligas", "sublabel": "Métricas y estimaciones", "pos": [970, 365], "size": [166, 76], "sources": [{ "path": "lib/league-analysis.ts", "line": 279, "end_line": 298 }, { "path": "app/api/local-fixtures/route.ts", "line": 60, "end_line": 74 }] },
-    { "id": "processed-data", "type": "database", "label": "Datasets procesados", "sublabel": "JSON histórico y temporada actual", "pos": [730, 455], "size": [190, 78], "sources": [{ "path": "scripts/normalize-league-data.mjs", "line": 153, "end_line": 171 }, { "path": "lib/league-analysis.ts", "line": 120, "end_line": 132 }] },
-    { "id": "csv-source", "type": "database", "label": "Datos de temporadas", "sublabel": "CSV por competición", "pos": [250, 510], "size": [166, 76], "sources": [{ "path": "scripts/normalize-league-data.mjs", "line": 4, "end_line": 15 }, { "path": "scripts/normalize-league-data.mjs", "line": 113, "end_line": 143 }] },
-    { "id": "normalizer", "type": "backend", "label": "Normalizador", "sublabel": "scripts/normalize-league-data.mjs", "pos": [490, 510], "size": [190, 76], "sources": [{ "path": "scripts/normalize-league-data.mjs", "line": 113, "end_line": 150 }, { "path": "scripts/normalize-league-data.mjs", "line": 153, "end_line": 171 }] }
+    {
+      "id": "browser",
+      "type": "external",
+      "label": "Persona usuaria",
+      "sublabel": "Navegador",
+      "pos": [
+        40,
+        250
+      ],
+      "size": [
+        140,
+        68
+      ],
+      "sources": [
+        {
+          "path": "app/login/page.tsx",
+          "line": 138,
+          "end_line": 147
+        }
+      ]
+    },
+    {
+      "id": "next-app",
+      "type": "frontend",
+      "label": "Aplicación Next.js",
+      "sublabel": "Login · Home · Partidos · Detalle",
+      "pos": [
+        250,
+        250
+      ],
+      "size": [
+        166,
+        78
+      ],
+      "sources": [
+        {
+          "path": "app/login/page.tsx",
+          "line": 138,
+          "end_line": 147
+        },
+        {
+          "path": "app/home/page.tsx",
+          "line": 157,
+          "end_line": 177
+        },
+        {
+          "path": "app/partidos/page.tsx",
+          "line": 226,
+          "end_line": 234
+        }
+      ]
+    },
+    {
+      "id": "session-proxy",
+      "type": "security",
+      "label": "Proxy de sesión",
+      "sublabel": "Protege páginas y APIs",
+      "pos": [
+        490,
+        115
+      ],
+      "size": [
+        162,
+        76
+      ],
+      "sources": [
+        {
+          "path": "proxy.ts",
+          "line": 4,
+          "end_line": 11
+        },
+        {
+          "path": "lib/supabase/proxy.ts",
+          "line": 4,
+          "end_line": 17
+        },
+        {
+          "path": "lib/supabase/proxy.ts",
+          "line": 39,
+          "end_line": 52
+        }
+      ]
+    },
+    {
+      "id": "supabase-auth",
+      "type": "cloud",
+      "label": "Supabase Auth",
+      "sublabel": "Sesión · OAuth · correo",
+      "pos": [
+        730,
+        115
+      ],
+      "size": [
+        156,
+        76
+      ],
+      "sources": [
+        {
+          "path": "lib/supabase/proxy.ts",
+          "line": 19,
+          "end_line": 39
+        },
+        {
+          "path": "app/auth/callback/route.ts",
+          "line": 15,
+          "end_line": 25
+        },
+        {
+          "path": "app/login/page.tsx",
+          "line": 58,
+          "end_line": 73
+        }
+      ]
+    },
+    {
+      "id": "fixtures-api",
+      "type": "backend",
+      "label": "API de partidos",
+      "sublabel": "/api/local-fixtures",
+      "pos": [
+        490,
+        300
+      ],
+      "size": [
+        162,
+        76
+      ],
+      "sources": [
+        {
+          "path": "app/api/local-fixtures/route.ts",
+          "line": 28,
+          "end_line": 44
+        }
+      ]
+    },
+    {
+      "id": "football-data",
+      "type": "cloud",
+      "label": "football-data.org",
+      "sublabel": "Partidos actuales",
+      "pos": [
+        730,
+        260
+      ],
+      "size": [
+        156,
+        76
+      ],
+      "sources": [
+        {
+          "path": "app/api/local-fixtures/route.ts",
+          "line": 45,
+          "end_line": 74
+        },
+        {
+          "path": "lib/football-data.ts",
+          "line": 30,
+          "end_line": 60
+        }
+      ]
+    },
+    {
+      "id": "analysis",
+      "type": "backend",
+      "label": "Análisis de ligas",
+      "sublabel": "Métricas y estimaciones",
+      "pos": [
+        970,
+        365
+      ],
+      "size": [
+        166,
+        76
+      ],
+      "sources": [
+        {
+          "path": "lib/league-analysis.ts",
+          "line": 279,
+          "end_line": 298
+        },
+        {
+          "path": "app/api/local-fixtures/route.ts",
+          "line": 60,
+          "end_line": 74
+        }
+      ]
+    },
+    {
+      "id": "processed-data",
+      "type": "database",
+      "label": "Datasets procesados",
+      "sublabel": "JSON histórico y temporada actual",
+      "pos": [
+        730,
+        455
+      ],
+      "size": [
+        190,
+        78
+      ],
+      "sources": [
+        {
+          "path": "scripts/normalize-league-data.mjs",
+          "line": 153,
+          "end_line": 171
+        },
+        {
+          "path": "lib/league-analysis.ts",
+          "line": 120,
+          "end_line": 132
+        }
+      ]
+    },
+    {
+      "id": "csv-source",
+      "type": "database",
+      "label": "Datos de temporadas",
+      "sublabel": "CSV por competición",
+      "pos": [
+        250,
+        510
+      ],
+      "size": [
+        166,
+        76
+      ],
+      "sources": [
+        {
+          "path": "scripts/normalize-league-data.mjs",
+          "line": 4,
+          "end_line": 15
+        },
+        {
+          "path": "scripts/normalize-league-data.mjs",
+          "line": 113,
+          "end_line": 143
+        }
+      ]
+    },
+    {
+      "id": "normalizer",
+      "type": "backend",
+      "label": "Normalizador",
+      "sublabel": "scripts/normalize-league-data.mjs",
+      "pos": [
+        490,
+        510
+      ],
+      "size": [
+        190,
+        76
+      ],
+      "sources": [
+        {
+          "path": "scripts/normalize-league-data.mjs",
+          "line": 113,
+          "end_line": 150
+        },
+        {
+          "path": "scripts/normalize-league-data.mjs",
+          "line": 153,
+          "end_line": 171
+        }
+      ]
+    }
   ],
   "connections": [
-    { "id": "user-app", "from": "browser", "to": "next-app", "label": "navega" },
-    { "id": "app-proxy", "from": "next-app", "to": "session-proxy", "label": "solicita página protegida" },
-    { "id": "proxy-auth", "from": "session-proxy", "to": "supabase-auth", "label": "valida o renueva sesión" },
-    { "id": "app-fixtures", "from": "next-app", "to": "fixtures-api", "label": "consulta partidos" },
-    { "id": "fixtures-current", "from": "fixtures-api", "to": "football-data", "label": "fecha actual o futura" },
-    { "id": "fixtures-history", "from": "fixtures-api", "to": "processed-data", "label": "fecha histórica" },
-    { "id": "fixtures-analysis", "from": "fixtures-api", "to": "analysis", "label": "calcula análisis disponible" },
-    { "id": "analysis-data", "from": "analysis", "to": "processed-data", "label": "lee historial y temporada" },
-    { "id": "data-source", "from": "csv-source", "to": "normalizer", "label": "temporadas CSV" },
-    { "id": "normalized-data", "from": "normalizer", "to": "processed-data", "label": "escribe archivos JSON" }
+    {
+      "id": "user-app",
+      "from": "browser",
+      "to": "next-app",
+      "label": "navega"
+    },
+    {
+      "id": "app-proxy",
+      "from": "next-app",
+      "to": "session-proxy",
+      "label": "solicita página protegida"
+    },
+    {
+      "id": "proxy-auth",
+      "from": "session-proxy",
+      "to": "supabase-auth",
+      "label": "valida o renueva sesión"
+    },
+    {
+      "id": "app-fixtures",
+      "from": "next-app",
+      "to": "fixtures-api",
+      "label": "consulta partidos"
+    },
+    {
+      "id": "fixtures-current",
+      "from": "fixtures-api",
+      "to": "football-data",
+      "label": "fecha actual o futura"
+    },
+    {
+      "id": "fixtures-history",
+      "from": "fixtures-api",
+      "to": "processed-data",
+      "label": "fecha histórica"
+    },
+    {
+      "id": "fixtures-analysis",
+      "from": "fixtures-api",
+      "to": "analysis",
+      "label": "calcula análisis disponible"
+    },
+    {
+      "id": "analysis-data",
+      "from": "analysis",
+      "to": "processed-data",
+      "label": "lee historial y temporada"
+    },
+    {
+      "id": "data-source",
+      "from": "csv-source",
+      "to": "normalizer",
+      "label": "temporadas CSV"
+    },
+    {
+      "id": "normalized-data",
+      "from": "normalizer",
+      "to": "processed-data",
+      "label": "escribe archivos JSON"
+    }
   ],
   "cards": [
-    { "dot": "cyan", "title": "Acceso", "items": ["Las rutas privadas redirigen a /login si no hay sesión.", "Las APIs protegidas responden 401 sin usuario autenticado.", "El callback intercambia el código de autenticación y vuelve a una ruta interna segura."] },
-    { "dot": "emerald", "title": "Partidos", "items": ["Para fechas actuales, la API consulta football-data.org.", "Para fechas históricas, lee el dataset local de temporada.", "Las páginas de inicio y partidos consumen /api/local-fixtures."] },
-    { "dot": "violet", "title": "Datos y análisis", "items": ["El script normaliza seis CSV por competición en datasets JSON.", "El análisis combina temporadas históricas con partidos actuales anteriores al encuentro.", "API-Football y TheSportsDB tienen endpoints separados; no son el recorrido principal mostrado."] }
+    {
+      "dot": "cyan",
+      "title": "Acceso",
+      "items": [
+        "Las rutas privadas redirigen a /login si no hay sesión.",
+        "Las APIs protegidas responden 401 sin usuario autenticado.",
+        "El callback intercambia el código de autenticación y vuelve a una ruta interna segura."
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Partidos",
+      "items": [
+        "Para fechas actuales, la API consulta football-data.org.",
+        "Para fechas históricas, lee el dataset local de temporada.",
+        "Las páginas de inicio y partidos consumen /api/local-fixtures."
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "Datos y análisis",
+      "items": [
+        "El script normaliza seis CSV por competición en datasets JSON.",
+        "El análisis combina temporadas históricas con partidos actuales anteriores al encuentro.",
+        "API-Football y TheSportsDB tienen endpoints separados; no son el recorrido principal mostrado."
+      ]
+    }
   ]
 }

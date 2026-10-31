@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { competitions } from "../../data/demo-matches";
 import { resolveFixtureVenue } from "../../data/team-venues";
 import { AppSidebar } from "../../components/AppSidebar";
+import { SportiaPageHeader } from "../../components/SportiaPageHeader";
 import { FixtureState } from "../../components/FixtureState";
 import { getLocalDate } from "../../lib/local-date";
 const competitionLabels: Record<string, string> = {
@@ -309,13 +310,13 @@ function PartidosContent() {
     <div className="app-shell matches-shell">
       <PartidosNavigation />
       <main className="main-area">
+        <SportiaPageHeader title="Partidos" description="Consulta la agenda de fútbol y encuentra los partidos de la fecha que elijas." />
         <header className="topbar matches-topbar">
           <label className="search-box"><span aria-hidden="true">⌕</span><input aria-label="Buscar equipo" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Buscar equipo..." /><kbd>Ctrl K</kbd></label>
           <div className="top-actions"><label className="date-picker"><MatchesIcon name="calendar" /><input aria-label="Elegir fecha" type="date" value={date} onChange={(event) => setDate(event.target.value)} /><span>{date}</span></label><span className="demo-status"><i /> Agenda</span></div>
         </header>
         <div className="matches-layout">
           <section className="matches-page">
-            <div className="matches-heading"><div><h1>Partidos</h1><p>Consulta la agenda de fútbol y encuentra los partidos de la fecha que elijas.</p></div></div>
             <div className="matches-filters" aria-label="Filtros de partidos">
               <div className="matches-mode" aria-label="Secciones de agenda"><button className="active" type="button" aria-pressed="true"><MatchesIcon name="calendar" size={14} />Partidos</button><button type="button" disabled><MatchesIcon name="trophy" size={14} />Ligas</button><button type="button" disabled><MatchesIcon name="teams" size={14} />Equipos</button><button type="button" disabled><MatchesIcon name="form" size={14} />Rachas</button></div>
               <div className="matches-competitions" aria-label="Filtrar por competición"><button aria-pressed={competition === "Todas"} className={competition === "Todas" ? "active" : ""} onClick={() => setCompetition("Todas")}>Todas</button>{competitions.slice(1).map((item) => <button key={item} aria-pressed={competition === item} className={competition === item ? "active" : ""} onClick={() => setCompetition(item)}>{competitionLabels[item]}</button>)}</div>

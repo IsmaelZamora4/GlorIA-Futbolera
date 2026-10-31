@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { applyPreferences, defaultPreferences, preferenceKey, preferencesChangedEvent, translations, type Preferences } from "../../lib/preferences";
 import { SportiaSidebar } from "../../components/SportiaSidebar";
+import { SportiaPageHeader } from "../../components/SportiaPageHeader";
 
 const availableCompetitions = [
   "Liga 1",
@@ -90,23 +91,13 @@ export default function SettingsPage() {
     <div className="app-shell settings-shell">
       <SportiaSidebar active="Configuración" />
       <main className="settings-page">
-      <header className="settings-topbar">
-        <label className="settings-search"><SettingsIcon kind="search" /><input placeholder={preferences.language === "en" ? "Search team, league or match..." : "Buscar equipo, liga o partido..."} /><kbd>Ctrl K</kbd></label>
-        <div className="settings-top-actions">
-          <button type="button" className="settings-circle-button" aria-label="Notificaciones"><SettingsIcon kind="bell" /><span>4</span></button>
-          <Link href="/configuracion" className="settings-circle-button" aria-label="Configuración"><SettingsIcon kind="settings" /></Link>
-          <div className="settings-profile"><span className="settings-avatar">TS</span><span><strong>Terry Stacia</strong><small>MU Bwoey</small></span><span className="settings-profile-chevron">⌄</span></div>
-        </div>
-      </header>
+      <SportiaPageHeader title={translations[preferences.language].settings.title} description={translations[preferences.language].settings.subtitle} />
 
       <section className="settings-content">
-        <header className="settings-heading">
-          <div>
-            <h1>{translations[preferences.language].settings.title}</h1>
-            <p>{translations[preferences.language].settings.subtitle}</p>
-          </div>
+        <div className="settings-toolbar">
+          <label className="settings-search"><SettingsIcon kind="search" /><input placeholder={preferences.language === "en" ? "Search team, league or match..." : "Buscar equipo, liga o partido..."} /><kbd>Ctrl K</kbd></label>
           <span className="settings-beta">BETA · v0.1.0</span>
-        </header>
+        </div>
 
         <div className="settings-grid">
           <section className="settings-card settings-interface-card">
