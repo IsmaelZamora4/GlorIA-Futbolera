@@ -8,12 +8,22 @@ const nextConfig: NextConfig = {
       { source: "/competiciones/:path*", destination: "/home/competiciones/:path*", permanent: false },
       { source: "/configuracion/:path*", destination: "/home/configuración/:path*", permanent: false },
       { source: "/metodologia/:path*", destination: "/home/metodología/:path*", permanent: false },
+      { source: "/metodolog%C3%ADa/:path*", destination: "/home/metodología/:path*", permanent: false },
       { source: "/bank/:path*", destination: "/home/bank/:path*", permanent: false },
       { source: "/posiciones/:path*", destination: "/home/posiciones/:path*", permanent: false },
       { source: "/partido/:path*", destination: "/home/partido/:path*", permanent: false },
       { source: "/home/configuracion/:path*", destination: "/home/configuración/:path*", permanent: false },
       { source: "/home/metodologia/:path*", destination: "/home/metodología/:path*", permanent: false },
     ];
+  },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        { source: "/home/metodolog%C3%ADa/:path*", destination: "/home/metodologia/:path*" },
+      ],
+      afterFiles: [],
+      fallback: [],
+    };
   },
   images: {
     remotePatterns: [
