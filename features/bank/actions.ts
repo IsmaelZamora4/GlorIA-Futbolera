@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { validateAdjustmentInput, validateBankInput, validateBetDetails, validateBetInput, type BankCurrency, type BetStatus } from "@/features/bank/services/calculations";
+import { resolveBankFootballEvent } from "@/features/bank/services/football-options";
 
 type ActionResult = { error?: string; success?: string };
 
@@ -36,11 +37,17 @@ export async function createBet(formData: FormData): Promise<ActionResult> {
   if (!user) return { error: "Tu sesión ha caducado. Vuelve a iniciar sesión." };
   const { data: bank, error: bankError } = await supabase.from("banks").select("id").eq("user_id", user.id).maybeSingle();
   if (bankError || !bank) return { error: "No se encontró tu Bank. Configúralo antes de registrar una apuesta." };
+  const resolvedEvent = await resolveBankFootballEvent(
+    getText(formData, "competition"),
+    getText(formData, "homeTeam"),
+    getText(formData, "awayTeam"),
+  );
+  if (resolvedEvent.error) return { error: resolvedEvent.error };
   const values = {
     bank_id: bank.id,
     user_id: user.id,
     sport: "Fútbol",
-    event: getText(formData, "event"),
+    event: resolvedEvent.event!,
     market: getText(formData, "market"),
     selection: getText(formData, "selection"),
     stake: getNumber(formData, "stake"),

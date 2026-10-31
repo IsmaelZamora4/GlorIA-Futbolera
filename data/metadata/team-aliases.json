@@ -56,7 +56,8 @@
     "La Coruna": ["Deportivo La Coruña", "RC Deportivo La Coruña", "RC Deportivo La Coruna"],
     "Malaga": ["Málaga CF", "Malaga CF"],
     "Betis": ["Real Betis Balompié", "Real Betis Balompie"],
-    "Santander": ["Racing Santander", "Real Racing Club de Santander", "Real Racing Club"]
+    "Santander": ["Racing Santander", "Real Racing Club de Santander", "Real Racing Club"],
+    "Levante": ["Levante UD", "Levante Unión Deportiva"]
   },
   "Bundesliga": {
     "Bayern Munich": ["FC Bayern München", "Bayern München", "Bayern Munich FC"],

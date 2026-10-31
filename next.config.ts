@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   async redirects() {
     return [
+      { source: "/profile/:path*", destination: "/home/profile/:path*", permanent: false },
       { source: "/partidos/:path*", destination: "/home/partidos/:path*", permanent: false },
       { source: "/competiciones/:path*", destination: "/home/competiciones/:path*", permanent: false },
       { source: "/configuracion/:path*", destination: "/home/configuración/:path*", permanent: false },

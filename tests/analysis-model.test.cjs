@@ -343,6 +343,36 @@ test("SSC Napoli se normaliza a Napoli y conserva sus estadísticas actuales", a
   assert.ok(statistics.home.goalsFor > 0);
 });
 
+test("Levante UD resuelve a Levante para datos de temporada, estadio y foto local", async () => {
+  const knownTeams = new Set([
+    ...JSON.parse(readFileSync("data/processed/la-liga/historical-matches.json", "utf8")),
+    ...JSON.parse(readFileSync("data/processed/la-liga/current-season-matches.json", "utf8")),
+  ].flatMap((match) => [match.homeTeam, match.awayTeam]));
+  const identity = resolveTeamIdentity("LaLiga", "Levante UD", knownTeams);
+  assert.equal(identity.canonicalName, "Levante");
+  assert.equal(identity.source, "alias");
+
+  const context = await getLocalMatchDetailContext({
+    competition: "LaLiga de España",
+    fixtureDate: "2026-10-31",
+    homeTeam: "Levante UD",
+    awayTeam: "Club Atlético de Madrid",
+  });
+  assert.ok(context);
+  assert.equal(context.fixture.home.canonicalName, "Levante");
+  assert.equal(context.fixture.home.source, "alias");
+  assert.ok(context.historicalMatches.some((match) => match.homeTeam === "Levante" || match.awayTeam === "Levante"));
+  assert.ok(context.currentMatchesBeforeFixture.some((match) => match.homeTeam === "Levante" || match.awayTeam === "Levante"));
+
+  const analysis = await getLocalLeagueAnalysis("LaLiga de España", "Levante UD", "Club Atlético de Madrid", "2026-10-31");
+  assert.ok(analysis);
+  assert.ok(analysis.currentSeasonHomeSample > 0 || analysis.currentSeasonAwaySample > 0);
+  assert.equal(resolveFixtureVenue("LaLiga de España", "Levante UD", "Estadio por confirmar"), "Ciutat de València");
+  const photo = getLocalVenuePhoto("LaLiga de España", context.fixture.home.canonicalName);
+  assert.equal(photo?.imageUrl, "/stadiums/la-liga/levante.webp");
+  assert.ok(existsSync(`public${photo.imageUrl}`));
+});
+
 test("cada alias configurado resuelve exactamente a un equipo presente en los datasets locales", () => {
   const directories = {
     Bundesliga: "bundesliga",
@@ -379,6 +409,27 @@ test("todos los equipos de la temporada actual tienen un escudo local de respald
         /^https:\/\/crests\.football-data\.org\/[\w.-]+$/,
         `${directory}: ${team} debe tener un escudo de respaldo`,
       );
+    }
+  }
+});
+
+test("los alias de equipos actuales también resuelven a su estadio configurado", () => {
+  const directories = {
+    Bundesliga: "bundesliga",
+    LaLiga: "la-liga",
+    "Ligue 1": "ligue-1",
+    "Premier League": "premier-league",
+    "Serie A": "serie-a",
+  };
+
+  for (const [competition, directory] of Object.entries(directories)) {
+    const current = JSON.parse(readFileSync(`data/processed/${directory}/current-season-matches.json`, "utf8"));
+    const currentTeams = new Set(current.flatMap((match) => [match.homeTeam, match.awayTeam]));
+    for (const [canonicalName, variants] of Object.entries(aliasesByCompetition[competition])) {
+      if (!currentTeams.has(canonicalName)) continue;
+      for (const variant of variants) {
+        assert.ok(getTeamVenue(competition, variant)?.stadium, `${competition}: ${variant} debe resolver a la sede de ${canonicalName}`);
+      }
     }
   }
 });

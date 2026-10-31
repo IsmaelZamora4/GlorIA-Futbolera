@@ -2,7 +2,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const processedRoot = join(process.cwd(), "data", "processed");
-const aliases = JSON.parse(await readFile(join(process.cwd(), "data", "team-aliases.json"), "utf8"));
+const aliases = JSON.parse(await readFile(join(process.cwd(), "data", "metadata", "team-aliases.json"), "utf8"));
 const leagueDirectories = {
   Bundesliga: "bundesliga",
   LaLiga: "la-liga",

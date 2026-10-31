@@ -160,6 +160,7 @@ button { cursor: pointer; }
 .methodology-shell .methodology-intro h2 { margin: 0 0 10px; color: #f4f4f8; font-size: 36px; font-weight: 700; letter-spacing: -.035em; line-height: 1.12; }
 .methodology-shell .methodology-intro > p { max-width: 720px; margin: 0; color: #b5b7c3; font-size: 14px; line-height: 1.65; }
 .methodology-shell .methodology-intro-note { max-width: 720px; gap: 11px; margin-top: 16px; border-color: #302746; border-radius: 10px; padding: 12px 14px; background: #17151f; }
+.methodology-shell .methodology-intro > .methodology-topbar-link { margin-top: 14px; }
 .methodology-shell .methodology-intro-note > svg { width: 20px; height: 20px; flex: 0 0 auto; stroke: #bd91fa; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 .methodology-shell .methodology-intro-note p { color: #c1bfd0; font-size: 12px; line-height: 1.5; }
 .methodology-shell .methodology-index { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; border: 0; padding: 16px 0 4px; }
@@ -2687,6 +2688,19 @@ button:active, .nav-item:active, .mobile-app-nav-item:active { transform: scale(
   .auth-options { gap: 8px; font-size: 11px; }
 }
 
+.password-reset-auth-page .password-reset-card { width: min(100%, 430px); }
+.password-reset-auth-page .password-reset-form { gap: 14px; }
+.password-reset-auth-page .password-reset-form .auth-field-group { gap: 6px; }
+.password-reset-auth-page .password-reset-hint { margin: -1px 0 0; color: #a6a7b0; font-size: 11px; }
+.password-reset-auth-page .password-reset-back { margin: 19px 0 0; }
+.password-reset-auth-page .password-reset-back a { color: #c978ff; text-decoration: none; }
+.password-reset-auth-page .password-reset-back a:hover { color: #e1b6ff; text-decoration: underline; text-underline-offset: 3px; }
+.password-reset-auth-page .password-reset-toggle { display: grid; width: 34px; height: 36px; flex: 0 0 34px; place-items: center; padding: 0; }
+.password-reset-auth-page .password-reset-toggle svg { width: 18px; height: 18px; }
+.password-reset-auth-page .password-reset-checking { margin: 0; color: #c1c2ca; font-size: 12px; }
+.password-reset-auth-page .password-reset-retry { width: 100%; text-decoration: none; }
+.password-reset-auth-page .password-reset-retry:hover { color: #fff; }
+
 /* /competiciones responsive overrides are last to outrank the legacy page rules above. */
 .competitions-shell .competitions-page { width: min(1120px, calc(100% - 64px)); }
 .competitions-shell .competitions-cache-icon { width: 20px; height: 20px; color: #bd91fa; background: transparent; }
@@ -2719,6 +2733,64 @@ button:active, .nav-item:active, .mobile-app-nav-item:active { transform: scale(
   .competitions-shell .competition-summary-item { flex-wrap: nowrap; }
   .competitions-shell .competition-summary-note { grid-column: 1 / -1; }
   .competitions-shell .competition-card-actions a, .competitions-shell .unavailable-action { font-size: 11px; }
+}
+
+.profile-shell { min-height: 100vh; background: #0f1015; }
+.profile-shell .main-area { min-width: 0; background: #0f1015; }
+.profile-shell > .main-area > .sportia-topbar { min-height: 76px; border-color: #1c1d26; padding: 18px clamp(20px, 3vw, 42px); background: #0f1015; }
+.profile-shell .sportia-sidebar .sportia-other-menu a.is-active { color: #fff; background: #1b1c26; }
+.profile-content { display: grid; width: min(1120px, calc(100% - 64px)); gap: 16px; margin: 0 auto; padding: 28px 0 48px; color: #e5e7ee; font-family: var(--font-jakarta-sans), var(--font-plex-sans), sans-serif; }
+.profile-identity, .profile-section { border: 1px solid #262734; border-radius: 12px; background: #181920; }
+.profile-identity { display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; align-items: center; gap: 20px; padding: 24px; }
+.profile-avatar { display: grid; width: 84px; height: 84px; overflow: hidden; place-items: center; border: 1px solid #514075; border-radius: 50%; color: #f4edff; background: #2a1250; font-size: 25px; font-weight: 700; }
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile-identity-copy { min-width: 0; }
+.profile-identity-copy h2 { overflow: hidden; margin: 0 0 5px; color: #f8fafc; font-size: 22px; text-overflow: ellipsis; }
+.profile-identity-copy p { margin: 0 0 7px; color: #c0c3d0; font-size: 13px; overflow-wrap: anywhere; }
+.profile-identity-copy span, .profile-avatar-actions small { color: #a2a5b5; font-size: 11px; }
+.profile-avatar-actions { display: grid; justify-items: end; gap: 8px; }
+.profile-avatar-actions button, .profile-section-heading > button, .profile-form-actions > button { min-height: 40px; border: 1px solid #6137a2; border-radius: 8px; padding: 0 14px; color: #fff; background: #7029d5; font: inherit; font-size: 12px; font-weight: 650; cursor: pointer; }
+.profile-avatar-actions button:hover:not(:disabled), .profile-section-heading > button:hover:not(:disabled), .profile-form-actions > button:hover:not(:disabled) { background: #7d3ce0; }
+.profile-avatar-actions .profile-text-button { min-height: 30px; border-color: transparent; color: #c0c3d0; background: transparent; }
+.profile-avatar-actions button:disabled, .profile-section-heading > button:disabled, .profile-form-actions > button:disabled { cursor: wait; opacity: .65; }
+.profile-file-input { display: none; }
+.profile-section-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.profile-section { display: grid; align-content: start; gap: 20px; padding: 22px; }
+.profile-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.profile-section-heading h2 { margin: 0 0 5px; color: #f4f5f9; font-size: 16px; }
+.profile-section-heading p { margin: 0; color: #a2a5b5; font-size: 12px; line-height: 1.55; }
+.profile-section > label { display: grid; gap: 8px; color: #c0c3d0; font-size: 12px; }
+.profile-section input:not([type="checkbox"]), .profile-section select { width: 100%; min-height: 42px; border: 1px solid #30313e; border-radius: 8px; padding: 0 12px; color: #f1f2f7; background: #111219; font: inherit; font-size: 13px; }
+.profile-section input:disabled { color: #969aaa; cursor: not-allowed; }
+.profile-favorites { display: grid; gap: 12px; margin: 0; border: 0; padding: 0; }
+.profile-favorites legend { margin-bottom: 12px; color: #c0c3d0; font-size: 12px; }
+.profile-favorites > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.profile-favorites label { display: flex; align-items: center; gap: 8px; color: #e1e3eb; font-size: 12px; }
+.profile-favorites input { width: 16px; height: 16px; accent-color: #9655ed; }
+.profile-form-actions { display: flex; min-height: 42px; grid-column: 1 / -1; align-items: center; gap: 14px; }
+.profile-form-actions p, .profile-success { margin: 0; color: #a8dfbd; font-size: 12px; }
+.profile-form-actions .profile-error, .profile-alert { margin: 0; color: #ffabb0; font-size: 12px; }
+.profile-alert { border: 1px solid #69383f; border-radius: 8px; padding: 12px 14px; background: #291a20; }
+.profile-security-section { grid-column: 1 / -1; }
+.profile-security-section .profile-section-heading > button { flex: 0 0 auto; }
+.profile-shell :focus-visible { outline: 2px solid #c9a8ff; outline-offset: 3px; }
+@media (max-width: 820px) {
+  .profile-content { width: min(100% - 40px, 720px); }
+  .profile-section-grid { grid-template-columns: 1fr; }
+  .profile-security-section, .profile-form-actions { grid-column: auto; }
+}
+@media (max-width: 720px) {
+  .profile-shell > .sportia-sidebar { display: none; }
+  .profile-shell > .main-area { margin-left: 0; }
+  .profile-content { width: calc(100% - 28px); padding-top: 20px; }
+  .profile-identity { grid-template-columns: 64px minmax(0, 1fr); gap: 14px; padding: 18px; }
+  .profile-avatar { width: 64px; height: 64px; font-size: 20px; }
+  .profile-avatar-actions { grid-column: 1 / -1; justify-items: start; }
+  .profile-identity-copy h2 { font-size: 18px; }
+  .profile-section { padding: 18px; }
+  .profile-favorites > div { grid-template-columns: 1fr 1fr; }
+  .profile-security-section .profile-section-heading { align-items: flex-start; flex-direction: column; }
+  .profile-form-actions { align-items: flex-start; flex-direction: column; }
 }
 
 /* Match detail shares /home's shell and visual language while keeping its analysis intact. */
@@ -3776,6 +3848,21 @@ button:active, .nav-item:active, .mobile-app-nav-item:active { transform: scale(
   background: var(--sportia-inner);
 }
 .bank-shell .bank-form input::placeholder { color: #8d90a5; }
+.bank-shell .bank-football-picker { display: grid; min-width: 0; gap: 7px; }
+.bank-shell .bank-football-picker-label { color: #c9cbd4; font-size: 13px; }
+.bank-shell .bank-football-picker-menu { position: relative; min-width: 0; }
+.bank-shell .bank-football-picker-menu > summary { display: flex; min-height: 42px; align-items: center; gap: 9px; border: 1px solid #292b38; border-radius: 8px; padding: 0 11px; color: #e2e8f0; background: var(--sportia-inner); font-size: 12px; cursor: pointer; list-style: none; }
+.bank-shell .bank-football-picker-menu > summary::-webkit-details-marker { display: none; }
+.bank-shell .bank-football-picker-menu > summary[aria-disabled="true"] { cursor: not-allowed; opacity: .55; }
+.bank-shell .bank-football-picker-menu > summary img { width: 23px; height: 23px; flex: 0 0 auto; object-fit: contain; }
+.bank-shell .bank-football-picker-menu > summary > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bank-shell .bank-football-picker-placeholder { color: #8d90a5; }
+.bank-shell .bank-football-picker-menu > summary > svg { width: 15px; height: 15px; flex: 0 0 auto; margin-left: auto; stroke: #aeb0bd; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.bank-shell .bank-football-picker-options { position: absolute; z-index: 30; top: calc(100% + 5px); right: 0; left: 0; display: grid; max-height: 260px; overflow-y: auto; border: 1px solid #34364a; border-radius: 9px; padding: 5px; background: #171821; box-shadow: 0 12px 28px rgba(0, 0, 0, .42); }
+.bank-shell .bank-football-picker-options button { display: flex; min-height: 40px; align-items: center; gap: 9px; border: 0; border-radius: 6px; padding: 5px 8px; color: #d9dbe4; background: transparent; font: inherit; font-size: 12px; text-align: left; cursor: pointer; }
+.bank-shell .bank-football-picker-options button:hover, .bank-shell .bank-football-picker-options button[aria-selected="true"] { color: #fff; background: #272136; }
+.bank-shell .bank-football-picker-options img { width: 25px; height: 25px; flex: 0 0 auto; object-fit: contain; }
+.bank-shell .bank-football-picker-options p { margin: 0; padding: 10px; color: #a3a5b2; font-size: 12px; }
 .bank-shell .bank-form input:focus,
 .bank-shell .bank-form select:focus,
 .bank-shell .bank-settle-form select:focus { border-color: #9b66ef; outline: none; }
@@ -3789,6 +3876,7 @@ button:active, .nav-item:active, .mobile-app-nav-item:active { transform: scale(
 }
 .bank-shell .bank-form .auth-submit:hover:not(:disabled),
 .bank-shell .bank-retry-link:hover { border-color: #7733ea; background: #7733ea; }
+.bank-shell .bank-form .auth-submit:disabled { cursor: not-allowed; opacity: .55; }
 .bank-shell .bank-history-count { color: #c9cbd4; }
 .bank-shell .bank-bets li { border-color: #252634; }
 .bank-shell .bank-status { color: #c9cbd4; }

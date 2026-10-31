@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import type { BankFootballCompetition } from "@/features/bank/services/football-options";
 import { createAdjustment, createBank, createBet, settleBet } from "@/features/bank/actions";
 import type { BankSummary } from "@/features/bank/services/calculations";
 
@@ -43,6 +45,7 @@ export function BankDashboard({
   bets,
   adjustments,
   summary,
+  footballOptions = [],
   loadError,
   betsPage = 1,
   betsPages = 1,
@@ -55,6 +58,7 @@ export function BankDashboard({
   bets: BankBet[];
   adjustments: BankAdjustment[];
   summary: BankSummary | null;
+  footballOptions?: BankFootballCompetition[];
   loadError?: string;
   betsPage?: number;
   betsPages?: number;
@@ -65,6 +69,11 @@ export function BankDashboard({
 }) {
   const [feedback, setFeedback] = useState<Record<string, ActionResult>>({});
   const [pendingActions, setPendingActions] = useState<Set<string>>(() => new Set());
+  const [competitionId, setCompetitionId] = useState("");
+  const [homeTeam, setHomeTeam] = useState("");
+  const [awayTeam, setAwayTeam] = useState("");
+  const selectedCompetition = footballOptions.find((item) => item.id === competitionId);
+  const availableTeams = selectedCompetition?.teams ?? [];
 
   const submit = async (key: string, action: BankAction, formData: FormData) => {
     setFeedback((current) => ({ ...current, [key]: {} }));
@@ -143,7 +152,14 @@ export function BankDashboard({
             <h2>Registrar apuesta</h2>
             <p>Los datos se guardan en tu Bank privado. Las cuotas admiten hasta tres decimales.</p>
             <form action={async (formData) => { await submit("bet", createBet, formData); }} className="bank-form">
-              <label htmlFor="event">Evento<input id="event" name="event" maxLength={160} required placeholder="Equipo local — Equipo visitante" /></label>
+              <input type="hidden" name="competition" value={competitionId} />
+              <input type="hidden" name="homeTeam" value={homeTeam} />
+              <input type="hidden" name="awayTeam" value={awayTeam} />
+              <FootballPicker label="Liga o competición" placeholder="Elige una competición" value={selectedCompetition ? { id: selectedCompetition.id, name: selectedCompetition.name, crest: selectedCompetition.logo } : null} options={footballOptions.map((item) => ({ id: item.id, name: item.name, crest: item.logo }))} onChange={(value) => { setCompetitionId(value?.id ?? ""); setHomeTeam(""); setAwayTeam(""); }} />
+              <div className="bank-form-grid">
+                <FootballPicker label="Local" placeholder={selectedCompetition ? "Elige el equipo local" : "Primero elige una liga"} value={availableTeams.find((team) => team.name === homeTeam) ? { id: homeTeam, ...availableTeams.find((team) => team.name === homeTeam)! } : null} options={availableTeams.filter((team) => team.name !== awayTeam).map((team) => ({ id: team.name, name: team.name, crest: team.crest }))} disabled={!selectedCompetition} onChange={(value) => setHomeTeam(value?.id ?? "")} />
+                <FootballPicker label="Visitante" placeholder={selectedCompetition ? "Elige el equipo visitante" : "Primero elige una liga"} value={availableTeams.find((team) => team.name === awayTeam) ? { id: awayTeam, ...availableTeams.find((team) => team.name === awayTeam)! } : null} options={availableTeams.filter((team) => team.name !== homeTeam).map((team) => ({ id: team.name, name: team.name, crest: team.crest }))} disabled={!selectedCompetition} onChange={(value) => setAwayTeam(value?.id ?? "")} />
+              </div>
               <label htmlFor="market">Mercado<input id="market" name="market" maxLength={120} required placeholder="Más de 2.5 goles" /></label>
               <label htmlFor="selection">Selección<input id="selection" name="selection" maxLength={160} required placeholder="Sí / Más de 2.5" /></label>
               <div className="bank-form-grid">
@@ -154,7 +170,7 @@ export function BankDashboard({
                   <input id="decimalOdds" name="decimalOdds" type="number" min="1.001" max="99999.999" step="0.001" inputMode="decimal" required />
                 </label>
               </div>
-              <button className="auth-submit" type="submit" disabled={pendingActions.has("bet")}>{pendingActions.has("bet") ? "Guardando…" : "Guardar apuesta"}</button>
+              <button className="auth-submit" type="submit" disabled={pendingActions.has("bet") || !competitionId || !homeTeam || !awayTeam || homeTeam === awayTeam}>{pendingActions.has("bet") ? "Guardando…" : "Guardar apuesta"}</button>
             </form>
             <Feedback state={feedback.bet} />
           </section>
@@ -280,6 +296,49 @@ function Pagination({ label, page, pages, total, pageKey, betsPage, adjustmentsP
         {next ? <Link href={next} aria-label={`${label}: página siguiente`}>Siguiente</Link> : <span aria-disabled="true">Siguiente</span>}
       </div>
     </nav>
+  );
+}
+
+type FootballOption = { id: string; name: string; crest: string };
+
+function FootballPicker({
+  label,
+  placeholder,
+  value,
+  options,
+  onChange,
+  disabled = false,
+}: {
+  label: string;
+  placeholder: string;
+  value: FootballOption | null;
+  options: FootballOption[];
+  onChange: (option: FootballOption | null) => void;
+  disabled?: boolean;
+}) {
+  const detailsRef = useRef<HTMLDetailsElement>(null);
+  const close = () => {
+    if (detailsRef.current) detailsRef.current.open = false;
+  };
+
+  return (
+    <div className="bank-football-picker">
+      <span className="bank-football-picker-label">{label}</span>
+      <details ref={detailsRef} className="bank-football-picker-menu">
+        <summary aria-disabled={disabled} onClick={(event) => { if (disabled) event.preventDefault(); }}>
+          {value ? <><Image src={value.crest} alt="" width={22} height={22} unoptimized /><span>{value.name}</span></> : <span className="bank-football-picker-placeholder">{placeholder}</span>}
+          <svg aria-hidden="true" viewBox="0 0 16 16" fill="none"><path d="m4 6 4 4 4-4" /></svg>
+        </summary>
+        <div className="bank-football-picker-options" role="listbox" aria-label={label}>
+          {options.length ? options.map((option) => (
+            <button type="button" role="option" aria-selected={value?.id === option.id} key={option.id} onClick={() => { onChange(option); close(); }}>
+              <Image src={option.crest} alt="" width={24} height={24} unoptimized />
+              <span>{option.name}</span>
+            </button>
+          )) : <p>No hay equipos disponibles.</p>}
+        </div>
+      </details>
+    </div>
   );
 }
 

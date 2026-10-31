@@ -13,6 +13,20 @@ require.extensions[".ts"] = (module, fileName) => {
 };
 
 let state;
+const footballOptions = [
+  { id: "premier-league", name: "Premier League", teams: [{ name: "Man City" }, { name: "Liverpool" }, { name: "Brighton" }] },
+  { id: "la-liga", name: "LaLiga", teams: [{ name: "Barcelona" }, { name: "Real Madrid" }] },
+];
+
+function resolveBankFootballEvent(competitionId, homeTeam, awayTeam) {
+  const competition = footballOptions.find((item) => item.id === competitionId);
+  if (!competition) return { error: "Selecciona una competición disponible." };
+  if (!homeTeam || !awayTeam) return { error: "Selecciona los equipos local y visitante." };
+  if (homeTeam === awayTeam) return { error: "El equipo local y el visitante deben ser distintos." };
+  const valid = new Set(competition.teams.map((team) => team.name));
+  if (!valid.has(homeTeam) || !valid.has(awayTeam)) return { error: "Los equipos seleccionados no pertenecen a esa competición." };
+  return { event: `${competition.name} · ${homeTeam} vs ${awayTeam}` };
+}
 
 function makeClient() {
   return {
@@ -58,6 +72,7 @@ Module._load = function (request, parent, isMain) {
   if (request === "@/features/bank/services/calculations") {
     return originalLoad.call(this, require.resolve("../features/bank/services/calculations.ts"), parent, isMain);
   }
+  if (request === "@/features/bank/services/football-options") return { resolveBankFootballEvent };
   if (request === "next/cache") return { revalidatePath: (path) => state.revalidated.push(path) };
   return originalLoad.call(this, request, parent, isMain);
 };
@@ -102,19 +117,33 @@ test("el propietario del Bank procede de la sesión y no del formulario", async 
 
 test("la apuesta consulta el Bank propio y persiste el user_id autenticado", async () => {
   reset();
-  const result = await createBet(form({ event: "Local vs Visita", market: "Goles", selection: "Más de 2.5", stake: 12.5, decimalOdds: 2.1, user_id: "user-b" }));
+  const result = await createBet(form({ competition: "premier-league", homeTeam: "Man City", awayTeam: "Brighton", market: "Goles", selection: "Más de 2.5", stake: 12.5, decimalOdds: 2.1, user_id: "user-b" }));
   assert.equal(result.success, "Apuesta registrada.");
   assert.ok(state.filters.some((filter) => filter.table === "banks" && filter.column === "user_id" && filter.value === "user-a"));
   assert.deepEqual(state.writes[0], {
     table: "bets",
-    values: { bank_id: "bank-a", user_id: "user-a", sport: "Fútbol", event: "Local vs Visita", market: "Goles", selection: "Más de 2.5", stake: 12.5, decimal_odds: 2.1 },
+    values: { bank_id: "bank-a", user_id: "user-a", sport: "Fútbol", event: "Premier League · Man City vs Brighton", market: "Goles", selection: "Más de 2.5", stake: 12.5, decimal_odds: 2.1 },
   });
 });
 
-test("rechaza campos y precisión inválidos antes de insertar", async () => {
+test("rechaza el mismo equipo como local y visitante y no inserta", async () => {
   reset();
-  const result = await createBet(form({ event: "x".repeat(161), market: "Goles", selection: "Sí", stake: 1.001, decimalOdds: 2 }));
-  assert.match(result.error, /evento/i);
+  const result = await createBet(form({ competition: "premier-league", homeTeam: "Man City", awayTeam: "Man City", market: "Goles", selection: "Más de 2.5", stake: 12, decimalOdds: 2 }));
+  assert.match(result.error, /deben ser distintos/i);
+  assert.equal(state.writes.length, 0);
+});
+
+test("rechaza equipos que no pertenecen a la competición enviada", async () => {
+  reset();
+  const result = await createBet(form({ competition: "premier-league", homeTeam: "Man City", awayTeam: "Barcelona", market: "Goles", selection: "Más de 2.5", stake: 12, decimalOdds: 2 }));
+  assert.match(result.error, /no pertenecen/i);
+  assert.equal(state.writes.length, 0);
+});
+
+test("rechaza importes con precisión inválida antes de insertar", async () => {
+  reset();
+  const result = await createBet(form({ competition: "premier-league", homeTeam: "Man City", awayTeam: "Brighton", market: "Goles", selection: "Sí", stake: 1.001, decimalOdds: 2 }));
+  assert.match(result.error, /decimales/i);
   assert.equal(state.writes.length, 0);
 });
 

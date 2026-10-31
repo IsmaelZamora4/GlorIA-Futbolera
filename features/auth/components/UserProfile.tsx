@@ -68,6 +68,7 @@ export function UserProfile({ profile }: { profile: HomeUserProfile }) {
               width={36}
               height={36}
               sizes="36px"
+              unoptimized
               onError={() => setFailedAvatarUrl(profile.avatarUrl)}
             />
           ) : getHomeUserInitials(profile.displayName)}
@@ -86,6 +87,9 @@ export function UserProfile({ profile }: { profile: HomeUserProfile }) {
           <small>{profile.email ?? "Cuenta de GlorIA"}</small>
         </div>
         <div className="sportia-profile-dropdown-divider" />
+        <Link className="sportia-profile-dropdown-item" href="/home/profile" onClick={() => { if (menuRef.current) menuRef.current.open = false; }}>
+          Mi perfil
+        </Link>
         <Link className="sportia-profile-dropdown-item" href="/home/configuración" onClick={() => { if (menuRef.current) menuRef.current.open = false; }}>
           Configuración
         </Link>

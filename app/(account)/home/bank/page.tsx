@@ -4,6 +4,7 @@ import { SportiaPageHeader } from "@/components/layout/SportiaPageHeader";
 import { createClient } from "@/lib/supabase/server";
 import type { BankSummary } from "@/features/bank/services/calculations";
 import { BankDashboard, type BankAdjustment, type BankBet } from "@/features/bank/components/BankDashboard";
+import { getBankFootballOptions } from "@/features/bank/services/football-options";
 
 const historyPageSize = 25;
 
@@ -145,10 +146,13 @@ export default async function BankPage({ searchParams }: { searchParams: BankSea
     return <BankPageShell><BankDashboard bank={bank} bets={[]} adjustments={[]} summary={null} loadError={getLoadError(historyError)} /></BankPageShell>;
   }
 
+  const footballOptions = await getBankFootballOptions();
+
   return (
     <BankPageShell>
       <BankDashboard
         bank={bank}
+        footballOptions={footballOptions}
         bets={(betsResult.data ?? []) as BankBet[]}
         adjustments={(adjustmentsResult.data ?? []) as BankAdjustment[]}
         summary={summary}

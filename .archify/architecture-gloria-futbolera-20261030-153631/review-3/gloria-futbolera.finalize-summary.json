@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261030-153631\\candidate.json",
+    "sha256": "c89a904c1b25934e32e7f3ce9bb4d18e36537c3db060d91c21acb0e6380d24ad",
+    "bytes": 12350
+  },
+  "artifact": {
+    "path": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261030-153631\\gloria-futbolera.html",
+    "sha256": "d1d10320e64c92d5e5be2e41d90c6160e2a28c59d6e054810854ca8fa5ab55bf",
+    "bytes": 871110
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261030-153631\\review-3\\gloria-futbolera.finalize.json",
+    "summaryReceipt": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261030-153631\\review-3\\gloria-futbolera.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\USUARIO\\GlorIA_Futbolera\\.archify\\architecture-gloria-futbolera-20261030-153631\\review-3\\gloria-futbolera.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.2.0",
+    "availableVersion": "3.2.0",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-30T20:41:53.711Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 9718,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  },
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "resolvedCrossovers": 4,
+      "routesOverSuggestedBends": 3
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [
+        {
+          "left": {
+            "id": "app-fixtures",
+            "from": "next-app",
+            "to": "fixtures-api",
+            "label": "consulta partidos",
+            "collectionIndex": 3,
+            "artifactIndex": 4
+          },
+          "right": {
+            "id": "app-bank",
+            "from": "next-app",
+            "to": "bank",
+            "label": "sirve /bank con sesión autenticada",
+            "collectionIndex": 12,
+            "artifactIndex": 13
+          },
+          "point": [
+            440,
+            360
+          ],
+          "sharedNode": "next-app"
+        },
+        {
+          "left": {
+            "id": "fixtures-history",
+            "from": "fixtures-api",
+            "to": "processed-data",
+            "label": "fecha histórica",
+            "collectionIndex": 5,
+            "artifactIndex": 6
+          },
+          "right": {
+            "id": "app-bank",
+            "from": "next-app",
+            "to": "bank",
+            "label": "sirve /bank con sesión autenticada",
+            "collectionIndex": 12,
+            "artifactIndex": 13
+          },
+          "point": [
+            585,
+            379
+          ]
+        },
+        {
+          "left": {
+            "id": "fixtures-analysis",
+            "from": "fixtures-api",
+            "to": "analysis",
+            "label": "calcula análisis disponible",
+            "collectionIndex": 6,
+            "artifactIndex": 7
+          },
+          "right": {
+            "id": "app-bank",
+            "from": "next-app",
+            "to": "bank",
+            "label": "sirve /bank con sesión autenticada",
+            "collectionIndex": 12,
+            "artifactIndex": 13
+          },
+          "point": [
+            636,
+            379
+          ]
+        },
+        {
+          "left": {
+            "id": "app-catalogue",
+            "from": "next-app",
+            "to": "public-catalogue",
+            "label": "publica catálogo y agenda destacada",
+            "collectionIndex": 10,
+            "artifactIndex": 11
+          },
+          "right": {
+            "id": "app-bank",
+            "from": "next-app",
+            "to": "bank",
+            "label": "sirve /bank con sesión autenticada",
+            "collectionIndex": 12,
+            "artifactIndex": 13
+          },
+          "point": [
+            440,
+            303
+          ],
+          "sharedNode": "next-app"
+        }
+      ],
+      "detours": [
+        {
+          "relationship": {
+            "id": "proxy-auth",
+            "from": "session-proxy",
+            "to": "supabase-auth",
+            "label": "valida o renueva sesión",
+            "collectionIndex": 2,
+            "artifactIndex": 3
+          },
+          "bends": 3,
+          "stretch": 1.244
+        },
+        {
+          "relationship": {
+            "id": "app-bank",
+            "from": "next-app",
+            "to": "bank",
+            "label": "sirve /bank con sesión autenticada",
+            "collectionIndex": 12,
+            "artifactIndex": 13
+          },
+          "bends": 4,
+          "stretch": 1.284
+        },
+        {
+          "relationship": {
+            "id": "bank-store",
+            "from": "bank",
+            "to": "bank-store",
+            "label": "lee y registra datos privados por usuario",
+            "collectionIndex": 13,
+            "artifactIndex": 14
+          },
+          "bends": 3,
+          "stretch": 1.254
+        }
+      ],
+      "truncated": false
+    },
+    "hints": [
+      "next-app has 5 relationships facing its right side, which fits 4 ports: make that side at least 88px, or move some of those neighbours so they face another side of next-app.",
+      "next-app → fixtures-api and next-app → bank cross next to next-app: move node fixtures-api or bank so the two reach next-app from different sides (for example one level with it, one directly above or below it).",
+      "fixtures-api → processed-data crosses next-app → bank: move the node of whichever is a branch, return, or second entrance to the other side of the main path, so that relationship runs through an empty corridor.",
+      "fixtures-api → analysis crosses next-app → bank: move the node of whichever is a branch, return, or second entrance to the other side of the main path, so that relationship runs through an empty corridor.",
+      "next-app → public-catalogue and next-app → bank cross next to next-app: move node public-catalogue or bank so the two reach next-app from different sides (for example one level with it, one directly above or below it).",
+      "session-proxy → supabase-auth needs 3 bends: move node session-proxy or supabase-auth so they share a row or column with matching centers, or sit diagonally with a clear corner.",
+      "next-app → bank needs 4 bends: move node next-app or bank so they share a row or column with matching centers, or sit diagonally with a clear corner.",
+      "bank → bank-store needs 3 bends: move node bank or bank-store so they share a row or column with matching centers, or sit diagonally with a clear corner."
+    ],
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}

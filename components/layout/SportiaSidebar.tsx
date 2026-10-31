@@ -38,6 +38,7 @@ export function SportiaSidebar({ active, selectedCompetition, onCompetitionSelec
     ["Mi Bank", "heart", "/home/bank"],
     ["Datos", "tv", "/home/datos"],
     ["Configuración", "settings", "/home/configuración"],
+    ["Perfil", "users", "/home/profile"],
   ] as const;
   return (
     <aside className="sportia-sidebar" aria-label="Navegación principal">
