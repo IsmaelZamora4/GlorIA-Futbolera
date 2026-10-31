@@ -10,7 +10,7 @@
       "url": "https://github.com/IsmaelZamora4/GlorIA-Futbolera.git",
       "provider": "github",
       "link_mode": "web",
-      "revision": "37731d20c478cfcb486793a7ee3365611a04375e"
+      "revision": "a62dfcf894720f0fd8f84d7338311d135b073e74"
     }
   },
   "components": [
@@ -378,7 +378,7 @@
       "label": "Supabase · Bank",
       "sublabel": "banks · bets · bank_adjustments",
       "pos": [
-        490,
+        505,
         420
       ],
       "size": [
@@ -400,6 +400,89 @@
           "path": "supabase/migrations/20261029000100_create_bank_schema.sql",
           "line": 57,
           "end_line": 85
+        }
+      ]
+    },
+    {
+      "id": "not-found-routes",
+      "type": "frontend",
+      "label": "Rutas 404",
+      "sublabel": "Pública · /home/*",
+      "pos": [
+        40,
+        350
+      ],
+      "size": [
+        190,
+        70
+      ],
+      "sources": [
+        {
+          "path": "app/not-found.tsx",
+          "line": 11,
+          "end_line": 23
+        },
+        {
+          "path": "app/(account)/home/not-found.tsx",
+          "line": 6,
+          "end_line": 20
+        },
+        {
+          "path": "app/(account)/home/[...slug]/page.tsx",
+          "line": 3,
+          "end_line": 5
+        }
+      ]
+    },
+    {
+      "id": "not-found-content",
+      "type": "frontend",
+      "label": "Presentación 404",
+      "sublabel": "Mensaje · enlaces · wallpaper",
+      "pos": [
+        40,
+        480
+      ],
+      "size": [
+        190,
+        70
+      ],
+      "sources": [
+        {
+          "path": "features/not-found/components/NotFoundContent.tsx",
+          "line": 11,
+          "end_line": 29
+        },
+        {
+          "path": "features/not-found/components/NotFoundContent.module.css",
+          "line": 13,
+          "end_line": 19
+        },
+        {
+          "path": "features/not-found/components/NotFoundContent.module.css",
+          "line": 30,
+          "end_line": 41
+        }
+      ]
+    },
+    {
+      "id": "not-found-wallpaper",
+      "type": "cloud",
+      "label": "Wallpaper 404",
+      "sublabel": "public/wallpapers/404-wallpaper.png",
+      "pos": [
+        40,
+        610
+      ],
+      "size": [
+        190,
+        70
+      ],
+      "sources": [
+        {
+          "path": "features/not-found/components/NotFoundContent.module.css",
+          "line": 13,
+          "end_line": 17
         }
       ]
     }
@@ -487,7 +570,22 @@
       "id": "bank-store",
       "from": "bank",
       "to": "bank-store",
-      "label": "lee y registra datos privados por usuario"
+      "label": "por usuario"
+    },
+    {
+      "id": "app-not-found",
+      "from": "next-app",
+      "to": "not-found-routes"
+    },
+    {
+      "id": "not-found-ui",
+      "from": "not-found-routes",
+      "to": "not-found-content"
+    },
+    {
+      "id": "not-found-wallpaper-use",
+      "from": "not-found-content",
+      "to": "not-found-wallpaper"
     }
   ],
   "cards": [
