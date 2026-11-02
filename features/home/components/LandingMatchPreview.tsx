@@ -1,15 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import match from "@/data/metadata/landing-match-preview.json";
+import {
+  getLandingVoteSnapshot,
+  getServerLandingVoteSnapshot,
+  saveLandingVote,
+  subscribeToLandingVote,
+} from "@/features/home/services/landing-vote-store.mjs";
 
 const tabs = ["Resumen", "Forma", "Goles", "Tiros", "Córneres", "Estadísticas", "Posiciones", "H2H"] as const;
 type Tab = (typeof tabs)[number];
 type Team = typeof match.home;
 type Vote = "home" | "draw" | "away";
-const voteKey = "gloria-landing-preview-vote:v1";
 
 function Crest({ team, size = 25 }: { team: Team; size?: number }) {
   return <Image className="mini-crest" src={team.crest} alt={`Escudo de ${team.name}`} width={size} height={size} unoptimized onError={(event) => { event.currentTarget.src = "/teams/team-placeholder.svg"; }} />;
@@ -35,20 +40,17 @@ function Results({ team, type }: { team: Team; type: "conditionMatches" | "recen
 
 export function LandingMatchPreview() {
   const [tab, setTab] = useState<Tab>("Resumen");
-  const [vote, setVote] = useState<Vote | null>(null);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(voteKey);
-      if (saved === "home" || saved === "draw" || saved === "away") setVote(saved);
-    } catch {
-      // La vista previa sigue disponible sin almacenamiento local.
-    }
-  }, []);
+  const storedVote = useSyncExternalStore(
+    subscribeToLandingVote,
+    getLandingVoteSnapshot,
+    getServerLandingVoteSnapshot,
+  );
+  const [voteOverride, setVoteOverride] = useState<Vote | null>(null);
+  const vote = voteOverride ?? storedVote;
 
   function chooseVote(choice: Vote) {
-    setVote(choice);
-    try { localStorage.setItem(voteKey, choice); } catch { /* La elección permanece durante esta visita. */ }
+    setVoteOverride(choice);
+    saveLandingVote(choice);
   }
 
   const choices: { id: Vote; label: string; number: string; team?: Team }[] = [
