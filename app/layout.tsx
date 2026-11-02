@@ -1,26 +1,33 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Sans, IBM_Plex_Sans_Condensed, Plus_Jakarta_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "@/app/globals.css";
 
-const plexSans = IBM_Plex_Sans({
-  subsets: ["latin"],
+const plexSans = localFont({
+  src: "./fonts/ibm-plex-sans-latin-variable.woff2",
+  weight: "400 700",
+  style: "normal",
   display: "swap",
   variable: "--font-plex-sans",
-  weight: ["400", "500", "600", "700"],
+  declarations: [{ prop: "font-stretch", value: "100%" }],
 });
 
-const plexSansCondensed = IBM_Plex_Sans_Condensed({
-  subsets: ["latin"],
+const plexSansCondensed = localFont({
+  src: [
+    { path: "./fonts/ibm-plex-sans-condensed-latin-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/ibm-plex-sans-condensed-latin-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/ibm-plex-sans-condensed-latin-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/ibm-plex-sans-condensed-latin-700.woff2", weight: "700", style: "normal" },
+  ],
   display: "swap",
   variable: "--font-plex-sans-condensed",
-  weight: ["400", "500", "600", "700"],
 });
 
-const jakartaSans = Plus_Jakarta_Sans({
-  subsets: ["latin"],
+const jakartaSans = localFont({
+  src: "./fonts/plus-jakarta-sans-latin-variable.woff2",
+  weight: "400 800",
+  style: "normal",
   display: "swap",
   variable: "--font-jakarta-sans",
-  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
