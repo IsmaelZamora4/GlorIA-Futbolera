@@ -5,16 +5,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { getHomeUserInitials, type HomeUserProfile } from "@/features/auth/services/home-user-profile";
+import { usePrivateAvatarUrl } from "@/features/auth/components/use-private-avatar-url";
 import { createClient } from "@/lib/supabase/browser";
 
 export function UserProfile({ profile }: { profile: HomeUserProfile }) {
   const router = useRouter();
   const menuRef = useRef<HTMLDetailsElement>(null);
   const summaryRef = useRef<HTMLElement>(null);
-  const [failedAvatarUrl, setFailedAvatarUrl] = useState<string | null>(null);
+  const privateAvatar = usePrivateAvatarUrl(profile.avatarUrl);
   const [signOutPending, setSignOutPending] = useState(false);
   const [signOutError, setSignOutError] = useState<string | null>(null);
-  const showAvatar = profile.avatarUrl !== null && failedAvatarUrl !== profile.avatarUrl;
+  const showAvatar = privateAvatar.avatarUrl !== null;
 
   useEffect(() => {
     function closeOnOutsidePointer(event: PointerEvent) {
@@ -63,13 +64,13 @@ export function UserProfile({ profile }: { profile: HomeUserProfile }) {
         <span className="sportia-avatar" aria-hidden="true">
           {showAvatar ? (
             <Image
-              src={profile.avatarUrl!}
+              src={privateAvatar.avatarUrl!}
               alt=""
               width={36}
               height={36}
               sizes="36px"
               unoptimized
-              onError={() => setFailedAvatarUrl(profile.avatarUrl)}
+              onError={privateAvatar.refreshAfterLoadError}
             />
           ) : getHomeUserInitials(profile.displayName)}
         </span>

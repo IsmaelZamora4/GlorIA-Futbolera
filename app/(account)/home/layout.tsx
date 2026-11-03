@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { HomeUserProvider } from "@/features/auth/components/HomeUserProvider";
 import { getHomeUserProfile } from "@/features/auth/services/home-user-profile";
+import { createAvatarSignedUrl } from "@/features/auth/services/avatar-url";
 import { requireAuthenticatedUser } from "@/lib/supabase/auth";
 import { createClient } from "@/lib/supabase/server";
 
@@ -13,9 +14,7 @@ export default async function HomeLayout({ children }: { children: ReactNode }) 
     .eq("user_id", user.id)
     .maybeSingle();
   const avatarUrl = storedProfile.data
-    ? storedProfile.data.avatar_path
-      ? supabase.storage.from("profile-avatars").getPublicUrl(storedProfile.data.avatar_path).data.publicUrl
-      : null
+    ? await createAvatarSignedUrl(supabase, user.id, storedProfile.data.avatar_path)
     : profile.avatarUrl;
   const displayName = storedProfile.data?.display_name ?? profile.displayName;
   const accountProfile = {

@@ -4,7 +4,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { removeAvatar, saveAvatarPath, saveProfileDetails } from "@/features/auth/actions";
+import { usePrivateAvatarUrl } from "@/features/auth/components/use-private-avatar-url";
 import { createClient } from "@/lib/supabase/browser";
+import { avatarCacheControlSeconds } from "@/features/auth/services/avatar-url";
 
 const competitions = ["Liga 1", "Premier League", "Serie A", "LaLiga", "Ligue 1", "Bundesliga", "Champions League", "Europa League"];
 const timezones = [
@@ -28,11 +30,11 @@ export type ProfileSettingsData = {
 
 export function ProfileSettings({ profile }: { profile: ProfileSettingsData }) {
   const router = useRouter();
+  const privateAvatar = usePrivateAvatarUrl(profile.avatarUrl);
   const fileInput = useRef<HTMLInputElement>(null);
   const [displayName, setDisplayName] = useState(profile.displayName);
   const [timezone, setTimezone] = useState(profile.timezone);
   const [favorites, setFavorites] = useState(profile.favorites);
-  const [avatarUrl, setAvatarUrl] = useState(profile.avatarUrl);
   const [pending, setPending] = useState(false);
   const [avatarPending, setAvatarPending] = useState(false);
   const [passwordPending, setPasswordPending] = useState(false);
@@ -91,7 +93,7 @@ export function ProfileSettings({ profile }: { profile: ProfileSettingsData }) {
     const path = `${user.id}/avatar-${crypto.randomUUID()}.${extension}`;
     const { error: uploadError } = await supabase.storage.from("profile-avatars").upload(path, file, {
       contentType: file.type,
-      cacheControl: "3600",
+      cacheControl: String(avatarCacheControlSeconds),
       upsert: false,
     });
     if (uploadError) {
@@ -106,7 +108,7 @@ export function ProfileSettings({ profile }: { profile: ProfileSettingsData }) {
       setError(cleanupError ? `${result.error} El archivo temporal también requiere limpieza.` : result.error);
       return;
     }
-    setAvatarUrl(supabase.storage.from("profile-avatars").getPublicUrl(path).data.publicUrl);
+    privateAvatar.setAvatarUrl(result.avatarUrl ?? null);
     setAvatarPending(false);
     setMessage(result.warning ?? "Foto de perfil actualizada.");
     router.refresh();
@@ -120,12 +122,12 @@ export function ProfileSettings({ profile }: { profile: ProfileSettingsData }) {
     if (result.error) {
       setError(result.error);
       if (result.avatarRemoved) {
-        setAvatarUrl(null);
+        privateAvatar.setAvatarUrl(null);
         router.refresh();
       }
     }
     else {
-      setAvatarUrl(null);
+      privateAvatar.setAvatarUrl(null);
       setMessage("Se quitó la foto de perfil.");
       router.refresh();
     }
@@ -148,9 +150,9 @@ export function ProfileSettings({ profile }: { profile: ProfileSettingsData }) {
 
   return <div className="profile-content">
     <section className="profile-identity" aria-label="Identidad de la cuenta">
-      <div className="profile-avatar" aria-hidden="true">{avatarUrl ? <Image src={avatarUrl} alt="" width={84} height={84} unoptimized /> : <span>{initials}</span>}</div>
+      <div className="profile-avatar" aria-hidden="true">{privateAvatar.avatarUrl ? <Image src={privateAvatar.avatarUrl} alt="" width={84} height={84} unoptimized onError={privateAvatar.refreshAfterLoadError} /> : <span>{initials}</span>}</div>
       <div className="profile-identity-copy"><h2>{displayName}</h2><p>{profile.email}</p><span>Miembro desde {registeredDate}</span></div>
-      <div className="profile-avatar-actions"><button type="button" onClick={() => fileInput.current?.click()} disabled={avatarPending}>{avatarPending ? "Subiendo…" : avatarUrl ? "Cambiar foto" : "Subir foto"}</button>{avatarUrl && <button className="profile-text-button" type="button" onClick={clearAvatar} disabled={avatarPending}>Quitar</button>}<input ref={fileInput} className="profile-file-input" type="file" accept="image/jpeg,image/png,image/webp" onChange={uploadAvatar} aria-label="Subir foto de perfil" /><small>JPEG, PNG o WebP · máximo 2 MB</small></div>
+      <div className="profile-avatar-actions"><button type="button" onClick={() => fileInput.current?.click()} disabled={avatarPending}>{avatarPending ? "Subiendo…" : privateAvatar.avatarUrl ? "Cambiar foto" : "Subir foto"}</button>{privateAvatar.avatarUrl && <button className="profile-text-button" type="button" onClick={clearAvatar} disabled={avatarPending}>Quitar</button>}<input ref={fileInput} className="profile-file-input" type="file" accept="image/jpeg,image/png,image/webp" onChange={uploadAvatar} aria-label="Subir foto de perfil" /><small>JPEG, PNG o WebP · máximo 2 MB</small></div>
     </section>
 
     {profile.loadError && <p className="profile-alert" role="alert">{profile.loadError}</p>}

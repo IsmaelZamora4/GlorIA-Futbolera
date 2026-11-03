@@ -6,6 +6,7 @@ import path from "node:path";
 import { boundFixtureDateRange } from "../features/fixtures/services/football-data.ts";
 import { BoundedTtlCache } from "../features/fixtures/services/bounded-ttl-cache.mjs";
 import { removeAvatarObjectThenUnlink, safelyRemoveAvatarObject } from "../features/auth/services/avatar-removal.ts";
+import { avatarCacheControlSeconds, avatarSignedUrlTtlSeconds, claimAvatarUrlRefresh, createAvatarSignedUrl, isAvatarPathOwnedByUser, resolveAvatarUrlOverride } from "../features/auth/services/avatar-url.ts";
 import { parseSignupInput, performSignupWithoutEnumeration, safeSignupFailureStatus, signupFeedback } from "../features/auth/services/signup-feedback.ts";
 import { assertPositiveTeamId, downloadTeamLogo, validateTeamLogoUrl } from "../scripts/team-logo-safety.mjs";
 
@@ -68,6 +69,87 @@ test("quitar avatar convierte excepciones en fallo claro o eliminación parcial"
     throw new Error("database detail must not escape");
   });
   assert.deepEqual(unlinkFailureWithoutAvatar, { removed: false, unlinked: false });
+});
+
+test("URLs firmadas de avatar tienen TTL acotado y solo se generan para la ruta propia", async () => {
+  const calls = [];
+  const supabase = { storage: { from: (bucket) => ({
+    createSignedUrl: async (path, expiresIn) => {
+      calls.push({ bucket, path, expiresIn });
+      return { data: { signedUrl: "https://storage.example.test/signed/avatar?token=fake" }, error: null };
+    },
+  }) } };
+
+  assert.equal(avatarSignedUrlTtlSeconds, 3600);
+  assert.equal(avatarCacheControlSeconds, 300);
+  assert.equal(isAvatarPathOwnedByUser("user-1", "user-1/avatar-123abc.png"), true);
+  assert.equal(isAvatarPathOwnedByUser("user-1", "user-2/avatar-123abc.png"), false);
+  assert.equal(isAvatarPathOwnedByUser("user-1", "user-1/avatar-../other.png"), false);
+  assert.equal(await createAvatarSignedUrl(supabase, "user-1", "user-2/avatar-123abc.png"), null);
+  assert.deepEqual(calls, []);
+
+  assert.equal(await createAvatarSignedUrl(supabase, "user-1", "user-1/avatar-123abc.png"), "https://storage.example.test/signed/avatar?token=fake");
+  assert.deepEqual(calls, [{ bucket: "profile-avatars", path: "user-1/avatar-123abc.png", expiresIn: 3600 }]);
+
+  const failingClient = { storage: { from: () => ({ createSignedUrl: async () => ({ data: null, error: new Error("private detail") }) }) } };
+  assert.equal(await createAvatarSignedUrl(failingClient, "user-1", "user-1/avatar-123abc.png"), null);
+  const throwingClient = { storage: { from: () => ({ createSignedUrl: async () => { throw new Error("network detail"); } }) } };
+  assert.equal(await createAvatarSignedUrl(throwingClient, "user-1", "user-1/avatar-123abc.png"), null);
+});
+
+test("renueva como máximo una vez por avatar, conserva la URL renovada y reinicia al cambiar avatar o vista", () => {
+  const firstUrl = "https://storage.example.test/object/sign/profile-avatars/user-1/avatar-a.png?token=old";
+  const renewedUrl = "https://storage.example.test/object/sign/profile-avatars/user-1/avatar-a.png?token=new";
+  const changedAvatarUrl = "https://storage.example.test/object/sign/profile-avatars/user-1/avatar-b.png?token=new";
+  const attempt = { identity: null, attempted: false };
+
+  assert.equal(claimAvatarUrlRefresh(firstUrl, attempt), true);
+  const refreshedOverride = { baseUrl: firstUrl, url: renewedUrl };
+  assert.equal(resolveAvatarUrlOverride(firstUrl, refreshedOverride), renewedUrl);
+  assert.equal(claimAvatarUrlRefresh(renewedUrl, attempt), false, "un token nuevo no vuelve a habilitar la renovación del mismo objeto");
+  const failedRenewalOverride = { baseUrl: firstUrl, url: null };
+  assert.equal(resolveAvatarUrlOverride(firstUrl, failedRenewalOverride), null, "si la URL renovada también falla, se muestra el fallback");
+  assert.equal(claimAvatarUrlRefresh(changedAvatarUrl, attempt), true, "un avatar con otra ruta recibe un nuevo intento");
+  assert.equal(claimAvatarUrlRefresh(firstUrl, attempt), true, "volver a cambiar al avatar anterior restablece el intento");
+  assert.equal(claimAvatarUrlRefresh(firstUrl, { identity: null, attempted: false }), true, "una nueva instancia de la vista puede intentar renovar de nuevo");
+  assert.equal(resolveAvatarUrlOverride("https://storage.example.test/object/sign/profile-avatars/user-1/avatar-b.png?token=latest", refreshedOverride), "https://storage.example.test/object/sign/profile-avatars/user-1/avatar-b.png?token=latest");
+});
+
+test("migraciones mantienen profile-avatars privado y limitan lectura y escritura al propietario", async () => {
+  const profileSql = await fs.readFile("supabase/migrations/20261031170000_create_user_profiles.sql", "utf8");
+  const migrationFiles = await fs.readdir("supabase/migrations");
+  const correctionName = migrationFiles.find((name) => name.endsWith("_make_profile_avatars_private.sql"));
+  assert.ok(correctionName, "debe existir una migración correctiva para instalaciones previas");
+  const correctionSql = await fs.readFile(path.join("supabase/migrations", correctionName), "utf8");
+
+  assert.match(profileSql, /values\s*\(\s*'profile-avatars'\s*,\s*'profile-avatars'\s*,\s*false/i);
+  assert.doesNotMatch(profileSql, /Profile avatars are publicly readable/i);
+  assert.match(correctionSql, /update\s+storage\.buckets\s+set\s+public\s*=\s*false\s+where\s+id\s*=\s*'profile-avatars'/i);
+  assert.match(correctionSql, /drop policy if exists\s+"Profile avatars are publicly readable"\s+on storage\.objects/i);
+  assert.doesNotMatch(correctionSql, /storage\.buckets[\s\S]*?where\s+id\s*<>/i);
+  const correctionReadStart = correctionSql.toLowerCase().indexOf('create policy "users can read their own profile avatar"');
+  assert.notEqual(correctionReadStart, -1);
+  const correctionReadEnd = correctionSql.indexOf(";", correctionReadStart);
+  const correctionReadPolicy = correctionSql.slice(correctionReadStart, correctionReadEnd);
+  assert.match(correctionReadPolicy, /for select to authenticated/i);
+  assert.match(correctionReadPolicy, /storage\.foldername\(name\)\)\[1\]\s*=\s*\(select auth\.uid\(\)\)::text/i);
+
+  const allSql = `${profileSql}\n${correctionSql}`;
+  assert.doesNotMatch(allSql, /create policy\s+"Profile avatars are publicly readable"/i);
+  for (const [name, operation, requiredClause] of [
+    ["Users can read their own profile avatar", "select", "using"],
+    ["Users can upload their own profile avatar", "insert", "with check"],
+    ["Users can update their own profile avatar", "update", "using"],
+    ["Users can delete their own profile avatar", "delete", "using"],
+  ]) {
+    const start = allSql.toLowerCase().indexOf(`create policy "${name.toLowerCase()}"`);
+    assert.notEqual(start, -1, `falta política ${name}`);
+    const end = allSql.indexOf(";", start);
+    const policy = allSql.slice(start, end).toLowerCase();
+    assert.match(policy, new RegExp(`for ${operation} to authenticated`));
+    assert.match(policy, new RegExp(`${requiredClause}[\\s\\S]*storage\\.foldername\\(name\\)\\)\\[1\\] = \\(select auth\\.uid\\(\\)\\)::text`));
+    if (operation === "update") assert.match(policy, /with check[\s\S]*storage\.foldername\(name\)\)\[1\] = \(select auth\.uid\(\)\)::text/);
+  }
 });
 
 test("registro entrega el mismo mensaje y el diagnóstico solo acepta status numérico", () => {

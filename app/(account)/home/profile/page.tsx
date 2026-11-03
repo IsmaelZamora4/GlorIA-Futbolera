@@ -3,6 +3,7 @@ import { AppSidebar } from "@/components/layout/AppSidebar";
 import { SportiaPageHeader } from "@/components/layout/SportiaPageHeader";
 import { ProfileSettings } from "@/features/auth/components/ProfileSettings";
 import { getHomeUserProfile } from "@/features/auth/services/home-user-profile";
+import { createAvatarSignedUrl } from "@/features/auth/services/avatar-url";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function ProfilePage() {
@@ -16,9 +17,7 @@ export default async function ProfilePage() {
     .maybeSingle();
   const fallback = getHomeUserProfile(user);
   const avatarUrl = profileQuery.data
-    ? profileQuery.data.avatar_path
-      ? supabase.storage.from("profile-avatars").getPublicUrl(profileQuery.data.avatar_path).data.publicUrl
-      : null
+    ? await createAvatarSignedUrl(supabase, user.id, profileQuery.data.avatar_path)
     : fallback.avatarUrl;
   const profile = {
     displayName: profileQuery.data?.display_name ?? fallback.displayName,

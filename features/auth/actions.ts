@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { removeAvatarObjectThenUnlink, safelyRemoveAvatarObject } from "@/features/auth/services/avatar-removal";
+import { createAvatarSignedUrl, isAvatarPathOwnedByUser } from "@/features/auth/services/avatar-url";
 
 const allowedTimezones = new Set([
   "America/Lima",
@@ -63,8 +64,7 @@ export async function saveProfileDetails(formData: FormData) {
 export async function saveAvatarPath(path: string) {
   const { supabase, user } = await getUserAndClient();
   if (!user) return { error: "Tu sesión ha caducado. Inicia sesión de nuevo." };
-  const validPath = new RegExp(`^${user.id}/avatar-[0-9a-f-]+\\.(jpg|png|webp)$`, "i");
-  if (!validPath.test(path)) return { error: "La ruta de imagen no es válida." };
+  if (!isAvatarPathOwnedByUser(user.id, path)) return { error: "La ruta de imagen no es válida." };
 
   const { data: currentProfile, error: profileError } = await supabase.from("user_profiles").select("display_name, timezone, favorite_competitions, avatar_path").eq("user_id", user.id).maybeSingle();
   if (profileError) return { error: "No se pudo leer el perfil actual. Inténtalo de nuevo." };
@@ -78,18 +78,29 @@ export async function saveAvatarPath(path: string) {
   }, { onConflict: "user_id" });
   if (error) return { error: "No se pudo actualizar la foto de perfil." };
 
+  let warning: string | undefined;
   if (currentProfile?.avatar_path && currentProfile.avatar_path !== path) {
     const removed = await safelyRemoveAvatarObject(async () => {
       const { error: removeError } = await supabase.storage.from("profile-avatars").remove([currentProfile.avatar_path]);
       return !removeError;
     });
-    if (!removed) {
-      refreshProfile();
-      return { success: true, warning: "La nueva foto se guardó, pero no se pudo eliminar el archivo anterior." };
-    }
+    if (!removed) warning = "La nueva foto se guardó, pero no se pudo eliminar el archivo anterior.";
   }
+  const avatarUrl = await createAvatarSignedUrl(supabase, user.id, path);
+  if (!avatarUrl) warning ??= "La foto se guardó, pero no se pudo cargar ahora. Actualiza la página para volver a intentarlo.";
   refreshProfile();
-  return { success: true };
+  return { success: true, avatarUrl, warning };
+}
+
+export async function refreshAvatarUrl() {
+  const { supabase, user } = await getUserAndClient();
+  if (!user) return null;
+  const { data: profile, error } = await supabase.from("user_profiles")
+    .select("avatar_path")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (error || !profile?.avatar_path) return null;
+  return createAvatarSignedUrl(supabase, user.id, profile.avatar_path);
 }
 
 export async function removeAvatar() {

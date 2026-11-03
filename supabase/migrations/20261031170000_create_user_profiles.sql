@@ -28,15 +28,18 @@ create policy "Users can update their own profile"
   with check ((select auth.uid()) = user_id);
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('profile-avatars', 'profile-avatars', true, 2097152, array['image/jpeg', 'image/png', 'image/webp'])
+values ('profile-avatars', 'profile-avatars', false, 2097152, array['image/jpeg', 'image/png', 'image/webp'])
 on conflict (id) do update set
   public = excluded.public,
   file_size_limit = excluded.file_size_limit,
   allowed_mime_types = excluded.allowed_mime_types;
 
-create policy "Profile avatars are publicly readable"
-  on storage.objects for select to public
-  using (bucket_id = 'profile-avatars');
+create policy "Users can read their own profile avatar"
+  on storage.objects for select to authenticated
+  using (
+    bucket_id = 'profile-avatars'
+    and (storage.foldername(name))[1] = (select auth.uid())::text
+  );
 
 create policy "Users can upload their own profile avatar"
   on storage.objects for insert to authenticated
