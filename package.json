@@ -11,7 +11,7 @@
     "validate:data": "node scripts/validate-league-data.mjs",
     "validate:teams": "node scripts/validate-team-identities.mjs",
     "backtest": "node scripts/backtest-league-model.mjs",
-    "test": "node --test tests/*.test.cjs",
+    "test": "node --test tests/*.test.cjs tests/*.test.mjs",
     "refresh:current": "node scripts/refresh-current-season.mjs",
     "normalize:premier": "node scripts/normalize-premier-league.mjs",
     "cache:logos": "node scripts/cache-team-logos.mjs",

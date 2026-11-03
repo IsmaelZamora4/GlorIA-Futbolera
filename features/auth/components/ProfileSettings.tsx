@@ -101,14 +101,14 @@ export function ProfileSettings({ profile }: { profile: ProfileSettingsData }) {
     }
     const result = await saveAvatarPath(path);
     if (result.error) {
-      await supabase.storage.from("profile-avatars").remove([path]);
+      const { error: cleanupError } = await supabase.storage.from("profile-avatars").remove([path]);
       setAvatarPending(false);
-      setError(result.error);
+      setError(cleanupError ? `${result.error} El archivo temporal también requiere limpieza.` : result.error);
       return;
     }
     setAvatarUrl(supabase.storage.from("profile-avatars").getPublicUrl(path).data.publicUrl);
     setAvatarPending(false);
-    setMessage("Foto de perfil actualizada.");
+    setMessage(result.warning ?? "Foto de perfil actualizada.");
     router.refresh();
   }
 
@@ -117,7 +117,13 @@ export function ProfileSettings({ profile }: { profile: ProfileSettingsData }) {
     setError("");
     const result = await removeAvatar();
     setAvatarPending(false);
-    if (result.error) setError(result.error);
+    if (result.error) {
+      setError(result.error);
+      if (result.avatarRemoved) {
+        setAvatarUrl(null);
+        router.refresh();
+      }
+    }
     else {
       setAvatarUrl(null);
       setMessage("Se quitó la foto de perfil.");

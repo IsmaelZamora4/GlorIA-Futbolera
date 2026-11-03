@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { removeAvatarObjectThenUnlink, safelyRemoveAvatarObject } from "@/features/auth/services/avatar-removal";
 
 const allowedTimezones = new Set([
   "America/Lima",
@@ -65,7 +66,8 @@ export async function saveAvatarPath(path: string) {
   const validPath = new RegExp(`^${user.id}/avatar-[0-9a-f-]+\\.(jpg|png|webp)$`, "i");
   if (!validPath.test(path)) return { error: "La ruta de imagen no es válida." };
 
-  const { data: currentProfile } = await supabase.from("user_profiles").select("display_name, timezone, favorite_competitions, avatar_path").eq("user_id", user.id).maybeSingle();
+  const { data: currentProfile, error: profileError } = await supabase.from("user_profiles").select("display_name, timezone, favorite_competitions, avatar_path").eq("user_id", user.id).maybeSingle();
+  if (profileError) return { error: "No se pudo leer el perfil actual. Inténtalo de nuevo." };
   const { error } = await supabase.from("user_profiles").upsert({
     user_id: user.id,
     display_name: currentProfile?.display_name ?? String(user.user_metadata?.full_name ?? user.user_metadata?.name ?? user.email ?? "Cuenta").slice(0, 80),
@@ -77,7 +79,14 @@ export async function saveAvatarPath(path: string) {
   if (error) return { error: "No se pudo actualizar la foto de perfil." };
 
   if (currentProfile?.avatar_path && currentProfile.avatar_path !== path) {
-    await supabase.storage.from("profile-avatars").remove([currentProfile.avatar_path]);
+    const removed = await safelyRemoveAvatarObject(async () => {
+      const { error: removeError } = await supabase.storage.from("profile-avatars").remove([currentProfile.avatar_path]);
+      return !removeError;
+    });
+    if (!removed) {
+      refreshProfile();
+      return { success: true, warning: "La nueva foto se guardó, pero no se pudo eliminar el archivo anterior." };
+    }
   }
   refreshProfile();
   return { success: true };
@@ -86,8 +95,16 @@ export async function saveAvatarPath(path: string) {
 export async function removeAvatar() {
   const { supabase, user } = await getUserAndClient();
   if (!user) return { error: "Tu sesión ha caducado. Inicia sesión de nuevo." };
-  const { data: profile } = await supabase.from("user_profiles").select("avatar_path, display_name, timezone, favorite_competitions").eq("user_id", user.id).maybeSingle();
-  const { error } = await supabase.from("user_profiles").upsert({
+  const { data: profile, error: profileError } = await supabase.from("user_profiles").select("avatar_path, display_name, timezone, favorite_competitions").eq("user_id", user.id).maybeSingle();
+  if (profileError) return { error: "No se pudo leer el perfil actual. Inténtalo de nuevo." };
+  const result = await removeAvatarObjectThenUnlink(
+    profile?.avatar_path ?? null,
+    async (avatarPath) => {
+      const { error: removeError } = await supabase.storage.from("profile-avatars").remove([avatarPath]);
+      return !removeError;
+    },
+    async () => {
+      const { error } = await supabase.from("user_profiles").upsert({
     user_id: user.id,
     display_name: String(profile?.display_name ?? user.email ?? "Cuenta").slice(0, 80),
     timezone: profile?.timezone ?? "America/Lima",
@@ -95,8 +112,17 @@ export async function removeAvatar() {
     avatar_path: null,
     updated_at: new Date().toISOString(),
   }, { onConflict: "user_id" });
-  if (error) return { error: "No se pudo quitar la foto de perfil." };
-  if (profile?.avatar_path) await supabase.storage.from("profile-avatars").remove([profile.avatar_path]);
+      return !error;
+    },
+  );
+  if (!result.removed && profile?.avatar_path) return { error: "No se pudo eliminar la foto. Tu perfil conserva la foto actual." };
+  if (!result.unlinked) {
+    if (profile?.avatar_path) return {
+      error: "El archivo de la foto se eliminó, pero no se pudo desvincular del perfil. Actualiza la página e inténtalo de nuevo.",
+      avatarRemoved: true,
+    };
+    return { error: "No se pudo quitar la foto de perfil." };
+  }
   refreshProfile();
   return { success: true };
 }

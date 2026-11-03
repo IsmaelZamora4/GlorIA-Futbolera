@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { footballDataCompetitions, getFootballDataFixtures, getWeekEndDate } from "@/features/fixtures/services/football-data";
+import { boundFixtureDateRange, footballDataCompetitions, getFootballDataFixtures, getWeekEndDate } from "@/features/fixtures/services/football-data";
 import { getLocalLeagueAnalysis, supportsLocalLeagueAnalysis } from "@/features/match-analysis/services/league-analysis";
 import { getAuthenticatedUser } from "@/lib/supabase/auth";
 
@@ -14,13 +14,19 @@ export async function GET(request: NextRequest) {
   if (!footballDataCompetitions[competition]) {
     return NextResponse.json({ error: "Esta competición aún no tiene una fuente actual gratuita configurada." }, { status: 400 });
   }
-  const dateTo = getWeekEndDate(date);
+  let dateRange: { dateFrom: string; dateTo: string };
+  try {
+    dateRange = boundFixtureDateRange(date, getWeekEndDate(date));
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : "El rango de fechas no es válido." }, { status: 400 });
+  }
+  const { dateFrom, dateTo } = dateRange;
 
   try {
     // The API supplies upcoming fixtures only. Every statistical estimate comes
     // from the local CSV pipeline, never from a historical API request.
-    const seasonMatches = await getFootballDataFixtures(date, dateTo, competition);
-    const fixtures = seasonMatches.filter((fixture: { utcDate: string; status: string }) => fixture.utcDate.slice(0, 10) >= date && fixture.status !== "FINISHED");
+    const seasonMatches = await getFootballDataFixtures(dateFrom, dateTo, competition);
+    const fixtures = seasonMatches.filter((fixture: { utcDate: string; status: string }) => fixture.utcDate.slice(0, 10) >= dateFrom && fixture.status !== "FINISHED");
     const enrichedFixtures = includeAnalysis && supportsLocalLeagueAnalysis(competition)
       ? await Promise.all(fixtures.map(async (fixture: { utcDate: string; homeTeam: { name: string }; awayTeam: { name: string } }) => ({
           ...fixture,
@@ -28,7 +34,7 @@ export async function GET(request: NextRequest) {
         })))
       : fixtures;
     return NextResponse.json(
-      { dateFrom: date, dateTo, competition, fixtures: enrichedFixtures, source: "football-data.org", cacheTtlSeconds: 21_600 },
+      { dateFrom, dateTo, competition, fixtures: enrichedFixtures, source: "football-data.org", cacheTtlSeconds: 21_600 },
       { headers: { "Cache-Control": "private, no-store" } },
     );
   } catch (error) {

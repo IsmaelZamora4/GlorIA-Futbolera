@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/browser";
 import { getSafeInternalPath } from "@/features/auth/services/redirect";
+import { registerAccount } from "@/features/auth/signup-action";
 
 type Mode = "login" | "register" | "recovery";
 
@@ -93,33 +94,32 @@ function LoginForm() {
       }
     }
     setPending(true);
-    const redirectTo = getAuthCallbackUrl(getRequestedDestination());
     try {
+      if (mode === "register") {
+        const result = await registerAccount({
+          email: email.trim(),
+          password,
+          name: name.trim(),
+          username: username.trim().toLowerCase(),
+          next: getRequestedDestination(),
+        });
+        setMessage(result.message);
+        return;
+      }
       const result = mode === "login"
         ? await supabase.auth.signInWithPassword({ email: email.trim(), password })
-        : mode === "register"
-          ? await supabase.auth.signUp({
-              email: email.trim(),
-              password,
-              options: {
-                emailRedirectTo: redirectTo,
-                data: { name: name.trim(), full_name: name.trim(), username: username.trim().toLowerCase() },
-              },
-            })
-          : await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: getAuthCallbackUrl("/auth/update-password") });
+        : await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: getAuthCallbackUrl("/auth/update-password") });
       if (result.error) {
         setError(mode === "login"
           ? "No se pudo iniciar sesión. Revisa tu correo y contraseña."
-          : mode === "register"
-            ? "No se pudo crear la cuenta. Revisa los datos o intenta con otro correo."
-            : "No se pudo enviar el enlace. Inténtalo de nuevo más tarde.");
+          : "No se pudo enviar el enlace. Inténtalo de nuevo más tarde.");
         return;
       }
       if (mode === "login") {
         router.replace(getRequestedDestination());
         return;
       }
-      setMessage(mode === "register" ? "Revisa tu correo para confirmar la cuenta." : "Si el correo existe, recibirás un enlace para recuperar el acceso.");
+      setMessage("Si el correo existe, recibirás un enlace para recuperar el acceso.");
     } catch {
       setError("No se pudo completar la solicitud. Comprueba tu conexión e inténtalo de nuevo.");
     } finally {
