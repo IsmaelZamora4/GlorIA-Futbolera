@@ -6,7 +6,9 @@ import type { HomeUserProfile } from "@/features/auth/services/home-user-profile
 const HomeUserContext = createContext<HomeUserProfile | null>(null);
 
 export function HomeUserProvider({ profile, children }: { profile: HomeUserProfile; children: ReactNode }) {
-  return <HomeUserContext.Provider value={profile}>{children}</HomeUserContext.Provider>;
+  const parentProfile = useContext(HomeUserContext);
+  const resolvedProfile = parentProfile ? { ...profile, ...parentProfile } : profile;
+  return <HomeUserContext.Provider value={resolvedProfile}>{children}</HomeUserContext.Provider>;
 }
 
 export function useHomeUserProfile() {
